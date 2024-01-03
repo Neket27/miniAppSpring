@@ -1,38 +1,46 @@
 package app.miniappspring.config;
 
 
+import app.miniappspring.service.MyUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
+    private static final String[] AUTH_WHITELIST = {
+            "/api/v1/auth/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder){
-        UserDetails admin = User.builder().username("admin").password(passwordEncoder.encode("admin")).build();
-        UserDetails user = User.builder().username("user").password(passwordEncoder.encode("user")).build();
-        return new InMemoryUserDetailsManager(admin,user);
+    public UserDetailsService userDetailsService(){
+
+        return new MyUserDetailsService();
     }
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf(AbstractHttpConfigurer::disable) // убрать потом
+                .csrf(AbstractHttpConfigurer::disable) // убрать потом
 //                .authorizeHttpRequests((authz) -> authz
 //                        .requestMatchers("home").permitAll()
 //                     //   .requestMatchers("login").permitAll()
@@ -41,16 +49,26 @@ public class SecurityConfig {
 //                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
 //              //  .httpBasic(withDefaults());
 
-             //   .csrf(AbstractHttpConfigurer::disable) // убрать потом
+                //   .csrf(AbstractHttpConfigurer::disable) // убрать потом
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("home").permitAll()
-                        .requestMatchers("main").authenticated()
-                        .requestMatchers("filter").authenticated()
-                     //   .anyRequest().authenticated()
+                      //  .requestMatchers("home","registration").permitAll()
+                        //.requestMatchers("main").authenticated()
+                        // .requestMatchers("filter").authenticated()
+                         .requestMatchers("registration").permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
         //  .httpBasic(withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService());
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean

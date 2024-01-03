@@ -1,17 +1,18 @@
 package app.miniappspring.entity;
 
-import io.swagger.annotations.ApiModel;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-//@Table(name = "EMPLOYEE")
+@Table(name = "message")
 @NoArgsConstructor
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
-@ApiModel("Модель сотрудника")
+@Schema($schema = "Модель сообщения")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
