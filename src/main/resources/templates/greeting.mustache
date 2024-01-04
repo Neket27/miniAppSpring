@@ -9,5 +9,14 @@
 <a href="/main">Main page </a>
 <a href="/registration">Registration page </a>
 
+<div>Список пользователей</div>
+{{#users}}
+    <div>
+    <b>{{id}}</b>
+    <span>{{username}}</span>
+    <span>{{password}}</span>
+    <I>{{roles}}</I>
+    </div>
+{{/users}}
 </body>
 </html>

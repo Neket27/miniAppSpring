@@ -14,21 +14,22 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/massage")
+@RequestMapping("/")
 public class GreetingController {
 private final MessageRepo messageRepo;
 private final MyUserDetailsService myUserDetailsService;
 
 
     @GetMapping("/home")
-    public @ResponseBody String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String,Object> model) {
+    public  String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String,Object> model) {
      model.put("name",name);
+     model.put("users",myUserDetailsService.getListUsers());
 
         return "greeting";
     }
 
     @GetMapping("/main")
-    public @ResponseBody String main(Map<String,Object>model){
+    public  String main(Map<String,Object>model){
         Iterable<Message> messages =messageRepo.findAll();
         model.put("messages",messages);
         return "main";
@@ -42,7 +43,7 @@ private final MyUserDetailsService myUserDetailsService;
                .build();
 
        messageRepo.save(message);
-
+  model.put("users",myUserDetailsService.getListUsers());
         Iterable<Message> messages =messageRepo.findAll();
         model.put("messages",messages);
        return "main";
@@ -50,21 +51,27 @@ private final MyUserDetailsService myUserDetailsService;
 
 
     @PostMapping("filter")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public @ResponseBody String filter(@RequestParam(name = "filter") String tag, Map<String,Object>model){
         List<Message> messages = messageRepo.findByTag(tag);
         model.put("messages",messages);
         return "main";
     }
 
-    @GetMapping("new-user")
-    public @ResponseBody String addUser(Map<String,Object>model){
+    @GetMapping("registration")
+    public  String addUser(Map<String,Object>model){
         return "registration";
     }
     @PostMapping("registration")
-    public @ResponseBody String addUser(@RequestBody User user, Map<String,Object>model){
+    public  String addUser(@RequestBody User user, Map<String,Object>model){
         myUserDetailsService.addUser(user);
-        return "home";
+        return "registration";
+    }
+
+    @GetMapping("username")
+    public String listUser(@RequestParam  String username, Map<String,Object>model){
+        model.put("users",myUserDetailsService.getUsersByName(username));
+        return "greeting";
     }
 
 

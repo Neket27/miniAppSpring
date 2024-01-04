@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
     @RequiredArgsConstructor
@@ -17,9 +16,7 @@ import java.util.stream.Collectors;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            //return user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());
-            List<SimpleGrantedAuthority>roles=List.of(new SimpleGrantedAuthority("ROLE_USER"));
-            return roles;
+            return user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());
         }
 
         @Override
