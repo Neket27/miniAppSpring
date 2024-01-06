@@ -1,6 +1,7 @@
 package app.miniappspring.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Set;
@@ -16,7 +17,9 @@ public class User {
 @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+//    @NotBlank(message = "username = null")
     private String username;
+//    @NotBlank(message = "password user = null")
     private String password;
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

@@ -1,11 +1,15 @@
 package app.miniappspring.controller;
 
+import app.miniappspring.detail.MyUserDetails;
+import app.miniappspring.dto.DtoCurrentUser;
 import app.miniappspring.entity.Message;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.MessageRepo;
 import app.miniappspring.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +22,12 @@ import java.util.Map;
 public class GreetingController {
 private final MessageRepo messageRepo;
 private final MyUserDetailsService myUserDetailsService;
-
+//private final DtoCurrentUser dtoCurrentUser;
 
     @GetMapping("/home")
     public  String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String,Object> model) {
-     model.put("name",name);
-     model.put("users",myUserDetailsService.getListUsers());
+     model.put("username","QQ");
+//     model.put("users",myUserDetailsService.getListUsers());
 
         return "greeting";
     }
@@ -70,7 +74,7 @@ private final MyUserDetailsService myUserDetailsService;
 
     @GetMapping("username")
     public String listUser(@RequestParam  String username, Map<String,Object>model){
-        model.put("users",myUserDetailsService.getUsersByName(username));
+        model.put("users",myUserDetailsService.getUserByUsername(username));
         return "greeting";
     }
 
