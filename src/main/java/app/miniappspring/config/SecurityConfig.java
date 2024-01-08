@@ -1,26 +1,20 @@
 package app.miniappspring.config;
 
-import app.miniappspring.filter.JwtFilter;
-import app.miniappspring.service.MyUserDetailsService;
-import app.miniappspring.utils.jwtToken.LoadUser;
+import app.miniappspring.filter.JwtAuthenticationFilter;
+import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,32 +29,35 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig  {
 
-    private final JwtFilter jwtFilter;
-//    private final AuthenticationConfiguration authConfiguration;
 //    private final LoadUser loadUser;
+    private final UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/auth/**",
-            "/v3/api-docs/**",
+            "/v3/api-docs/**",//    @Bean
+//    public AuthenticationManager authenticationManager() throws Exception {
+//        return authConfiguration.getAuthenticationManager();
+//    }
             "/v3/api-docs.yaml",
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
 
-//    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
-//        return authConfiguration.getAuthenticationManager();
-//    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
 //    @Autowired
 //    public void configure(AuthenticationManagerBuilder builder, AuthenticationProvider jwtAuthenticationProvider) {
 //        builder.authenticationProvider(jwtAuthenticationProvider);
 //    }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return jwtFilter.getLoadUser();
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        return jwtFilter.getLoadUser();
+//    }
 
 
     @Bean
@@ -69,7 +66,7 @@ public class SecurityConfig  {
                 .csrf(AbstractHttpConfigurer::disable) // убрать потом
                 .cors(AbstractHttpConfigurer::disable) // убрать потом
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(swssion->swssion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
 
 //                .authorizeHttpRequests((authz) -> authz
 //                        .requestMatchers("home").permitAll()
@@ -90,13 +87,17 @@ public class SecurityConfig  {
                                 .anyRequest().permitAll()
 
                 )
-                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .formLogin(login->{login
 //                            .loginPage("/login.html")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/home", true);
                 })
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .httpBasic(withDefaults());
 
 
@@ -107,7 +108,7 @@ public class SecurityConfig  {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userService.userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

@@ -1,7 +1,6 @@
 package app.miniappspring.service;
 
 
-import app.miniappspring.dto.jwtToken.JwtAuthentication;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
@@ -9,9 +8,6 @@ import app.miniappspring.repository.UserRepo;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
