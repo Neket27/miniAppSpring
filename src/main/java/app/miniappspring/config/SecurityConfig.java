@@ -1,8 +1,8 @@
 package app.miniappspring.config;
 
-
 import app.miniappspring.filter.JwtFilter;
 import app.miniappspring.service.MyUserDetailsService;
+import app.miniappspring.utils.jwtToken.LoadUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,7 +36,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig  {
 
     private final JwtFilter jwtFilter;
-    private final AuthenticationConfiguration authConfiguration;
+//    private final AuthenticationConfiguration authConfiguration;
+//    private final LoadUser loadUser;
+
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/auth/**",
             "/v3/api-docs/**",
@@ -44,20 +47,19 @@ public class SecurityConfig  {
             "/swagger-ui.html"
     };
 
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authConfiguration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager() throws Exception {
+//        return authConfiguration.getAuthenticationManager();
+//    }
 
-    @Autowired
-    public void configure(AuthenticationManagerBuilder builder, AuthenticationProvider jwtAuthenticationProvider) {
-        builder.authenticationProvider(jwtAuthenticationProvider);
-    }
+//    @Autowired
+//    public void configure(AuthenticationManagerBuilder builder, AuthenticationProvider jwtAuthenticationProvider) {
+//        builder.authenticationProvider(jwtAuthenticationProvider);
+//    }
 
     @Bean
     public UserDetailsService userDetailsService(){
-
-        return MyUserDetailsService.builder().build();
+        return jwtFilter.getLoadUser();
     }
 
 
@@ -79,23 +81,23 @@ public class SecurityConfig  {
 
                 //   .csrf(AbstractHttpConfigurer::disable) // убрать потом
                 .authorizeHttpRequests((authz) -> authz
-                      //  .requestMatchers("home","registration").permitAll()
-                        //.requestMatchers("main").authenticated()
-                        // .requestMatchers("filter").authenticated()
+                                //  .requestMatchers("home","registration").permitAll()
+                                //.requestMatchers("main").authenticated()
+                                // .requestMatchers("filter").authenticated()
 //                         .requestMatchers("registration").permitAll()
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                                .requestMatchers(AUTH_WHITELIST).permitAll()
+                                .requestMatchers("/admin").hasRole("ADMIN")
+                                .anyRequest().permitAll()
 
                 )
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(login->{login
 //                            .loginPage("/login.html")
-                            .loginProcessingUrl("/login")
-                            .defaultSuccessUrl("/home", true);
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/home", true);
                 })
-                .sessionManagement(SessionManagementConfigurer::disable)
-          .httpBasic(withDefaults());
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(withDefaults());
 
 
         return http.build();

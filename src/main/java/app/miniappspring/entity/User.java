@@ -17,13 +17,14 @@ public class User {
 @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-//    @NotBlank(message = "username = null")
+    @NotBlank(message = "username = null")
     private String username;
-//    @NotBlank(message = "password user = null")
+    @NotBlank(message = "password user = null")
     private String password;
     private boolean active;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name="user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
 }

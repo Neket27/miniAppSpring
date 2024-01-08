@@ -1,8 +1,9 @@
-package app.miniappspring.utils;
+package app.miniappspring.utils.jwtToken;
 
 
-import app.miniappspring.dto.JwtAuthentication;
+import app.miniappspring.dto.jwtToken.JwtAuthentication;
 import app.miniappspring.entity.Role;
+import app.miniappspring.entity.User;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,12 +13,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JwtUtils {
 
-    public static JwtAuthentication generate(Claims claims) {
-        final JwtAuthentication jwtInfoToken = new JwtAuthentication();
-        jwtInfoToken.setRoles(getRoles(claims));
-        jwtInfoToken.setFirstName(claims.get("firstName", String.class));
+public final class JwtUtils  {
+
+    public static JwtAuthentication generate(Claims claims,User user) {
+        final JwtAuthentication jwtInfoToken = new JwtAuthentication(user);
+//        Object v = jwtInfoToken.getPrincipal();
+        jwtInfoToken.setRoles(getRoles(claims));////////////////////////////////////////////////////////////////////////////////////////
+//        jwtInfoToken.getUser().setFirstName(claims.get("firstName", String.class));
         jwtInfoToken.setUsername(claims.getSubject());
         return jwtInfoToken;
     }

@@ -1,15 +1,10 @@
 package app.miniappspring.controller;
 
-import app.miniappspring.detail.MyUserDetails;
-import app.miniappspring.dto.DtoCurrentUser;
 import app.miniappspring.entity.Message;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.MessageRepo;
 import app.miniappspring.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +69,7 @@ private final MyUserDetailsService myUserDetailsService;
 
     @GetMapping("username")
     public String listUser(@RequestParam  String username, Map<String,Object>model){
-        model.put("users",myUserDetailsService.getUserByUsername(username));
+        model.put("users",myUserDetailsService.getByUsername(username));
         return "greeting";
     }
 

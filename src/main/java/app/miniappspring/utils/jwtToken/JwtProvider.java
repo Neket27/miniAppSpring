@@ -1,4 +1,4 @@
-package app.miniappspring.utils;
+package app.miniappspring.utils.jwtToken;
 
 import app.miniappspring.entity.User;
 import io.jsonwebtoken.*;
@@ -32,7 +32,7 @@ public class JwtProvider {
 
     public String generateAccessToken(@NonNull User user) {
         final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
+        final Instant accessExpirationInstant = now.plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
                 .setSubject(user.getUsername())
@@ -91,8 +91,9 @@ public class JwtProvider {
     }
 
     private Claims getClaims(@NonNull String token, @NonNull Key secret) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(secret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }

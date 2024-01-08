@@ -1,4 +1,4 @@
-package app.miniappspring.dto;
+package app.miniappspring.dto.jwtToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
