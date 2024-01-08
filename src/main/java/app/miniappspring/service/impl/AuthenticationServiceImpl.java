@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .username(signUpRequest.getUsername())
                 .firstname(signUpRequest.getFirstname())
                 .lastname(signUpRequest.getLastname())
-                .roles(Collections.singleton(Role.USER))
+                .roles(Collections.singleton(Role.ROLE_USER))
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .build();
         return userRepo.save(user);

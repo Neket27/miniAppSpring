@@ -31,7 +31,7 @@ public class MyUserDetailsService  {
 
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(Role.USER));
+        user.setRoles(Collections.singleton(Role.ROLE_USER));
         userRepo.save(user);
     }
 

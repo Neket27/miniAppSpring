@@ -14,6 +14,6 @@ public enum Role  {
 //        return null;
 //    }
 
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN
 }

@@ -1,5 +1,6 @@
 package app.miniappspring.config;
 
+import app.miniappspring.entity.Role;
 import app.miniappspring.filter.JwtAuthenticationFilter;
 import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -64,41 +65,52 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // убрать потом
-                .cors(AbstractHttpConfigurer::disable) // убрать потом
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request->request.requestMatchers("/api/v1/auth/**")
+                                .permitAll()
+                                .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ROLE_ADMIN.name())
+                              //  .requestMatchers("/api/v1/user").hasAnyAuthority(Role.ROLE_USER.name())
+                                .anyRequest().authenticated())
+                .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
+
+
+// .cors(AbstractHttpConfigurer::disable) // убрать потом
+////                .httpBasic(AbstractHttpConfigurer::disable)
+//
+//
+////                .authorizeHttpRequests((authz) -> authz
+////                        .requestMatchers("home").permitAll()
+////                     //   .requestMatchers("login").permitAll()
+////                        .anyRequest().authenticated()
+////                )
+////                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+////              //  .httpBasic(withDefaults());
+//
+//                //   .csrf(AbstractHttpConfigurer::disable) // убрать потом
 //                .authorizeHttpRequests((authz) -> authz
-//                        .requestMatchers("home").permitAll()
-//                     //   .requestMatchers("login").permitAll()
-//                        .anyRequest().authenticated()
+//                                //  .requestMatchers("home","registration").permitAll()
+//                                //.requestMatchers("main").authenticated()
+//                                // .requestMatchers("filter").authenticated()
+////                         .requestMatchers("registration").permitAll()
+//                                .requestMatchers(AUTH_WHITELIST).permitAll()
+//                                .requestMatchers("/admin").hasRole("ADMIN")
+//                                .anyRequest().permitAll()
+//
 //                )
-//                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
-//              //  .httpBasic(withDefaults());
+////                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+//
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//
+//                .formLogin(login->{login
+////                            .loginPage("/login.html")
+//                        .loginProcessingUrl("/login")
+//                        .defaultSuccessUrl("/home", true);
+//                })
 
-                //   .csrf(AbstractHttpConfigurer::disable) // убрать потом
-                .authorizeHttpRequests((authz) -> authz
-                                //  .requestMatchers("home","registration").permitAll()
-                                //.requestMatchers("main").authenticated()
-                                // .requestMatchers("filter").authenticated()
-//                         .requestMatchers("registration").permitAll()
-                                .requestMatchers(AUTH_WHITELIST).permitAll()
-                                .requestMatchers("/admin").hasRole("ADMIN")
-                                .anyRequest().permitAll()
-
-                )
-//                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
-                .formLogin(login->{login
-//                            .loginPage("/login.html")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/home", true);
-                })
-
-                .httpBasic(withDefaults());
+//                .httpBasic(withDefaults());
 
 
         return http.build();

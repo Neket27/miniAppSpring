@@ -11,4 +11,5 @@ public class MiniAppSpringApplication {
 		SpringApplication.run(MiniAppSpringApplication.class, args);
 	}
 
+
 }

@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_USER')")
 public class UserController {
 
-    @PreAuthorize("hasAnyAuthority('USER')")
+//    @PreAuthorize("hasAnyAuthority('USER')")
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hi User");
