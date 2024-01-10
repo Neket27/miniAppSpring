@@ -13,6 +13,8 @@ import app.miniappspring.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,9 +57,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
-        String username = jwtService.extractUserName(refreshTokenRequest.getToken());
+        String username = jwtService.getUserNameFromRefreshToken(refreshTokenRequest.getToken());
         User user =userRepo.findByUsername(username).orElseThrow(()->new ErrorException("Пользователь с логином "+username+" не найден"));
-    if(jwtService.isTokenValid(refreshTokenRequest.getToken(),user)){
+    if(jwtService.isTokenValidRefreshToken(refreshTokenRequest.getToken(),user)){
         String newToken =jwtService.generateToken(user);
         JwtAuthenticationResponse jwtAuthenticationResponse= JwtAuthenticationResponse.builder()
                 .token(newToken)
@@ -66,6 +68,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthenticationResponse;
     }
     return null;
+    }
+
+    @Override
+    public User getAuthenticationInfo(){
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

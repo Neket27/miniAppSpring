@@ -3,7 +3,7 @@ package app.miniappspring.controller;
 import app.miniappspring.entity.Message;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.MessageRepo;
-import app.miniappspring.service.MyUserDetailsService;
+import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/")
 public class GreetingController {
 private final MessageRepo messageRepo;
-private final MyUserDetailsService myUserDetailsService;
+private final UserService userService;
 //private final DtoCurrentUser dtoCurrentUser;
 
     @GetMapping("/home")
@@ -42,7 +42,7 @@ private final MyUserDetailsService myUserDetailsService;
                .build();
 
        messageRepo.save(message);
-  model.put("users",myUserDetailsService.getListUsers());
+  model.put("users",userService.getListUsers());
         Iterable<Message> messages =messageRepo.findAll();
         model.put("messages",messages);
        return "main";
@@ -63,13 +63,13 @@ private final MyUserDetailsService myUserDetailsService;
     }
     @PostMapping("registration")
     public  String addUser(@RequestBody User user, Map<String,Object>model){
-        myUserDetailsService.addUser(user);
+        userService.addUser(user);
         return "registration";
     }
 
     @GetMapping("username")
     public String listUser(@RequestParam  String username, Map<String,Object>model){
-        model.put("users",myUserDetailsService.getByUsername(username));
+        model.put("users",userService.getByUsername(username));
         return "greeting";
     }
 

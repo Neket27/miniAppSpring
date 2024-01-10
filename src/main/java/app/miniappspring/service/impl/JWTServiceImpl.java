@@ -1,72 +1,115 @@
 package app.miniappspring.service.impl;
 
-import app.miniappspring.entity.User;
 import app.miniappspring.service.JWTService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class JWTServiceImpl implements JWTService {
 
-    public String generateToken(UserDetails userDetails){
+    private final SecretKey jwtAccessSecret;
+    private final SecretKey jwtRefreshSecret;
+
+    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
+        this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+    }
+
+
+    public String generateToken(@NonNull UserDetails userDetails){
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()*1000*60*24))
-                .signWith(getSiginKey(), SignatureAlgorithm.HS256)
+                .signWith(jwtAccessSecret, SignatureAlgorithm.HS256)
                 .compact();
     }
 
+
     @Override
-    public String generateRefreshToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateRefreshToken(@NonNull HashMap<String, UserDetails> extraClaims, @NonNull UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+604800000))
-                .signWith(getSiginKey(), SignatureAlgorithm.HS256)
+                .signWith(jwtRefreshSecret, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     @Override
-    public String extractUserName(String token){
-        return extractClaim(token,Claims::getSubject);
+    public String getUserNameFromAccessToken(@NonNull String token) {
+        return extractClaim(token,jwtAccessSecret,Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims,T> claimsResolvers){
-        final Claims claims= extractAllClaim(token);
+    @Override
+    public String getUserNameFromRefreshToken(@NonNull String token){
+        return extractClaim(token,jwtRefreshSecret,Claims::getSubject);
+    }
+
+    @Override
+    public String extractUserName(@NonNull String token, @NonNull SecretKey secretKey) {
+        return extractClaim(token,secretKey,Claims::getSubject);
+    }
+
+    private <T> T extractClaim(@NonNull String token,@NonNull SecretKey secretKey, Function<Claims,T> claimsResolvers){
+        final Claims claims= getClaims(token,secretKey);
         return claimsResolvers.apply(claims);
     }
 
-    private Claims extractAllClaim(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSiginKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims getClaims(@NonNull String token, @NonNull SecretKey secretKey) {
+        try {
+          return   Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        }
+      catch (
+    ExpiredJwtException expEx) {
+        log.error("Token expired", expEx);
+    } catch (
+    UnsupportedJwtException unsEx) {
+        log.error("Unsupported jwt", unsEx);
+    } catch (MalformedJwtException mjEx) {
+        log.error("Malformed jwt", mjEx);
+    } catch (
+    SignatureException sEx) {
+        log.error("Invalid signature", sEx);
+    } catch (Exception e) {
+        log.error("invalid token", e);
+    }
+        return null;
     }
 
-    private Key getSiginKey() {
-        byte[] key = Decoders.BASE64.decode("qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w");
-    return Keys.hmacShaKeyFor(key);
+    @Override
+    public boolean isTokenValidAccessToken(@NonNull String token, @NonNull UserDetails userDetails){
+        final String username =getUserNameFromAccessToken(token);
+        return (username.equals(userDetails.getUsername())&&!isTokenExpired(token,jwtAccessSecret));
     }
 
-    public boolean isTokenValid(String token,UserDetails userDetails){
-        final String username =extractUserName(token);
-        return (username.equals(userDetails.getUsername())&&!isTokenExpired(token));
+    @Override
+    public boolean isTokenValidRefreshToken(@NonNull String token, @NonNull UserDetails userDetails){
+        final String username =getUserNameFromRefreshToken(token);
+        return (username.equals(userDetails.getUsername())&&!isTokenExpired(token,jwtRefreshSecret));
     }
 
-    private boolean isTokenExpired(String token) {
-      return   extractClaim(token,Claims::getExpiration).before(new Date());
+    private boolean isTokenExpired(@NonNull String token,@NonNull SecretKey secretKey) {
+      return  extractClaim(token,secretKey,Claims::getExpiration).before(new Date());
     }
+
+
 }
