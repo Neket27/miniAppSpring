@@ -3,8 +3,7 @@ package app.miniappspring;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
@@ -107,6 +106,22 @@ public class UserServiceMockTest {
         //Assert
         assertEquals(expectedUser,actualUsers);
 
+    }
+
+    @Test
+    @IgnoreForBinding
+    public void testRemoveUser(){
+        //Arrange
+        UserService userServiceLocal= spy(new UserServiceImpl(userRepo));
+        //Act
+        doNothing().when(userRepo).deleteById(anyLong());
+
+        doReturn(user).when(userServiceLocal).getByUsername(anyString());
+        Long id= userServiceLocal.getByUsername("nikita").getId();
+        boolean actual=userServiceLocal.remove(String.valueOf(id));
+
+        //Assert
+        assertTrue(actual);
     }
 
 
