@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 @Component
-//@Transactional
+@Transactional
 @RequiredArgsConstructor
 public class UnificationDataUser {
 
