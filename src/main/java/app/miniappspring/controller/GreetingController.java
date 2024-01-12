@@ -1,12 +1,10 @@
 package app.miniappspring.controller;
 
 import app.miniappspring.arguments.CreateUserArgument;
-import app.miniappspring.dto.user.CreateUserDto;
-import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Message;
 import app.miniappspring.entity.User;
+import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.MessageRepo;
-import app.miniappspring.service.LoadFileService;
 import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -14,7 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +27,6 @@ import java.util.Map;
 public class GreetingController {
 private final MessageRepo messageRepo;
 private final UserService userService;
-private final LoadFileService uploadFileService;
 
     @GetMapping("/home")
     public  String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Map<String,Object> model) {
@@ -68,8 +70,8 @@ private final LoadFileService uploadFileService;
     public  String addUser(Map<String,Object>model){
         return "registration";
     }
-    @PostMapping("registration")
-    public  String addUser(@RequestBody CreateUserArgument createUserArgument, Map<String,Object>model){
+    @PostMapping(path = "registration",produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public  String addUser(@ModelAttribute CreateUserArgument createUserArgument, Map<String,Object>model){
         userService.addUser(createUserArgument);
         return "registration";
     }
@@ -83,8 +85,11 @@ private final LoadFileService uploadFileService;
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
     @PostMapping(path = "/photo",produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public  String upLoadPhoto(Map<String,Object> model,@RequestParam("photoFile") MultipartFile multipartFile) throws IOException {
-            Image file = uploadFileService.loadImage(multipartFile);
-        model.put("msg", "Uploaded images: " + file.toString());
+        StringBuilder fileNames = new StringBuilder();
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, multipartFile.getOriginalFilename());
+        fileNames.append(multipartFile.getOriginalFilename());
+        Files.write(fileNameAndPath, multipartFile.getBytes());
+        model.put("msg", "Uploaded images: " + fileNames.toString());
 
         return "photo";
     }

@@ -1,5 +1,6 @@
 package app.miniappspring.dto.user;
 
+
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Role;
 import jakarta.persistence.*;
@@ -20,6 +21,6 @@ public class CreateUserDto {
     @NotBlank(message = "password user = null")
     private String password;
     private String email;
-    private MultipartFile avatarMultipartFile;
+    private Image avatar;
     private Set<Role> roles;
 }

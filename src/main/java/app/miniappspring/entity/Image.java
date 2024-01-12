@@ -1,50 +1,31 @@
 package app.miniappspring.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 
 @Entity
+@Table(name = "images")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
-public class Image extends java.awt.Image {
+public class Image  {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    byte[] bytes;
+    private String name;
+    private String originalFileName;
+    private Long size;
+    private String contentType;
+    @Lob
+    private byte[] bytes;
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private User user;
 
 
-    @Override
-    public int getWidth(ImageObserver imageObserver) {
-        return 0;
-    }
-
-    @Override
-    public int getHeight(ImageObserver imageObserver) {
-        return 0;
-    }
-
-    @Override
-    public ImageProducer getSource() {
-        return null;
-    }
-
-    @Override
-    public Graphics getGraphics() {
-        return null;
-    }
-
-    @Override
-    public Object getProperty(String s, ImageObserver imageObserver) {
-        return null;
-    }
 }
