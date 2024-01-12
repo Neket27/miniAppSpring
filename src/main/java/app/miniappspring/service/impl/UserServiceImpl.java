@@ -1,10 +1,14 @@
 package app.miniappspring.service.impl;
 
 
+import app.miniappspring.action.UnificationDataUser;
+import app.miniappspring.arguments.CreateUserArgument;
+import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.UserRepo;
+import app.miniappspring.service.LoadFileService;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
 import lombok.*;
@@ -27,6 +31,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
+//    private final UnificationDataUser unificationDataUser;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -40,13 +45,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void addUser(@NonNull User user) {
-        if( isUsernameAlreadyInUse(user.getUsername()))
-            throw new ErrorException("Пользователь с логином "+user.getUsername()+" уже существует");
-
-        user.setPassword(EncoderPassword.encode(user.getPassword()));
+    public void addUser(@NonNull CreateUserArgument createUserArgument) {
+        if( isUsernameAlreadyInUse(createUserArgument.getUsername()))
+            throw new ErrorException("Пользователь с логином "+createUserArgument.getUsername()+" уже существует");
+//          User user=  unificationDataUser.unificationDataImageWithUser(createUserArgument);
+       User user =User.builder()
+               .username("lol")
+               .password("lol")
+               .build();
+        user.setPassword(EncoderPassword.encode(createUserArgument.getPassword()));
         user.setRoles(Collections.singleton(Role.ROLE_USER));
-
         userRepo.save(user);
     }
 

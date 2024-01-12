@@ -1,8 +1,12 @@
 package app.miniappspring.service;
 
+import app.miniappspring.arguments.CreateUserArgument;
+import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.entity.User;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
+import org.h2.command.ddl.CreateUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +16,8 @@ public interface UserService {
 
     UserDetailsService userDetailsService();
 
-    void addUser(User user);
 
+    void addUser(@NonNull CreateUserArgument createUserArgument);
     List<User> getListUsers();
 
     User getById(Long id);

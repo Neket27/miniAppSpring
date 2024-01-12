@@ -5,11 +5,13 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import app.miniappspring.action.UnificationDataUser;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
+import app.miniappspring.service.impl.LoadFileServiceImpl;
 import app.miniappspring.service.impl.UserServiceImpl;
 import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.hibernate.validator.internal.IgnoreForbiddenApisErrors;
@@ -41,7 +43,7 @@ public class UserServiceMockTest {
     @BeforeEach
     void setup() {
         userRepo = Mockito.mock(UserRepo.class);
-        userService =new UserServiceImpl(userRepo);
+        userService =new UserServiceImpl(userRepo,UnificationDataUser.builder().build());
          user=User.builder()
                 .id(ID_USER)
                 .username("nikita")
@@ -112,7 +114,7 @@ public class UserServiceMockTest {
     @IgnoreForBinding
     public void testRemoveUser(){
         //Arrange
-        UserService userServiceLocal= spy(new UserServiceImpl(userRepo));
+        UserService userServiceLocal= spy(new UserServiceImpl(userRepo,UnificationDataUser.builder().build()));
         //Act
         doNothing().when(userRepo).deleteById(anyLong());
 

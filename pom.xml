@@ -41,7 +41,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-<!--DB-->
+		<!--DB-->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -51,9 +51,9 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-<!--	end	DB-->
+		<!--	end	DB-->
 
-<!--		Swagger-->
+		<!--		Swagger-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -64,14 +64,14 @@
 			<artifactId>springdoc-openapi-starter-common</artifactId>
 			<version>${springdoc.version}</version>
 		</dependency>
-<!--end swagger-->
+		<!--end swagger-->
 
-<!--		mustache instead spring-html-->
+		<!--		mustache instead spring-html-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mustache</artifactId>
 		</dependency>
-<!--		end 	mustache instead spring-html-->
+		<!--		end 	mustache instead spring-html-->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
