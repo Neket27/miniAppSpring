@@ -12,6 +12,7 @@ import app.miniappspring.repository.ImageRepo;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
+import app.miniappspring.utils.jwtToken.mapper.UserMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +33,10 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final UnificationDataUser unificationDataUser;
     private final ImageRepo imageRepo;
+    private final UnificationDataUser unificationDataUser;
+    private final UserMapper userMapper;
+
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -48,10 +51,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void addUser(@NonNull CreateUserArgument createUserArgument) {
+    public CreateUserDto addUser(@NonNull CreateUserArgument createUserArgument) {
         if( isUsernameAlreadyInUse(createUserArgument.getUsername()))
             throw new ErrorException("Пользователь с логином "+createUserArgument.getUsername()+" уже существует");
-        CreateUserDto createUserDto =unificationDataUser.unificationDataFileWithCreateUserDto(createUserArgument);
+        CreateUserDto createUserDto =userMapper.toCreateUserDto(createUserArgument);
         User user = User.builder()
                 .firstname(createUserDto.getFirstname())
                 .lastname(createUserDto.getLastname())
@@ -60,15 +63,8 @@ public class UserServiceImpl implements UserService {
                 .email(createUserDto.getEmail())
                 .roles(Collections.singleton(Role.ROLE_USER))
                 .build();
-//        user.setPassword(EncoderPassword.encode(createUserArgument.getPassword()));
-//        user.setRoles(Collections.singleton(Role.ROLE_USER));
-        User userFromBD=userRepo.save(user);
-            if(createUserDto.getAvatar()!=null) {
-                Image avatar = createUserDto.getAvatar();
-                avatar.setUser(userFromBD);
-                imageRepo.save(avatar);
-            }
 
+            return userMapper.toCreateUserDto(userRepo.save(user));
     }
 
     @Override

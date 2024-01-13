@@ -10,4 +10,8 @@ public class EncoderPassword  {
         return passwordEncoder.encode(password);
     }
 
+    public static boolean equalsPasswords(String rawPassword,String encodingPassword){
+        return passwordEncoder.matches(rawPassword,encodingPassword);
+    }
+
 }

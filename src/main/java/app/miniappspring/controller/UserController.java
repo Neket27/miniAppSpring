@@ -6,7 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -24,7 +27,7 @@ public class UserController {
 
 //    http://localhost:8080/api/v1/user/remove/nik3
     @GetMapping("/remove/{username}")
-    public ResponseEntity<String> sayHello(@PathVariable String username){
+    public ResponseEntity<String> sayHello(@PathVariable @NonNull String username){
         return ResponseEntity.ok("Удаление пользователя прошло:  "+userService.remove(username));
     }
 }

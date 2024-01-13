@@ -1,6 +1,7 @@
 package app.miniappspring.service;
 
 import app.miniappspring.arguments.CreateUserArgument;
+import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ public interface UserService {
 
     UserDetailsService userDetailsService();
 
-    void addUser(CreateUserArgument createUserArgument);
+    CreateUserDto addUser(CreateUserArgument createUserArgument);
 
     List<User> getListUsers();
 

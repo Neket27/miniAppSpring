@@ -1,7 +1,9 @@
 package app.miniappspring.action;
 
 import app.miniappspring.arguments.CreateUserArgument;
+import app.miniappspring.arguments.UpdateUserArgument;
 import app.miniappspring.dto.user.CreateUserDto;
+import app.miniappspring.dto.user.UpdateUserDto;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.User;
 import app.miniappspring.service.LoadFileService;
@@ -21,18 +23,18 @@ public class UnificationDataUser {
 
     private final UserMapper userMapper;
     private final  LoadFileService loadFileService;
-    public CreateUserDto unificationDataFileWithCreateUserDto(CreateUserArgument createUserArgument){
-        CreateUserDto createUserDto;
+    public UpdateUserDto unificationDataFileWithUpdateUserDto(UpdateUserArgument updateUserArgument){
+        UpdateUserDto updateUserDto;
         try {
-            Image image = loadFileService.loadImage(createUserArgument.getAvatarMultipartFile());
-            createUserDto = userMapper.toCreateUserDto(createUserArgument);
+            Image image = loadFileService.loadImage(updateUserArgument.getAvatarMultipartFile());
+            updateUserDto = userMapper.toUpdateUserDto(updateUserArgument);
             if(image!=null)
-            createUserDto.setAvatar(image);
+            updateUserDto.setAvatar(image);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return createUserDto;
+        return updateUserDto;
     }
 
 }

@@ -9,10 +9,12 @@ import app.miniappspring.action.UnificationDataUser;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
+import app.miniappspring.repository.ImageRepo;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
 import app.miniappspring.service.impl.LoadFileServiceImpl;
 import app.miniappspring.service.impl.UserServiceImpl;
+import app.miniappspring.utils.jwtToken.mapper.UserMapper;
 import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.hibernate.validator.internal.IgnoreForbiddenApisErrors;
 import org.junit.jupiter.api.Assertions;
@@ -33,9 +35,11 @@ import java.util.Set;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceMockTest {
 
-
    private UserService userService;
    private UserRepo userRepo;
+   private ImageRepo imageRepo;
+   private  UnificationDataUser unificationDataUser;
+   private UserMapper userMapper;
    private User user;
 
    static long ID_USER=1;
@@ -43,7 +47,11 @@ public class UserServiceMockTest {
     @BeforeEach
     void setup() {
         userRepo = Mockito.mock(UserRepo.class);
-        userService =new UserServiceImpl(userRepo,UnificationDataUser.builder().build());
+        imageRepo =Mockito.mock(ImageRepo.class);
+        unificationDataUser = mock(UnificationDataUser.class);
+        userMapper =mock(UserMapper.class);
+
+        userService =new UserServiceImpl(userRepo,imageRepo,unificationDataUser,userMapper);
          user=User.builder()
                 .id(ID_USER)
                 .username("nikita")
@@ -111,10 +119,9 @@ public class UserServiceMockTest {
     }
 
     @Test
-    @IgnoreForBinding
     public void testRemoveUser(){
         //Arrange
-        UserService userServiceLocal= spy(new UserServiceImpl(userRepo,UnificationDataUser.builder().build()));
+        UserService userServiceLocal= spy(new UserServiceImpl(userRepo,imageRepo,unificationDataUser,userMapper));
         //Act
         doNothing().when(userRepo).deleteById(anyLong());
 

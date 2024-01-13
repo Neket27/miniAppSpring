@@ -1,15 +1,16 @@
-package app.miniappspring.dto.jwtToken;
+package app.miniappspring.dto.user;
 
+import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Role;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
-public class SignUpRequest {
-
+@Getter
+@Setter
+public class UpdateUserDto {
     private String firstname;
     private String lastname;
     @NotBlank(message = "username = null")
@@ -17,5 +18,6 @@ public class SignUpRequest {
     @NotBlank(message = "password user = null")
     private String password;
     private String email;
+    private Image avatar;
     private Set<Role> roles;
 }

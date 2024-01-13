@@ -21,6 +21,5 @@ public class CreateUserDto {
     @NotBlank(message = "password user = null")
     private String password;
     private String email;
-    private Image avatar;
     private Set<Role> roles;
 }
