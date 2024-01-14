@@ -2,7 +2,8 @@
   "name": "webpack",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index",
+  "types": "dist/index",
   "scripts": {
     "start": "npm run build && node server/index.js",
     "dev": "NODE_ENV=development webpack serve --config webpack.config.js",
@@ -32,7 +33,7 @@
     "sass-loader": "^12.4.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.7.1"
   }
 }

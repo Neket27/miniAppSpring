@@ -24,7 +24,7 @@ target/
 /nbbuild/
 /dist/
 /nbdist/
-/.nb-gradle/
+/.nb-gradle
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -37,3 +37,7 @@ build/
 .gitignore npm-*.log
 *.log
 generated/.
+
+# dependencies
+/src/main/resources/static/node_modules/
+dist

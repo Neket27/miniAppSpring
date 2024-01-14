@@ -8,7 +8,9 @@ const production = process.env.NODE_ENV === 'production';
 
 
 module.exports = {
-    entry: { myAppName: path.resolve(__dirname, "./index.js") },
+    entry: { myAppName: path.resolve(__dirname, "./js/ts/index.ts") },
+    // entry: "./js/ts/index.ts",
+    devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, "./dist"),
         filename: production ? '[name].[contenthash].js' : '[name].js',
@@ -16,9 +18,10 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                // test: /\.(js|jsx|ts)$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
-                use: ["babel-loader"],
+                use: ["ts-loader"],
             },
             {
                 test: /\.s(a|c)ss$/,
@@ -44,14 +47,14 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ["*", ".js", ".jsx", ".scss"],
+        extensions: ["*", ".js", ".jsx", ".scss",".ts,",".tsx"],
     },
     plugins: [
         new CleanWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: "Webpack & React",
-            template: "./index.html",
+            template: "./templates/index.html",
             favicon: "./favicon.ico"
         }),
         new MiniCssExtractPlugin({

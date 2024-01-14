@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styles.scss';
+import styles from '../scss/styles.scss';
 
 
 const onClickEvent = (e) => {
