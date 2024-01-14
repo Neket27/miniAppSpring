@@ -18,6 +18,5 @@ public class UpdateUserArgument {
     @NotBlank(message = "password user = null")
     private String password;
     private String email;
-    private MultipartFile avatarMultipartFile;
     private Set<Role> roles;
 }

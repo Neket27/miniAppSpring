@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### React ###
+/static/node_modules
+.gitignore npm-*.log
+*.log
+generated/.

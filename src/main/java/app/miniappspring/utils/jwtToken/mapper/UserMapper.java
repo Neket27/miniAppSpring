@@ -17,6 +17,7 @@ User toEntity(CreateUserArgument createUserArgument);
 CreateUserDto toCreateUserDto(CreateUserArgument createUserArgument);
 CreateUserDto toCreateUserDto(User user);
 UpdateUserDto toUpdateUserDto(UpdateUserArgument updateUserArgument);
+UpdateUserDto toUpdateUserDto(User user);
 User toEntity(CreateUserDto createUserDto);
 
 CreateUserArgument toCreateUserArgument(SignUpRequest signUpRequest);

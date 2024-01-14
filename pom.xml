@@ -240,6 +240,18 @@
 		</profile>
 	</profiles>
 
+<!--	for react ignor-->
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>static/node_modules/**/*.*</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+
 
 
 </project>

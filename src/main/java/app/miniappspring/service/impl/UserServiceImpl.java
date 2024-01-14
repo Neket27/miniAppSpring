@@ -3,7 +3,10 @@ package app.miniappspring.service.impl;
 
 import app.miniappspring.action.UnificationDataUser;
 import app.miniappspring.arguments.CreateUserArgument;
+import app.miniappspring.arguments.UpdateUserArgument;
 import app.miniappspring.dto.user.CreateUserDto;
+import app.miniappspring.dto.user.UpdateAvatarUserDto;
+import app.miniappspring.dto.user.UpdateUserDto;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
@@ -68,6 +71,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public UpdateUserDto updateDataUser(@NonNull UpdateUserArgument updateUserArgument){
+        UpdateUserDto updateUserDto = userMapper.toUpdateUserDto(updateUserArgument);
+           User user =getByUsername(updateUserDto.getUsername());
+           user.setFirstname(updateUserDto.getFirstname());
+           user.setLastname(updateUserDto.getLastname());
+           user.setUsername(updateUserDto.getUsername());
+           if(!EncoderPassword.equalsPasswords(updateUserDto.getPassword(),user.getPassword()) && updateUserDto.getPassword()!=null)
+           user.setPassword(EncoderPassword.encode(updateUserDto.getPassword()));
+           user.setEmail(updateUserDto.getEmail());
+           if(updateUserDto.getRoles()!=null)
+           user.setRoles(updateUserDto.getRoles());
+           return userMapper.toUpdateUserDto(userRepo.save(user));
+    }
+
+    @Override
+    @Transactional
+    public boolean updateUserAvatar(@NonNull UpdateAvatarUserDto updateAvatarUserDto){
+        User user =getByUsername(updateAvatarUserDto.getUsername());
+        imageRepo.deleteById(user.getId());
+        Image avatar = unificationDataUser.unificationAvatarWithUser(updateAvatarUserDto.getMultipartFileAvatar(),user);
+        imageRepo.save(avatar);
+        return true;
+    }
+
+
+    @Override
+    @Transactional
     public List<User> getListUsers() {
         Iterable<User> users = userRepo.findAll();
         users.forEach(user -> user.setPassword(EncoderPassword.encode(user.getPassword())));
@@ -75,16 +106,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User getById(@NonNull Long id) {
         return userRepo.findById(id).orElseThrow(()->new ErrorException("Пользователь с id= "+id+" не найден"));
     }
 
     @Override
+    @Transactional
     public User getByUsername(@NonNull String username){
         return userRepo.findByUsername(username).orElseThrow(()->new ErrorException("Пользователь с логином "+username+" не найден"));
     }
 
     @Override
+    @Transactional
     public boolean remove(@NonNull String username) {
         try {
            Long id= getByUsername(username).getId();
@@ -96,14 +130,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public boolean isUsernameAlreadyInUse(@NonNull String username) {
         return userRepo.existsUserByUsername(username);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public boolean isEmailAlreadyInUse(@NonNull String email) {
         return userRepo.existsUserByEmail(email);
     }
