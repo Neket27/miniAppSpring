@@ -8,7 +8,7 @@ const production = process.env.NODE_ENV === 'production';
 
 
 module.exports = {
-    entry: { myAppName: path.resolve(__dirname, "./Client.tsx") },
+    entry: { myAppName: path.resolve(__dirname, "./index.tsx") },
     // entry: "./js/ts/index.ts",
     devtool: 'inline-source-map',
     output: {
@@ -19,7 +19,7 @@ module.exports = {
         rules: [
             {
                 // test: /\.(js|jsx|ts)$/,
-                test: /\.(ts||tsx)$/,
+                test: /\.(ts||tsx||js||jsx)$/,
                 exclude: /node_modules/,
                 use: ["ts-loader"],
             },
@@ -54,7 +54,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: "Webpack & React",
-            template: "./Html/Browser.html",
+            template: "./Html/index.html",
             favicon: "./favicon.ico"
         }),
         // new MiniCssExtractPlugin({

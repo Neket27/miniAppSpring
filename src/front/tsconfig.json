@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+//    "sourceMap": true,
+//    "outDir": "./dist",
+//    "module": "commonjs",
+
     "target": "es5",
     "jsx": "react",
     "noEmitOnError": true,
