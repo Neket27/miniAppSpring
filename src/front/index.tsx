@@ -1,20 +1,24 @@
-import App from './app';
+
 import React from "react";
 import ReactDOM from "react-dom/client";
+// import {BrowserRouter} from "react-router-dom";
+import App from "./App";
 
 
-//
-// ReactDOM.render(<App />, document.getElementById("root"));
-//
-// const devMode = process.env.NODE_ENV === 'development';
-// if (devMode && module && module.hot) {
-//     module.hot.accept();
-// }
-
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-
+const  root =ReactDOM.createRoot(document.getElementById('root')as HTMLElement);
 root.render(
     <React.StrictMode>
-        <App />
+
+            <App/>
+
     </React.StrictMode>
 );
+
+//
+// const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+//
+// root.render(
+//     <React.StrictMode>
+//         <OldApp />
+//     </React.StrictMode>
+// );

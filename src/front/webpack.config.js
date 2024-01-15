@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
@@ -13,10 +13,12 @@ module.exports = {
     devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname, "./dist"),
+        publicPath: '/',
         filename: production ? '[name].[contenthash].js' : '[name].js',
     },
     module: {
         rules: [
+            { test: /\.(html)$/, use: ['html-loader'] },
             {
                 // test: /\.(js|jsx|ts)$/,
                 test: /\.(ts||tsx||js||jsx)$/,
@@ -57,13 +59,20 @@ module.exports = {
             template: "./Html/index.html",
             favicon: "./favicon.ico"
         }),
-        // new MiniCssExtractPlugin({
-        //     filename: production ? '[name].[contenthash].css' : '[name].css',
-        // }),
+        new MiniCssExtractPlugin({
+            filename: production ? '[name].[contenthash].css' : '[name].css',
+        }),
     ],
     devServer: {
-        port: 3001,
+              // Enable compression
+        compress: true,
+
+        // Enable hot reloading
         hot: true,
+
+        port: 3000,
+        historyApiFallback: true,
+
     },
     mode: production ? 'production' : 'development'
 };

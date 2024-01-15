@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack-dev-server",
-    "build": "webpack --config webpack.client.js --mode production",
-    "dev": "webpack --config webpack.client.js --mode development"
+    "build": "webpack",
+    "build-prod": "webpack --mode=production"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,9 @@
     "autoprefixer": "^9.8.6",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.9.0",
+    "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.6.0",
+    "mini-css-extract-plugin": "^2.7.7",
     "postcss-csso": "^6.0.1",
     "postcss-loader": "^7.3.4",
     "sass": "^1.69.7",
@@ -38,8 +40,5 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.2"
-  },
-  "browserslist": [
-    "last 2 versions"
-  ]
+  }
 }
