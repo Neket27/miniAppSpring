@@ -1,12 +1,17 @@
 package app.miniappspring.service.impl;
 
+import app.miniappspring.entity.TokenJWT;
+import app.miniappspring.entity.User;
+import app.miniappspring.repository.TokenRepo;
 import app.miniappspring.service.JWTService;
+import app.miniappspring.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.NonNull;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,20 +21,37 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
 
-@Slf4j
 @Service
+
+//@RequiredArgsConstructor
+@NoArgsConstructor
+@Slf4j
+@Setter
+@Getter
+
 public class JWTServiceImpl implements JWTService {
 
-    private final SecretKey jwtAccessSecret;
-    private final SecretKey jwtRefreshSecret;
+//    @Value("${jwt.secret.access}")
+//    private SecretKey jwtAccessSecret;
+//    @Value("${jwt.secret.refresh}")
+//    private SecretKey jwtRefreshSecret;
+    @Autowired
+    private  TokenRepo tokenRepo;
+    @Autowired
+    private  UserService userService;
 
-    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+    private SecretKey jwtAccessSecret=null;
+    private SecretKey jwtRefreshSecret=null;
+    public void createSecretKeys(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+
     }
 
 
+
     public String generateToken(@NonNull UserDetails userDetails){
+        createSecretKeys("zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==","zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==");
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -41,6 +63,7 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public String generateRefreshToken(@NonNull HashMap<String, UserDetails> extraClaims, @NonNull UserDetails userDetails) {
+        createSecretKeys("zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==","zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==");
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
@@ -48,6 +71,17 @@ public class JWTServiceImpl implements JWTService {
                 .setExpiration(new Date(System.currentTimeMillis()+604800000))
                 .signWith(jwtRefreshSecret, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    @Override
+    public TokenJWT saveToken(User user, String refreshToken){
+        TokenJWT tokenJWT = tokenRepo.findById(user.getId()).orElse(null);
+        if(tokenJWT!=null){
+            tokenJWT.setRefreshToken(refreshToken);
+            return tokenRepo.save(tokenJWT);
+        }
+        return tokenRepo.save(new TokenJWT(user.getId(),refreshToken,user));
+
     }
 
     @Override

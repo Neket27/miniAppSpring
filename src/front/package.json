@@ -37,6 +37,15 @@
     "webpack-notifier": "^1.15.0"
   },
   "dependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
+    "@babel/preset-react": "^7.23.3",
+    "@clerk/nextjs": "^4.29.3",
+    "@types/axios": "^0.14.0",
+    "axios": "^1.6.5",
+    "babel-loader": "^9.1.3",
+    "crypto-browserify": "^3.12.0",
+    "mobx-react-lite": "^4.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.2"

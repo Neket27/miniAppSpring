@@ -1,24 +1,17 @@
-// @ts-ignore
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import React from "react";
-
-import RegisterPage from "./auth/registreition";
+import React  from "react";
 import LoginPage from "./auth/login";
+import Home from "./auth/content/home";
+
 
 const App =()=>{
+
     return (
             <div className="App">
-                <BrowserRouter>
-                    <Routes>
-                        <Route path='login' element={<LoginPage />}></Route>
-                        <Route path='register' element={<RegisterPage />}></Route>
-                    </Routes>
-                </BrowserRouter>
+                <Home></Home>
+                <LoginPage/>
             </div>
-
-
     );
-}
+
+};
 
 export default App;
-

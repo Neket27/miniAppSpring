@@ -1,5 +1,7 @@
 package app.miniappspring.service;
 
+import app.miniappspring.entity.TokenJWT;
+import app.miniappspring.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -10,6 +12,8 @@ public interface JWTService {
     String generateToken(UserDetails userDetails);
 
     String generateRefreshToken(HashMap<String, UserDetails> extraClaims, UserDetails userDetails);
+
+    TokenJWT saveToken(User user, String refreshToken);
 
     String getUserNameFromAccessToken(String token);
 

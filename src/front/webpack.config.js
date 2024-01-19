@@ -3,6 +3,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {options} = require("axios");
+// const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -18,12 +20,28 @@ module.exports = {
     },
     module: {
         rules: [
-            { test: /\.(html)$/, use: ['html-loader'] },
+            { test:( /\.(html)$/)|| (/\.[jt]s$/),
+                use: ['html-loader'] },
+            {
+                test:/\.(ts||tsx||js||jsx||json)$/,
+                exclude: /node_modules/,
+                use: 'babel-loader',
+                // presets: ['@babel/preset-env'],
+
+            },
             {
                 // test: /\.(js|jsx|ts)$/,
-                test: /\.(ts||tsx||js||jsx)$/,
+                test: /\.(ts||tsx||js||jsx||json)$/,
                 exclude: /node_modules/,
-                use: ["ts-loader"],
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        compilerOptions: {
+                            transpileOnly: true,
+                            noEmit: false, // this option will solve the issue
+                        },
+                    },
+                },
             },
             {
                 test: /\.s(a|c)ss$/,
@@ -49,7 +67,8 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ["*", ".js", ".jsx", ".scss",".ts,",".tsx"],
+        extensions: [".","*", ".js", ".jsx", ".scss",".ts,",".tsx",".scss"],
+
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -62,6 +81,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: production ? '[name].[contenthash].css' : '[name].css',
         }),
+
     ],
     devServer: {
               // Enable compression
@@ -74,5 +94,6 @@ module.exports = {
         historyApiFallback: true,
 
     },
-    mode: production ? 'production' : 'development'
+    mode: production ? 'production' : 'development',
+
 };
