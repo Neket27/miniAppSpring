@@ -1,9 +1,10 @@
 import React from 'react';
+import AuthRootComponent from "../../index";
 
 const Home=()=> {
     return (
         <div>
-            <h2>Главная стракица</h2>
+            <h1>Главная страница</h1>
 
         </div>
     );

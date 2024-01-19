@@ -1,25 +1,36 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
+import {Context} from "../../main";
+import {Link,} from "react-router-dom";
+import {observer} from "mobx-react-lite";
+
 
 const RegisterPage=()=>{
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] =useState<string>('');
+
+    const {store} =useContext(Context);
     return(
         <div>
-        <h1>Register page</h1>
+            <h1>Register page</h1>
+            <input
+                onChange={e => setUsername(e.target.value)}
+                value={username}
+                type="text"
+                placeholder="Username"
+            />
 
+            <input
+                onChange={e => setPassword(e.target.value)}
+                value={password}
+                type="password"
+                placeholder="Password"
+            />
+            <button onClick={() => store.registration(username, password)}>Зарегистрироваться</button>
+            <button>  <Link to="/login">Войти</Link></button>
         </div>
     );
 
-    // function Login():any{
-    //     return <h2>Login</h2>;
-    // }
-    //
-    // function PasswordReset() {
-    //     return <h2>Password Reset</h2>;
-    // }
-    //
-    // function Dashboard() {
-    //     return <h2>Dashboard</h2>;
-    // }
 };
 
-export default RegisterPage;
+export default observer(RegisterPage);
 
