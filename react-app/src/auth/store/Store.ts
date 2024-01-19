@@ -9,6 +9,7 @@ import {API_URL} from "../http";
 export default class Store{
     user={} as IUser;
     isAuth = false;
+    isLoading=false;
 
     constructor() {
         makeAutoObservable(this);
@@ -21,14 +22,26 @@ export default class Store{
         this.user=user;
     }
 
+    setLoading(bool:boolean){
+        this.isLoading=bool;
+    }
+
     async login(username:string,password:string){
         try{
             const response =await AuthService.login(username,password);
-           console.log(response);
+            console.log(response);
+
             // @ts-ignore
             localStorage.getItem('token',response.data.accessToken);
             this.setAuth(true);
-            this.setUser(response.data.user);
+            // this.setUser(response.data.user);
+            let user:IUser={
+                id:'1',
+                email:'nik@gmail.com',
+                isActivated:true,
+            };
+
+            this.setUser(user);
         }catch (e){
             // @ts-ignore
             console.log(e.response?.data?.message);
@@ -42,7 +55,13 @@ export default class Store{
             // @ts-ignore
             localStorage.getItem('token',response.data.accessToken);
             this.setAuth(true);
-            this.setUser(response.data.user);
+            // this.setUser(response.data.user);
+            let user:IUser={
+                id:'1',
+                email:'nik@gmail.com',
+                isActivated:true,
+            };
+            this.setUser(user);
         }catch (e){
             // @ts-ignore
             console.log(e.response?.data?.message);
@@ -64,8 +83,9 @@ export default class Store{
     }
 
     async checkAuth(){
+        this.setLoading(true);
         try {
-            const response = await axios.get<AuthResponse>(`${API_URL}/refresh`,{withCredentials:true});
+            const response = await axios.get<AuthResponse>(`${API_URL}/api/v1/auth/refresh`,{withCredentials:true});
             console.log(response);
             localStorage.setItem('token',response.data.accessToken);
             this.setAuth(true);
@@ -73,6 +93,8 @@ export default class Store{
             }catch (e){
             // @ts-ignore
             console.log(e.response?.data?.message);
+        }finally {
+            this.setLoading(false);
         }
     };
 

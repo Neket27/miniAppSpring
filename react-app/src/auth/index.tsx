@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import {Link} from 'react-router-dom';
 import Home from "./content/home";
 import LoginPage from "./login";
@@ -9,9 +8,9 @@ import Dashboard from "./dashboard";
 
 const Path =()=>{
     return (
-        location.pathname==='/'?
+        window.location.pathname==='/'?
             <Home/>:
-            location.pathname==='/login'?
+            window.location.pathname==='/login'?
                 <LoginPage/>:
                 location.pathname==='/register'?
                     <RegisterPage/>:
@@ -22,7 +21,6 @@ const Path =()=>{
     );
 }
 const AuthRootComponent=()=>{
-    Path();
     return(
         <div>
             <nav>
@@ -44,6 +42,7 @@ const AuthRootComponent=()=>{
                     </li>
                 </ul>
             </nav>
+            <Path/>
         </div>
 
     );
