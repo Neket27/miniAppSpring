@@ -5,14 +5,15 @@ import {Route, Routes} from "react-router-dom";
 import {Context} from "./main";
 import {observer} from "mobx-react-lite";
 
+
 const App:FC=()=> {
     const {store} = useContext(Context);
 
-    useEffect(()=>{
-       if(localStorage.getItem('token')){
+    useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
+       if(localStorage.getItem('token')) { //если пользователь авторизован, то у него есть токен
            store.checkAuth();
        }
-    });
+    }, []);
 
     if(store.isLoading)
         return <div>Загрузка...</div>
