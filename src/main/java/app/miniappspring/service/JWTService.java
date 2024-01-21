@@ -3,6 +3,8 @@ package app.miniappspring.service;
 import app.miniappspring.entity.TokenJWT;
 import app.miniappspring.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.HashMap;
@@ -24,4 +26,9 @@ public interface JWTService {
     boolean isTokenValidAccessToken(String token, UserDetails userDetails);
 
     boolean isTokenValidRefreshToken(String token, UserDetails userDetails);
+
+    @Transactional
+    TokenJWT getRefreshToken(String refreshToken);
+
+    void removeRefreshToken(String refreshToken);
 }

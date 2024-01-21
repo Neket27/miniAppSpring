@@ -9,12 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface AuthenticationService {
     CreateUserDto signnup(SignUpRequest signUpRequest);
-    JwtAuthenticationResponse signin(SigninRequest signinRequest, HttpServletResponse httpServletResponse);
-
-    JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
-
+    JwtAuthenticationResponse signin(SigninRequest signinRequest);
+    JwtAuthenticationResponse refreshToken(String token);
     UserDetails getAuthenticationInfo();
-
-
-    void logout(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse) throws ServletException;
+    void logout(String refreshToken, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException;
 }

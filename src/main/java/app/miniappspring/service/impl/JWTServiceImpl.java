@@ -2,6 +2,7 @@ package app.miniappspring.service.impl;
 
 import app.miniappspring.entity.TokenJWT;
 import app.miniappspring.entity.User;
+import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.TokenRepo;
 import app.miniappspring.service.JWTService;
 import app.miniappspring.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -22,36 +24,35 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
-
-//@RequiredArgsConstructor
-@NoArgsConstructor
 @Slf4j
 @Setter
 @Getter
 
 public class JWTServiceImpl implements JWTService {
 
-//    @Value("${jwt.secret.access}")
-//    private SecretKey jwtAccessSecret;
-//    @Value("${jwt.secret.refresh}")
-//    private SecretKey jwtRefreshSecret;
-    @Autowired
     private  TokenRepo tokenRepo;
-    @Autowired
     private  UserService userService;
 
-    private SecretKey jwtAccessSecret=null;
-    private SecretKey jwtRefreshSecret=null;
-    public void createSecretKeys(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+    private final SecretKey jwtAccessSecret;
+    private final SecretKey jwtRefreshSecret;
+    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
 
     }
 
+    @Autowired
+    public void setTokenRepo(TokenRepo tokenRepo){
+        this.tokenRepo=tokenRepo;
+    }
 
+    @Autowired
+    public void setUserService(UserService userService){
+        this.userService=userService;
+    }
 
+    @Override
     public String generateToken(@NonNull UserDetails userDetails){
-        createSecretKeys("zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==","zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==");
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -60,10 +61,8 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
-
     @Override
     public String generateRefreshToken(@NonNull HashMap<String, UserDetails> extraClaims, @NonNull UserDetails userDetails) {
-        createSecretKeys("zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==","zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==");
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
@@ -74,6 +73,7 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
+    @Transactional
     public TokenJWT saveToken(User user, String refreshToken){
         TokenJWT tokenJWT = tokenRepo.findById(user.getId()).orElse(null);
         if(tokenJWT!=null){
@@ -82,6 +82,18 @@ public class JWTServiceImpl implements JWTService {
         }
         return tokenRepo.save(new TokenJWT(user.getId(),refreshToken,user));
 
+    }
+
+    @Override
+    @Transactional
+    public TokenJWT getRefreshToken(String refreshToken) {
+        return tokenRepo.findByRefreshToken(refreshToken).orElseThrow(()->new ErrorException("RefreshToken не найден в базе данных"));
+    }
+
+    @Override
+    @Transactional
+    public void removeRefreshToken(String refreshToken){
+        tokenRepo.deleteByRefreshToken(refreshToken);
     }
 
     @Override

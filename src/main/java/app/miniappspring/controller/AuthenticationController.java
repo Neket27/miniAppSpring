@@ -1,13 +1,14 @@
 package app.miniappspring.controller;
 
-import app.miniappspring.dto.jwtToken.*;
+import app.miniappspring.dto.jwtToken.JwtAuthenticationResponse;
+import app.miniappspring.dto.jwtToken.SignUpRequest;
+import app.miniappspring.dto.jwtToken.SigninRequest;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.service.AuthenticationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +26,24 @@ return ResponseEntity.ok(authenticationService.signnup(signUpRequest));
     }
 
     @PostMapping("/signin")
-    public JwtAuthenticationResponse signin(@RequestBody SigninRequest signinRequest, HttpServletResponse httpServletResponse){
-        return authenticationService.signin(signinRequest,httpServletResponse);
+    public JwtAuthenticationResponse signin(@RequestBody SigninRequest signinRequest){
+        return authenticationService.signin(signinRequest);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse>signin(@RequestBody RefreshTokenRequest refreshTokenRequest){
-        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+//    @GetMapping("/refresh")
+//    public ResponseEntity<JwtAuthenticationResponse>refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
+//        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest.getToken()));
+//    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse>refresh(@CookieValue(value = "refreshToken")String refreshToken){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
-        authenticationService.logout(httpServletRequest,httpServletResponse);
-        return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<?> logout(@CookieValue(value = "refreshToken") String refreshTokenFromCooke,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
+        authenticationService.logout(refreshTokenFromCooke,httpServletRequest,httpServletResponse);
+        return ResponseEntity.ok("Вы вышли из системы");
     }
 
 
