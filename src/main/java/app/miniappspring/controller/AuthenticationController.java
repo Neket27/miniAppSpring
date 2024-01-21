@@ -1,6 +1,7 @@
 package app.miniappspring.controller;
 
 import app.miniappspring.dto.jwtToken.JwtAuthenticationResponse;
+import app.miniappspring.dto.jwtToken.ResetPasswordDto;
 import app.miniappspring.dto.jwtToken.SignUpRequest;
 import app.miniappspring.dto.jwtToken.SigninRequest;
 import app.miniappspring.dto.user.CreateUserDto;
@@ -20,14 +21,14 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(path = "/singup")
-    public ResponseEntity<CreateUserDto> singup(@RequestBody SignUpRequest signUpRequest){
-return ResponseEntity.ok(authenticationService.signnup(signUpRequest));
+    public ResponseEntity<JwtAuthenticationResponse> singup(@RequestBody SignUpRequest signUpRequest) {
+        return ResponseEntity.ok(authenticationService.signnup(signUpRequest));
 
     }
 
     @PostMapping("/signin")
-    public JwtAuthenticationResponse signin(@RequestBody SigninRequest signinRequest){
-        return authenticationService.signin(signinRequest);
+    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest signinRequest) {
+        return ResponseEntity.ok(authenticationService.signin(signinRequest));
     }
 
 //    @GetMapping("/refresh")
@@ -36,15 +37,19 @@ return ResponseEntity.ok(authenticationService.signnup(signUpRequest));
 //    }
 
     @GetMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse>refresh(@CookieValue(value = "refreshToken")String refreshToken){
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@CookieValue(value = "refreshToken") String refreshToken) {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue(value = "refreshToken") String refreshTokenFromCooke,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
-        authenticationService.logout(refreshTokenFromCooke,httpServletRequest,httpServletResponse);
+    public ResponseEntity<?> logout(@CookieValue(value = "refreshToken") String refreshTokenFromCooke, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
+        authenticationService.logout(refreshTokenFromCooke, httpServletRequest, httpServletResponse);
         return ResponseEntity.ok("Вы вышли из системы");
     }
 
+    @PostMapping("resetPassword")
+    public ResponseEntity<JwtAuthenticationResponse> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto){
+        return ResponseEntity.ok(authenticationService.resetPassword(resetPasswordDto));
+    }
 
 }

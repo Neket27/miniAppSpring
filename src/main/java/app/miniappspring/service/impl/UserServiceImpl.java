@@ -88,6 +88,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UpdateUserDto updateDataUser(UpdateUserDto updateUserDto){
+        User user =getByUsername(updateUserDto.getUsername());
+        user.setFirstname(updateUserDto.getFirstname());
+        user.setLastname(updateUserDto.getLastname());
+        user.setUsername(updateUserDto.getUsername());
+        if(!EncoderPassword.equalsPasswords(updateUserDto.getPassword(),user.getPassword()))
+            user.setPassword(EncoderPassword.encode(updateUserDto.getPassword()));
+        user.setEmail(updateUserDto.getEmail());
+            user.setRoles(updateUserDto.getRoles());
+        return userMapper.toUpdateUserDto(userRepo.save(user));
+    }
+
+    @Override
+    @Transactional
     public boolean updateUserAvatar(@NonNull UpdateAvatarUserDto updateAvatarUserDto){
         User user =getByUsername(updateAvatarUserDto.getUsername());
         imageRepo.deleteById(user.getId());

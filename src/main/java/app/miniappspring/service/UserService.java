@@ -24,6 +24,9 @@ public interface UserService {
     UpdateUserDto updateDataUser(@NonNull UpdateUserArgument updateUserArgument);
 
     @Transactional
+    UpdateUserDto updateDataUser(UpdateUserDto updateUserDto);
+
+    @Transactional
     boolean updateUserAvatar(UpdateAvatarUserDto updateAvatarUserDto);
 
     List<User> getListUsers();
