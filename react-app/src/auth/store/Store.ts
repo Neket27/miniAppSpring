@@ -1,9 +1,6 @@
 import {IUser} from "../model/IUser";
 import AuthService from "../service/AuthService";
 import { makeAutoObservable} from "mobx";
-import axios from "axios";
-import {AuthResponse} from "../model/response/AuthResponse";
-import {API_URL} from "../http";
 
 export default class Store{
     user={} as IUser;
