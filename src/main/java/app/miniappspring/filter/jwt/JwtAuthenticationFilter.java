@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String username;
 
-        if (StringUtils.isNullOrEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, prefix )) {
+        if (StringUtils.isNullOrEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, prefix )||authHeader.equals(prefix+" null")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,9 +1,10 @@
 package app.miniappspring.repository;
 
-import app.miniappspring.entity.ImageUser;
+import app.miniappspring.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ImageRepo extends JpaRepository<ImageUser,Long> {
+public interface ProductRepo extends JpaRepository<Product,Long> {
+
 }

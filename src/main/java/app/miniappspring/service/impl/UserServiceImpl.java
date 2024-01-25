@@ -7,7 +7,7 @@ import app.miniappspring.arguments.UpdateUserArgument;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.dto.user.UpdateAvatarUserDto;
 import app.miniappspring.dto.user.UpdateUserDto;
-import app.miniappspring.entity.Image;
+import app.miniappspring.entity.ImageUser;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     public boolean updateUserAvatar(@NonNull UpdateAvatarUserDto updateAvatarUserDto){
         User user =getByUsername(updateAvatarUserDto.getUsername());
         imageRepo.deleteById(user.getId());
-        Image avatar = unificationDataUser.unificationAvatarWithUser(updateAvatarUserDto.getMultipartFileAvatar(),user);
+        ImageUser avatar = unificationDataUser.unificationAvatarWithUser(updateAvatarUserDto.getMultipartFileAvatar(),user);
         imageRepo.save(avatar);
         return true;
     }

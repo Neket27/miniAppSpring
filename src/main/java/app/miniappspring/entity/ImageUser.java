@@ -3,20 +3,25 @@ package app.miniappspring.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-@Embeddable
+@Entity
+@Table(name = "images")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
-public class Image {
-    @Column(name = "name_image")
+@Builder
+public class ImageUser {
+    @Id
+    private Long id;
     private String name;
-//    private String originalFileName;
-//    private Long size;
+    private String originalFileName;
+    private Long size;
     private String contentType;
     @Lob
     private byte[] bytes;
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    private User user;
+
 
 }

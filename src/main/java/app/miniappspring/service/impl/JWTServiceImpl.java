@@ -27,7 +27,6 @@ import java.util.function.Function;
 @Slf4j
 @Setter
 @Getter
-
 public class JWTServiceImpl implements JWTService {
 
     private  TokenRepo tokenRepo;

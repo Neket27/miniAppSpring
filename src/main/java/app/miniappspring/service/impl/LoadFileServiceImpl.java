@@ -1,28 +1,23 @@
 package app.miniappspring.service.impl;
 
-import app.miniappspring.entity.Image;
+import app.miniappspring.entity.ImageUser;
 import app.miniappspring.service.LoadFileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.random.RandomGenerator;
-
-import static app.miniappspring.controller.GreetingController.UPLOAD_DIRECTORY;
 
 @Service
 public class LoadFileServiceImpl implements LoadFileService {
     @Override
-    public Image loadImage(MultipartFile multipartFile) throws IOException {
+    public ImageUser loadImage(MultipartFile multipartFile) throws IOException {
         if (multipartFile != null) {
-            Image image;
+            ImageUser image;
 //            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, multipartFile.getOriginalFilename());
             try {
                 Long id = RandomGenerator.getDefault().nextLong();
-                image = Image.builder()
+                image = ImageUser.builder()
                         .id(id)
                         .name(multipartFile.getName())
                         .originalFileName(multipartFile.getOriginalFilename())
