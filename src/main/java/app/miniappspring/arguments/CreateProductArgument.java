@@ -2,9 +2,15 @@ package app.miniappspring.arguments;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 
 import java.util.List;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateProductArgument {
     private String name;
     private float cost;
@@ -15,10 +21,10 @@ public class CreateProductArgument {
     private boolean available;
     private int stock;
     private String detail;
-    @Schema(type = "string", format = "binary", description = "Binary data")
+//    @Schema(type = "string", format = "binary", description = "Binary data")
     private byte[] image;
     private String producerCountry;
-    private int SellerWarranty;
-    @ArraySchema(schema = @Schema(type = "string", format = "binary"))
+    private int sellerWarranty;
+//    @ArraySchema(schema = @Schema(type = "string", format = "binary"))
     private List<byte[]> images;
 }

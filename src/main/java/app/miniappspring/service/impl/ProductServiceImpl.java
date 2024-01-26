@@ -1,12 +1,15 @@
 package app.miniappspring.service.impl;
 
+import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Product;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.ProductRepo;
 import app.miniappspring.service.ProductService;
+import app.miniappspring.utils.jwtToken.mapper.ProductArgumentMapper;
 import app.miniappspring.utils.jwtToken.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepo productRepo;
     private final ProductMapper productMapper;
-//    private final ImageMapper imageMapper;
-
+    private final ProductArgumentMapper productArgumentMapper;
 
     @Override
     @Transactional
@@ -52,14 +54,20 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDetailDto getProductDetailDto(Long id){
        ProductDetailDto productDetailDto = productMapper.toProductDetailDto(findProduct(id));
-
         return  productDetailDto;
     }
 
     @Override
     @Transactional
-    public List<ProductCardDto> addProduct(CreateProductDto createProductDto){
-        Product p=productMapper.toProductCard(createProductDto);
+    public List<ProductCardDto> addProduct(CreateProductArgument createProductArgument){
+        Product p=productMapper.toProduct(createProductArgument);
+//        CharacteristicProduct characteristicProduct =CharacteristicProduct.builder()
+//                .producerCountry("city")
+//                .SellerWarranty(1)
+//                .build();
+//        p.setCharacteristicProduct(characteristicProduct);
+       CharacteristicProduct characteristic=  productArgumentMapper.toCharacteristicProduct(createProductArgument);
+        p.setCharacteristicProduct(characteristic);
       Product product=  productRepo.save(p);
       System.out.println(product);
         List<ProductCardDto> l = getListCardProduct();
@@ -70,7 +78,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException {
         Product product = findProduct(idCardPhoto);
-//        Image image =imageMapper.toImage(photoCardProduct);
         product.setImage(photoCardProduct.getBytes());
         productRepo.save(product);
     }

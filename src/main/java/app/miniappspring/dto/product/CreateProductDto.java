@@ -16,7 +16,6 @@ public class CreateProductDto {
     private boolean available;
     private int stock;
     private String detail;
-
     private CharacteristicProduct characteristic;
     private byte[] image;
 }

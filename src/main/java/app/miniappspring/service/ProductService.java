@@ -1,5 +1,6 @@
 package app.miniappspring.service;
 
+import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
@@ -23,7 +24,7 @@ public interface ProductService {
 
 
     @Transactional
-    List<ProductCardDto> addProduct(CreateProductDto createProductDto);
+    List<ProductCardDto> addProduct(CreateProductArgument createProductArgument);
 
     @Transactional
     void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException;

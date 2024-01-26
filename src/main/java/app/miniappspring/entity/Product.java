@@ -24,10 +24,12 @@ public class Product {
     private boolean available;
     private int stock;
     private String detail;
-    @OneToOne
-    @JoinColumn(name = "id")
-    private CharacteristicProduct characteristic;
+
     @Column(name = "image")
     private byte[] image;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "characteristic_id", referencedColumnName = "id")
+    private CharacteristicProduct characteristicProduct;
 
 }

@@ -1,5 +1,6 @@
 package app.miniappspring.controller.product;
 
+import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.service.ProductService;
@@ -23,8 +24,8 @@ public class ProductController {
     }
 
     @PostMapping("/product/add")
-    public List<ProductCardDto> addProduct(@RequestBody CreateProductDto createProductDto){
-        return productService.addProduct(createProductDto);
+    public List<ProductCardDto> addProduct(@RequestBody CreateProductArgument createProductArgument){
+        return productService.addProduct(createProductArgument);
     }
 
     @PostMapping(path = "/product/addPhotoCardProduct", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
