@@ -2,6 +2,7 @@ package app.miniappspring.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class CharacteristicProduct {
     private Long id;
     private String producerCountry;
     private int sellerWarranty;
-    @ElementCollection(targetClass = Byte.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "images", joinColumns = @JoinColumn(name = "id_images",referencedColumnName = "id"))
-    @Column(name = "image", nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(name = "images_product", joinColumns = @JoinColumn(name = "images_product_id"))
+    @Column(name = "image", nullable = false, columnDefinition = "bytea")
     private List<byte[]> images;
 
 

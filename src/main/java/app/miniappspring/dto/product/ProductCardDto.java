@@ -8,8 +8,9 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductCardDto {
-    private final Long id;
+    private Long id;
     private String name;
     private float cost;
     private float rating;

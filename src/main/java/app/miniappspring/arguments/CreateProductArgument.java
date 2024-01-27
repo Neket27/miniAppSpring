@@ -1,5 +1,7 @@
 package app.miniappspring.arguments;
 
+import app.miniappspring.entity.CategoryProduct;
+import app.miniappspring.entity.CharacteristicProduct;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -12,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreateProductArgument {
+    private CategoryProduct categoryProduct;
+    private String subcategory;
     private String name;
     private float cost;
     private float rating;
@@ -27,4 +31,5 @@ public class CreateProductArgument {
     private int sellerWarranty;
 //    @ArraySchema(schema = @Schema(type = "string", format = "binary"))
     private List<byte[]> images;
+
 }

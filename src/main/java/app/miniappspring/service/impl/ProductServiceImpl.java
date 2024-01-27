@@ -1,9 +1,10 @@
 package app.miniappspring.service.impl;
 
 import app.miniappspring.arguments.CreateProductArgument;
-import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.dto.product.category.CategoryDto;
+import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Product;
 import app.miniappspring.exception.ErrorException;
@@ -17,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,25 +57,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDetailDto getProductDetailDto(Long id){
-       ProductDetailDto productDetailDto = productMapper.toProductDetailDto(findProduct(id));
+        Product product =findProduct(id);
+       ProductDetailDto productDetailDto = productMapper.toProductDetailDto(product);
+
         return  productDetailDto;
     }
 
     @Override
     @Transactional
     public List<ProductCardDto> addProduct(CreateProductArgument createProductArgument){
-        Product p=productMapper.toProduct(createProductArgument);
-//        CharacteristicProduct characteristicProduct =CharacteristicProduct.builder()
-//                .producerCountry("city")
-//                .SellerWarranty(1)
-//                .build();
-//        p.setCharacteristicProduct(characteristicProduct);
-       CharacteristicProduct characteristic=  productArgumentMapper.toCharacteristicProduct(createProductArgument);
-        p.setCharacteristicProduct(characteristic);
-      Product product=  productRepo.save(p);
-      System.out.println(product);
-        List<ProductCardDto> l = getListCardProduct();
-        return l;
+        Product product=productMapper.toProduct(createProductArgument);
+        CharacteristicProduct characteristic=  productArgumentMapper.toCharacteristicProduct(createProductArgument);
+        product.setCharacteristicProduct(characteristic);
+        productRepo.save(product);
+        return getListCardProduct();
     }
 
     @Override
@@ -80,6 +79,19 @@ public class ProductServiceImpl implements ProductService {
         Product product = findProduct(idCardPhoto);
         product.setImage(photoCardProduct.getBytes());
         productRepo.save(product);
+    }
+
+    @Override
+    @Transactional
+    public CategoryDto getListCategory(){
+              List<CategoryProduct> categoryProducts = Arrays.stream(CategoryProduct.values()).map(category-> {
+           Product product=productRepo.getFirstByCategoryProduct(category).orElse(null);
+           if(product!=null)
+                 return product.getCategoryProduct();
+           return null;
+       }).filter(Objects::nonNull).toList();
+
+        return new CategoryDto(categoryProducts);
     }
 
 }

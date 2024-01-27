@@ -24,9 +24,11 @@ public class Product {
     private boolean available;
     private int stock;
     private String detail;
-
     @Column(name = "image")
     private byte[] image;
+    @Enumerated(EnumType.STRING)
+    private CategoryProduct categoryProduct;
+    private String subcategory;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "characteristic_id", referencedColumnName = "id")
