@@ -7,22 +7,22 @@ import CardProductController from "./product/controller/CardProductController";
 
 
 const store =new Store();
-const productCardController = new CardProductController();
+// const productCardController = new CardProductController();
 
 interface State {
     store:Store
-    productCardController:CardProductController
+    // productCardController:CardProductController
 }
 
 export const Context = createContext<State>({
     store,
-    productCardController
+    // productCardController
 });
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
       <BrowserRouter>
-      <Context.Provider value={{store,productCardController}}>
+      <Context.Provider value={{store}}>
         <App/>
       </Context.Provider>
       </BrowserRouter>

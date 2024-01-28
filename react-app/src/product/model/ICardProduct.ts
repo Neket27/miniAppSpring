@@ -1,6 +1,6 @@
 export interface ICardProduct{
+    id:number,
     name:string,
     cost:number,
-    image:File
-
+    rating:number,
 }
