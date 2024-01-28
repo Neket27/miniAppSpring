@@ -7,22 +7,12 @@ import React, {FC, useContext, useEffect} from 'react'
 // import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css?ver=5.0.3'
 // import 'https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic&amp;subset=cyrillic'
 
-
-
-
-//
-// import '../js/jquery.js'
-// import '../js/jquery-migrate.min.js'
-// import '../js/bootstrap.min.js'
-//
-//
-// import '../js/jquery.magnify.js'
-// import '../js/ant107_shop.js'
 import AuthRootComponent from "./auth";
 import {Route, Routes} from "react-router-dom";
 import {Context} from "./main";
 import {observer} from "mobx-react-lite";
 import Product from "./content/home/product";
+import DetailProduct from "./content/detail/product";
 
 
 const App:FC=()=> {
@@ -43,7 +33,6 @@ const App:FC=()=> {
             <div>{store.isAuth?
                 <button onClick={() => store.logout()}>Выйти</button>:null
                  }
-                 <Product/>
             </div>
 
             <Routes>
@@ -52,6 +41,8 @@ const App:FC=()=> {
                 <Route path="/register" element={<AuthRootComponent/>}></Route>
                 <Route path="/reset" element={<AuthRootComponent/>}></Route>
                 <Route path="/dashboard" element={<AuthRootComponent/>}></Route>
+                {/*<Route path="/detailProduct" element={<DetailProduct/>}></Route>*/}
+                <Route path='/detailProduct/:typeId' element={<DetailProduct/>} />
             </Routes>
         </div>
     );
