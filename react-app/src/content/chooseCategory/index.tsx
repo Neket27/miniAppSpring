@@ -6,48 +6,41 @@ import './../../../css/magnify.css'
 import './../../../css/ant107_shop.css'
 
 // import "./../../../js/jquery.magnify.js"
-import Product from "./product";
+
 import DetailProduct from "../detail/product";
 import Category from "../category";
-import {ICardProduct} from "../../product/model/ICardProduct";
+import Product from "../home/product";
+import {ICategory} from "../../product/model/ICategory";
 import ProductService from "../../product/service/productService";
-// import 'https://fonts.googleapis.com/icon?family=Material+Icons&#038;ver=5.0.3'
-// import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css?ver=5.0.3'
-// import 'https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic&amp;subset=cyrillic'
-//
-// import '../../../js/jquery.js'
-// import '../../../js/jquery-migrate.min.js'
-// import '../../../js/bootstrap.min.js'
+import {ICardProduct} from "../../product/model/ICardProduct";
+import {useParams} from "react-router-dom";
 
+const ChooseCategory=()=> {
+    const [products,setProducts]=useState<ICardProduct[]>([]);
+    async function getProductByCategory(category:ICategory){
+        const response = await ProductService.getProductByCategory(category);
+        // console.log("res")
+        // @ts-ignore
+        setProducts(response);
 
-
-const Home=()=> {
-    const [products,setProduct]=useState<ICardProduct[]>([]);
-    // const {typeId}=useParams();
-    // console.log(typeId)
-    async function getListProductOnHomePage(){
-        try{
-            const response =await ProductService.getCardsProduct();
-            // @ts-ignore
-            setProduct(response);
-
-        }catch (e){
-            // @ts-ignore
-            console.log(e.response?.data?.message);
-        }
     }
 
-
-    useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
-        getListProductOnHomePage();
-    }, []);
+useEffect(()=>{
 
 
+    // @ts-ignore
+    // ct.categoryProduct=typeId;
+    // console.log(ct.categoryProduct)
+    // getProductByCategory(ct);
+
+},[])
+
+console.log(products);
     return (
         <div>
             <div id="ant107_shop" className="ant107_shop_container">
                 <div className="container">
-                    <div className="row">
+                    <div className="row" >
 
                         <main className="col-xl-9 col-md-8">
                             <div className="ant107_shop-shop-items">
@@ -64,14 +57,15 @@ const Home=()=> {
                             </div>
                         </main>
 
-                        <Category/>
+                        <Category clickF={getProductByCategory}  />
 
                     </div>
                 </div>
 
             </div>
+            {/*<button onClick={()=> getProductByCategory(ct)}></button>*/}
         </div>
     );
 }
 
-export default Home;
+export default ChooseCategory;

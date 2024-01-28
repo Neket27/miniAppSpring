@@ -13,6 +13,8 @@ import {Context} from "./main";
 import {observer} from "mobx-react-lite";
 import Product from "./content/home/product";
 import DetailProduct from "./content/detail/product";
+import ChooseCategory from "./content/chooseCategory";
+
 
 
 const App:FC=()=> {
@@ -41,8 +43,8 @@ const App:FC=()=> {
                 <Route path="/register" element={<AuthRootComponent/>}></Route>
                 <Route path="/reset" element={<AuthRootComponent/>}></Route>
                 <Route path="/dashboard" element={<AuthRootComponent/>}></Route>
-                {/*<Route path="/detailProduct" element={<DetailProduct/>}></Route>*/}
                 <Route path='/detailProduct/:typeId' element={<DetailProduct/>} />
+                <Route path='/category/product/:typeId' element={<ChooseCategory/>} />
             </Routes>
         </div>
     );

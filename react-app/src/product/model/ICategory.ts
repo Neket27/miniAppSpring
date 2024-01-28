@@ -1,4 +1,5 @@
 
 export interface ICategory{
-    category:Map<string,number>;
+    categoryProduct:string,
+    subcategory:string
 }
