@@ -4,6 +4,7 @@ import app.miniappspring.entity.CategoryProduct;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,5 +12,6 @@ import java.util.List;
 @Setter
 @Builder
 public class CategoryDto {
-   private List<CategoryProduct> categoryProducts;
+   private Map<String,Integer> numberOfProductsInThisCategory;
+
 }

@@ -18,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,14 +82,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public CategoryDto getListCategory(){
-              List<CategoryProduct> categoryProducts = Arrays.stream(CategoryProduct.values()).map(category-> {
-           Product product=productRepo.getFirstByCategoryProduct(category).orElse(null);
-           if(product!=null)
-                 return product.getCategoryProduct();
-           return null;
-       }).filter(Objects::nonNull).toList();
-
-        return new CategoryDto(categoryProducts);
+              Map<String,Integer> countProductThisCategory = new HashMap<>();
+              Arrays.stream(CategoryProduct.values()).toList().forEach(category->{
+                  int count =productRepo.countAllByCategoryProduct(category).get();
+                    if(count!=0)
+                        countProductThisCategory.put(category.getRussianValue(), count);
+              });
+        return new CategoryDto(countProductThisCategory);
     }
 
 }
