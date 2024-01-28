@@ -1,8 +1,8 @@
 import api from "../../http";
 import {CardProductResponse} from "../model/response/CardProductResponse";
-import {ICardProduct} from "../model/ICardProduct";
 import {ProductDetailResponse} from "../model/response/ProductDetailResponse";
 import {CategoryResponse} from "../model/response/CategoryResponse";
+import {ICategory} from "../model/ICategory";
 
 
 export default class ProductService{
@@ -18,6 +18,12 @@ export default class ProductService{
 
     static async getMapCategory(){
         return api.get<CategoryResponse>('/api/v1/category')
+            .then(response=>response.data);
+    }
+
+    static async getProductByCategory(category:ICategory){
+
+        return api.post<CardProductResponse>('/api/v1/category/product/'+category.categoryProduct,category)
             .then(response=>response.data);
     }
 

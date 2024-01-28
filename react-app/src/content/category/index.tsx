@@ -2,8 +2,10 @@ import React, {useEffect, useState} from "react";
 import ProductService from "../../product/service/productService";
 import {CategoryResponse} from "../../product/model/response/CategoryResponse";
 import {transliterate} from "transliteration";
+import {Link, useParams} from "react-router-dom";
+import {ICategory} from "../../product/model/ICategory";
 
-const Category = ()=>{
+const Category = (props: { clickF(category:ICategory): void; })=>{
     const [categoryMap,setCategoryMap]=useState<Map<string,number>>(new Map());
 
     async function getMapCategory(){
@@ -23,18 +25,32 @@ const Category = ()=>{
         return map;
     }
 
+    let {typeId}=useParams();
+    let ct:ICategory={
+        // @ts-ignore
+        categoryProduct:typeId,
+        subcategory:"kkk"
+    }
+    // @ts-ignore
+
+
 useEffect(()=>{
     getMapCategory();
+    props.clickF(ct);
 },[]);
 
     let categoryJsx:any[]=[];
 
-    categoryMap.forEach((count, category) =>
-      categoryJsx.push(
-        <li key={transliterate(category)}><a href="#">
-            <i className="fas fa-chevron-right mr-2"></i> {category} <span>({count})</span></a>
-        </li>)
-    );
+    categoryMap.forEach((count, category) => {
+        const categoryOnEnglish:string=transliterate(category);
+        categoryJsx.push(
+            <li key={categoryOnEnglish} onClick={()=>
+                props.clickF(ct)}>
+                <Link  to={"/category/product/"+categoryOnEnglish}>
+                    <i className="fas fa-chevron-right mr-2"></i> {category} <span>({count})</span>
+                </Link>
+            </li>)
+    });
 
     return (
         <aside className="col-xl-3 col-md-4">
