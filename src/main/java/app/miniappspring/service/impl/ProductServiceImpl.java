@@ -104,12 +104,12 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }
 
-
-
     @Override
     @Transactional
     public List<CategoryProduct> searchProductByCategory(String category){
-        return categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList());
+        if (!category.isEmpty())
+         return categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList());
+        return Collections.emptyList();
     }
 
 }
