@@ -14,6 +14,9 @@ import {ICategory} from "../../product/model/ICategory";
 import ProductService from "../../product/service/productService";
 import {ICardProduct} from "../../product/model/ICardProduct";
 import {useParams} from "react-router-dom";
+import translit from 'cyrillic-to-translit-js';
+
+
 
 const ChooseCategory=()=> {
     const [products,setProducts]=useState<ICardProduct[]>([]);
@@ -25,14 +28,18 @@ const ChooseCategory=()=> {
 
     }
 
-useEffect(()=>{
+    let {typeId}=useParams();
 
-
-    // @ts-ignore
-    // ct.categoryProduct=typeId;
-    // console.log(ct.categoryProduct)
-    // getProductByCategory(ct);
-
+    useEffect(()=>{
+        // @ts-ignore
+        let categoryOnRussian:string=translit().reverse(typeId);
+        let category:ICategory={
+            categoryProduct:categoryOnRussian,
+            subcategory:'unsupported'
+        }
+        console.log("category.categoryProduc")
+        console.log(category.categoryProduct)
+    getProductByCategory(category);
 },[])
 
 console.log(products);
@@ -57,7 +64,7 @@ console.log(products);
                             </div>
                         </main>
 
-                        <Category clickF={getProductByCategory}  />
+                        <Category OnClickGetListProduct={getProductByCategory}  />
 
                     </div>
                 </div>
