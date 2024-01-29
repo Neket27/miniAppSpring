@@ -4,7 +4,9 @@ import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.dto.product.category.Category;
 import app.miniappspring.dto.product.category.CategoryDto;
+import app.miniappspring.entity.CategoryProduct;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,5 +33,11 @@ public interface ProductService {
     void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException;
 
     @Transactional
-    CategoryDto getListCategory();
+    CategoryDto getCategories();
+
+    @Transactional
+    List<ProductCardDto> getProductsByCategory(Category category);
+
+    @Transactional
+    List<CategoryProduct>searchProductByCategory(String category);
 }

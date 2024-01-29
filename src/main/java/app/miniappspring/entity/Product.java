@@ -26,7 +26,9 @@ public class Product {
     private String detail;
     @Column(name = "image")
     private byte[] image;
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_product_id", referencedColumnName = "id")
     private CategoryProduct categoryProduct;
     private String subcategory;
 

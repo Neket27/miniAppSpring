@@ -1,24 +1,22 @@
 package app.miniappspring.entity;
 
-public enum CategoryProduct {
-    СLOTHES("Одежда"),
-    SHOES("Обувь"),
-    TOOLS("Инструменты"),
-    DIFFERENT_GOODS("Различные товары"),
-    NEW_PRODUCTS("Новые продукты"),
-    PHONES("Телефоны"),
-    TV("Телевизоры"),
-    COMPUTERS("Компьютеры"),
-    SPEAKERS("Колонки");
+import jakarta.persistence.*;
+import lombok.*;
 
-    private String russianValue;
-
-    CategoryProduct(String russianValue) {
-        this.russianValue = russianValue;
-    }
-
-    public String getRussianValue() {
-        return russianValue;
-    }
+@Entity
+@Table(name = "categoryProduct")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CategoryProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Enumerated(EnumType.STRING)
+    Category category;
+    String subcategory;
+    String stringValueCategory;
 
 }

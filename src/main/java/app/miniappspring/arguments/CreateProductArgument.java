@@ -1,5 +1,6 @@
 package app.miniappspring.arguments;
 
+import app.miniappspring.entity.Category;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreateProductArgument {
-    private CategoryProduct categoryProduct;
+    private Category category;
     private String subcategory;
     private String name;
     private float cost;

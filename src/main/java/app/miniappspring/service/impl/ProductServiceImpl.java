@@ -3,13 +3,16 @@ package app.miniappspring.service.impl;
 import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.dto.product.category.Category;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Product;
 import app.miniappspring.exception.ErrorException;
+import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.repository.ProductRepo;
 import app.miniappspring.service.ProductService;
+import app.miniappspring.utils.jwtToken.mapper.CategoryMapper;
 import app.miniappspring.utils.jwtToken.mapper.ProductArgumentMapper;
 import app.miniappspring.utils.jwtToken.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +32,9 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
     private final ProductMapper productMapper;
+    private final CategoryMapper categoryMapper;
     private final ProductArgumentMapper productArgumentMapper;
 
     @Override
@@ -66,6 +74,8 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductCardDto> addProduct(CreateProductArgument createProductArgument){
         Product product=productMapper.toProduct(createProductArgument);
         CharacteristicProduct characteristic=  productArgumentMapper.toCharacteristicProduct(createProductArgument);
+        CategoryProduct categoryProduct =categoryMapper.toCategoryProduct(createProductArgument);
+        product.setCategoryProduct(categoryProduct);
         product.setCharacteristicProduct(characteristic);
         productRepo.save(product);
         return getListCardProduct();
@@ -81,14 +91,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public CategoryDto getListCategory(){
-              Map<String,Integer> countProductThisCategory = new HashMap<>();
-              Arrays.stream(CategoryProduct.values()).toList().forEach(category->{
-                  int count =productRepo.countAllByCategoryProduct(category).get();
-                    if(count!=0)
-                        countProductThisCategory.put(category.getRussianValue(), count);
-              });
+    public CategoryDto getCategories(){
+        Map<String,Integer> countProductThisCategory = Arrays.stream(app.miniappspring.entity.Category.values())
+                .collect(Collectors.toMap(category -> category.getRussianValue(),category->categoryRepo.countByCategory(category)));
         return new CategoryDto(countProductThisCategory);
+    }
+
+    @Override
+    @Transactional
+    public List<ProductCardDto> getProductsByCategory(Category category){
+        List<Product>products= productRepo.findByCategoryProduct_StringValueCategoryContainingIgnoreCase(category.getCategoryProduct()).orElse(Collections.emptyList());
+        return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
+    }
+
+
+
+    @Override
+    @Transactional
+    public List<CategoryProduct> searchProductByCategory(String category){
+        return categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList());
     }
 
 }
