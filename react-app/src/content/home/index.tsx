@@ -24,8 +24,7 @@ import {ICategory} from "../../product/model/ICategory";
 
 const Home=()=> {
     const [products,setProduct]=useState<ICardProduct[]>([]);
-    //     let {typeId}=useParams();
-    // console.log(typeId)
+
     async function getListProductOnHomePage(){
         try{
             const response =await ProductService.getCardsProduct();

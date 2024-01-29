@@ -3,6 +3,7 @@ import {CardProductResponse} from "../model/response/CardProductResponse";
 import {ProductDetailResponse} from "../model/response/ProductDetailResponse";
 import {CategoryResponse} from "../model/response/CategoryResponse";
 import {ICategory} from "../model/ICategory";
+import {CategorySearchResponse} from "../model/response/CategorySearchResponse";
 
 
 export default class ProductService{
@@ -27,4 +28,8 @@ export default class ProductService{
             .then(response=>response.data);
     }
 
+    static search(searchValue: string) {
+        return api.get<Array<CategorySearchResponse>>('/api/v1/search?category='+searchValue)
+            .then(response=>response.data);
+    }
 }
