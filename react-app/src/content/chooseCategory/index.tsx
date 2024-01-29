@@ -37,8 +37,6 @@ const ChooseCategory=()=> {
             categoryProduct:categoryOnRussian,
             subcategory:'unsupported'
         }
-        console.log("category.categoryProduc")
-        console.log(category.categoryProduct)
     getProductByCategory(category);
 },[])
 
