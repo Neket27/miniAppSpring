@@ -1,7 +1,6 @@
 package app.miniappspring.dto.product;
 
-import app.miniappspring.entity.CategoryProduct;
-import app.miniappspring.entity.Image;
+import app.miniappspring.dto.product.category.CategoryDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -12,8 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ProductCardDto {
     private Long id;
-    private CategoryProduct categoryProduct;
-    private String subcategory;
+    private CategoryDto category;
     private String name;
     private float cost;
     private float rating;

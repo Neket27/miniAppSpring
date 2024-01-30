@@ -7,8 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryProductDto {
-    Category category;
-    String subcategory;
-    String stringValueCategory;
+    private Long idProduct;
+    private String nameProduct;
+    private Category category;
+    private String subcategory;
+    private String stringValueCategory;
 
 }

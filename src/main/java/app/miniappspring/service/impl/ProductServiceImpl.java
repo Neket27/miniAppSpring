@@ -3,8 +3,9 @@ package app.miniappspring.service.impl;
 import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
-import app.miniappspring.dto.product.category.Category;
 import app.miniappspring.dto.product.category.CategoryDto;
+import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
+import app.miniappspring.dto.product.category.CategoryProductDto;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Product;
@@ -91,24 +92,29 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public CategoryDto getCategories(){
+    public NumberOfProductsInThisCategory getCategories(){
         Map<String,Integer> countProductThisCategory = Arrays.stream(app.miniappspring.entity.Category.values())
                 .collect(Collectors.toMap(category -> category.getRussianValue(),category->categoryRepo.countByCategory(category)));
-        return new CategoryDto(countProductThisCategory);
+        return new NumberOfProductsInThisCategory(countProductThisCategory);
     }
 
     @Override
     @Transactional
-    public List<ProductCardDto> getProductsByCategory(Category category){
+    public List<ProductCardDto> getProductsByCategory(CategoryDto category){
         List<Product>products= productRepo.findByCategoryProduct_StringValueCategoryContainingIgnoreCase(category.getCategoryProduct()).orElse(Collections.emptyList());
         return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }
 
     @Override
     @Transactional
-    public List<CategoryProduct> searchProductByCategory(String category){
-        if (!category.isEmpty())
-         return categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList());
+    public List<CategoryProductDto> searchProductByCategory(String category){
+
+        if (!category.isEmpty()) {
+            List<Product> productList = productRepo.findByNameContainsIgnoreCase(category).orElse(Collections.emptyList());
+            List<CategoryProductDto> categoryList = categoryMapper.toListCategoryProductDto(categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList()));
+            categoryList.addAll(categoryMapper.toListCategoryProduct(productList));
+            return categoryList;
+        }
         return Collections.emptyList();
     }
 

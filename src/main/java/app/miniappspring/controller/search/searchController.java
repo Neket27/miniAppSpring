@@ -1,7 +1,6 @@
 package app.miniappspring.controller.search;
 
-import app.miniappspring.dto.product.category.CategoryDto;
-import app.miniappspring.entity.CategoryProduct;
+import app.miniappspring.dto.product.category.CategoryProductDto;
 import app.miniappspring.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,7 @@ public class searchController {
     private final ProductService productService;
 
     @GetMapping("/search")
-    public List<CategoryProduct> searchProductByCategory(@RequestParam String category){
+    public List<CategoryProductDto> searchProductByCategory(@RequestParam String category){
        return productService.searchProductByCategory(category);
     }
 }

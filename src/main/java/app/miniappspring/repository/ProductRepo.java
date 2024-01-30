@@ -22,6 +22,7 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
 
 //    long countByCategoryProduct(CategoryProduct categoryProduct);
 
+    Optional<List<Product>> findByNameContainsIgnoreCase(String str);
     Optional<List<Product>> findByCategoryProduct_StringValueCategoryContainingIgnoreCase(String str);
 
 

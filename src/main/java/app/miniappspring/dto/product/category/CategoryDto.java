@@ -1,17 +1,11 @@
 package app.miniappspring.dto.product.category;
 
-import app.miniappspring.entity.CategoryProduct;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 @Setter
-@Builder
+@Getter
 public class CategoryDto {
-   private Map<String,Integer> numberOfProductsInThisCategory;
-
+    private String categoryProduct;
+    private String subcategory;
 }
