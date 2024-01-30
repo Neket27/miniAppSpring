@@ -1,7 +1,9 @@
+import {ICharacteristic} from "./ICharacteristic";
+import {ICategory} from "./ICategory";
+
 export interface ICardProduct{
     id:number,
-    categoryProduct:string,
-    subcategory:string,
+    categoryProduct:ICategory,
     name:string,
     cost:number,
     rating:number,

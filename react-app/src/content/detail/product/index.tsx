@@ -2,13 +2,29 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import ProductService from "../../../product/service/productService";
 import {IDetailProduct} from "../../../product/model/IDetailProduct";
+const URL = import.meta.env.VITE_URL;
 
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
 import "./../../../../js/jquery.magnify.js"
+import {ICardProduct} from "../../../product/model/ICardProduct";
+import {ICategory} from "../../../product/model/ICategory";
+import FormForDetailProduct from "../form";
+
 const DetailProduct = () => {
     const {typeId} = useParams();
     const [productDetail, setProductDetail] = useState<IDetailProduct>();
+
+    //дубляж функции с chooseCategory
+    const [relatedProducts,setRelatedProducts]=useState<ICardProduct[]>([]);
+    async function getProductByCategory(category:ICategory){
+        const response = await ProductService.getProductsByCategory(category);
+        console.log("res")
+        console.log(response)
+        // @ts-ignore
+        setRelatedProducts(response);
+
+    }
 
     async function getProductDetail() {
         try {
@@ -16,7 +32,7 @@ const DetailProduct = () => {
             const response = await ProductService.getProductDetail(parseInt(typeId, 10));
             // @ts-ignore
             setProductDetail(response);
-    console.log(response)
+
         } catch (e) {
             // @ts-ignore
             console.log(e.response?.data?.message);
@@ -25,8 +41,56 @@ const DetailProduct = () => {
 
     useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
         getProductDetail();
+
     }, []);
 
+    useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
+        console.log("Категория")
+        console.log(productDetail?.categoryProduct.stringValueCategory);
+        let category:ICategory={
+            // @ts-ignore
+            categoryProduct:productDetail?.categoryProduct.stringValueCategory,
+            subcategory:'unsupported',
+            stringValueCategory:'mmm'
+        }
+        getProductByCategory(category)
+    }, [productDetail]);
+
+
+    const imagesMain = productDetail?.characteristicProduct.images.map(imageBytes=>
+        <div className="tab-pane active" id="ant107_shop-preview2">
+            <img src={"data:image/png;base64," +imageBytes } alt=""
+                 data-magnify-src={"data:image/png;base64," +imageBytes}/>
+        </div>
+    );
+
+    const images =productDetail?.characteristicProduct.images.map(imageBytes =>
+        <li>
+            <a data-toggle="tab" href="#ant107_shop-preview1">
+                <img src={"data:image/png;base64,"+imageBytes} alt=""/>
+            </a>
+        </li>
+    );
+
+    const relatedProductListJsx = relatedProducts.map(product =>{
+        console.log("product")
+        console.log(product)
+       return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
+            <div className="ant107_shop-shop-box">
+                <div className="ant107_shop-shop-img">
+                    <a href="#!"><img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/></a>
+                </div>
+                <div className="ant107_shop-shop-info">
+                    <h5><a href="#!">{product.name}</a></h5>
+                    <div className="ant107_shop-price-rating">
+                        <span className="ant107_shop-shop-price">{product.cost}</span>
+                        <span className="ant107_shop-shop-rating">{product.rating}</span>
+                        <a href="#"><i className="fas fa-shopping-cart"></i></a>
+                    </div>
+                </div>
+            </div>
+     </div>
+    } );
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
@@ -38,44 +102,24 @@ const DetailProduct = () => {
                             <div className="ant107_shop-product-preview-wrap">
                                 <div className="tab-content">
                                     <div className="tab-pane" id="ant107_shop-preview1">
-                                        <img src="/img/ant107_shop/img02.jpg" alt=""
-                                             data-magnify-src="/img/ant107_shop/img02.jpg"/>
+                                        <img
+                                            src={URL+"/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}
+                                            alt=""
+                                            data-magnify-src={URL+"/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
                                     </div>
-                                    <div className="tab-pane active" id="ant107_shop-preview2">
-                                        <img src="/img/ant107_shop/img03.jpg" alt=""
-                                             data-magnify-src="/img/ant107_shop/img03.jpg"/>
-                                    </div>
-                                    <div className="tab-pane" id="ant107_shop-preview3">
-                                        <img src="/img/ant107_shop/img04.jpg" alt=""
-                                             data-magnify-src="/img/ant107_shop/img04.jpg"/>
-                                    </div>
-                                    <div className="tab-pane" id="ant107_shop-preview4">
-                                        <img src="/img/ant107_shop/img05.jpg" alt=""
-                                             data-magnify-src="/img/ant107_shop/img05.jpg"/>
-                                    </div>
+
+                                    {/*{imagesMain}*/}
+                                    {/*<div className="tab-pane active" id="ant107_shop-preview2">*/}
+                                    {/*    <img*/}
+                                    {/*        src={"data:image/png;base64," + productDetail?.characteristicProduct.images[0]}*/}
+                                    {/*        alt=""*/}
+                                    {/*        data-magnify-src={"data:image/png;base64," + productDetail?.characteristicProduct.images[0]}/>*/}
+                                    {/*</div>*/}
+
                                 </div>
 
                                 <ul className="nav nav-tabs d-flex align-content-between">
-                                    <li>
-                                        <a data-toggle="tab" href="#ant107_shop-preview1">
-                                            <img src="/img/ant107_shop/img02.jpg" alt=""/>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a className="active" data-toggle="tab" href="#ant107_shop-preview2">
-                                            <img src="/img/ant107_shop/img03.jpg" alt=""/>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab" href="#ant107_shop-preview3">
-                                            <img src="/img/ant107_shop/img04.jpg" alt=""/>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a data-toggle="tab" href="#ant107_shop-preview4">
-                                            <img src="/img/ant107_shop/img05.jpg" alt=""/>
-                                        </a>
-                                    </li>
+                                    {images}
                                 </ul>
                             </div>
                         </div>
@@ -113,7 +157,6 @@ const DetailProduct = () => {
                                 <p>{productDetail?.detail}</p>
 
                                 <ul className="ant107_shop-list-style-one mt-3 mb-3">
-                                    {/*<li>{productDetail?.characteristic.producerCountry}</li>*/}
                                     <li>{productDetail?.characteristicProduct.producerCountry}</li>
                                     <li>{productDetail?.characteristicProduct.sellerWarranty}</li>
                                 </ul>
@@ -172,64 +215,7 @@ const DetailProduct = () => {
                                         <h2>Написать отзыв</h2>
                                     </div>
 
-                                    <form id="ant107_shop-contact-form" className="ant107_shop-contact-form"
-                                          action="#" method="POST">
-                                        <div className="row clearfix">
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="ant107_shop-name">Ваше имя</label>
-                                                    <input type="text" name="first_name" id="ant107_shop-name"
-                                                           className="form-control" value=""
-                                                           placeholder="Иван Дионтьев" required/>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="email">Email</label>
-                                                    <input type="ant107_shop-email" name="email"
-                                                           id="ant107_shop-email" className="form-control" value=""
-                                                           placeholder="yourmail@gmail.com" required/>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-12">
-                                                <div className="form-group">
-                                                    <label htmlFor="ant107_shop-message">Сообщение</label>
-                                                    <textarea name="message" id="ant107_shop-message"
-                                                              className="form-control" rows={3}
-                                                              placeholder="Что Вы хотите сказать"
-                                                              required></textarea>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-4 d-flex">
-                                                <div className="ant107_shop-your-rating d-flex align-items-center">
-                                                    <h6 className="mb-0 mr-2">Ваша оценка:</h6>
-                                                    <div className="ant107_shop-ratings"
-                                                         id="ant107_shop-your-rating">
-                                                        <i className="fas fa-star"></i>
-                                                        <i className="fas fa-star"></i>
-                                                        <i className="fas fa-star"></i>
-                                                        <i className="fas fa-star"></i>
-                                                        <i className="fas fa-star"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <div className="ant107_shop-upload-btn-wrapper">
-                                                    <button className="ant107_shop-upload-btn">
-                                                        <span><i className="fas fa-file-image"></i>Вложения</span>
-                                                    </button>
-                                                    <input type="file" name="myfile"/>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <div className="form-group text-left text-md-right mb-0">
-                                                    <button className="ant107_shop-theme-btn ant107_shop-br-30"
-                                                            type="submit">Отправить
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
+                                   <FormForDetailProduct/>
                                 </div>
                             </div>
                         </div>
@@ -240,66 +226,9 @@ const DetailProduct = () => {
                     <div className="ant107_shop-related-product mt-5">
                         <h3 className="mb-4">Похожие товары</h3>
                         <div className="row">
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
-                                <div className="ant107_shop-shop-box">
-                                    <div className="ant107_shop-shop-img">
-                                        <a href="#!"><img src="/img/ant107_shop/img02.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="ant107_shop-shop-info">
-                                        <h5><a href="#!">Название товара</a></h5>
-                                        <div className="ant107_shop-price-rating">
-                                            <span className="ant107_shop-shop-price">650.00</span>
-                                            <span className="ant107_shop-shop-rating">4.0</span>
-                                            <a href="#"><i className="fas fa-shopping-cart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
-                                <div className="ant107_shop-shop-box">
-                                    <div className="ant107_shop-shop-img">
-                                        <a href="#!"><img src="/img/ant107_shop/img03.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="ant107_shop-shop-info">
-                                        <h5><a href="#!">Название товара</a></h5>
-                                        <div className="ant107_shop-price-rating">
-                                            <span className="ant107_shop-shop-price">650.00</span>
-                                            <span className="ant107_shop-shop-rating">4.0</span>
-                                            <a href="#"><i className="fas fa-shopping-cart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
-                                <div className="ant107_shop-shop-box">
-                                    <div className="ant107_shop-shop-img">
-                                        <a href="#!"><img src="/img/ant107_shop/img04.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="ant107_shop-shop-info">
-                                        <h5><a href="#!">Название товара</a></h5>
-                                        <div className="ant107_shop-price-rating">
-                                            <span className="ant107_shop-shop-price">650.00</span>
-                                            <span className="ant107_shop-shop-rating">4.0</span>
-                                            <a href="#"><i className="fas fa-shopping-cart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
-                                <div className="ant107_shop-shop-box">
-                                    <div className="ant107_shop-shop-img">
-                                        <a href="#!"><img src="/img/ant107_shop/img05.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="ant107_shop-shop-info">
-                                        <h5><a href="#!">Название товара</a></h5>
-                                        <div className="ant107_shop-price-rating">
-                                            <span className="ant107_shop-shop-price">650.00</span>
-                                            <span className="ant107_shop-shop-rating">4.0</span>
-                                            <a href="#"><i className="fas fa-shopping-cart"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            {relatedProductListJsx}
+
                         </div>
                     </div>
                 </main>
