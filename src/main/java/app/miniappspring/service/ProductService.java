@@ -6,6 +6,8 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.dto.product.category.CategoryProductDto;
+import app.miniappspring.entity.Feedback;
+import app.miniappspring.entity.Product;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +19,9 @@ public interface ProductService {
 
     @Transactional
     ProductCardDto getProduct(Long id);
+
+    @Transactional
+    Product findProduct(Long id);
 
     @Transactional
     List<ProductCardDto> getListCardProduct();
@@ -39,4 +44,5 @@ public interface ProductService {
 
     @Transactional
     List<CategoryProductDto>searchProductByCategory(String category);
+
 }

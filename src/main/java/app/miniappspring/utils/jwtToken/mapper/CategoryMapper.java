@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -20,7 +21,7 @@ public interface CategoryMapper{
     @Mapping(source = "subcategory",target = "subcategory")
     CategoryDto toCategoryDto(CategoryProduct categoryProduct);
     CategoryProductDto toCategoryProductDto(CategoryProduct categoryProduct);
-    List<CategoryProductDto> toListCategoryProductDto(List<CategoryProduct> categoryProductList);
+
     @Mapping(source = "id", target = "idProduct")
     @Mapping(source = "name",target = "nameProduct")
     @Mapping(source = "categoryProduct.category", target = "category")
@@ -28,7 +29,13 @@ public interface CategoryMapper{
     @Mapping(source = "categoryProduct.stringValueCategory", target = "stringValueCategory")
     CategoryProductDto toCategoryProduct(Product product);
 
-    default List<CategoryProductDto> toListCategoryProduct(List<Product> productList) {
+    default List<CategoryProductDto> toListCategoryProductDto(Set<CategoryProduct> categoryProductSet){
+        return categoryProductSet.stream()
+                .map(this::toCategoryProductDto)
+                .collect(Collectors.toList());
+    }
+
+    default List<CategoryProductDto> toListCategoryProductDto(List<Product> productList) {
         return productList.stream()
                 .map(this::toCategoryProduct)
                 .collect(Collectors.toList());

@@ -2,6 +2,7 @@ package app.miniappspring.dto.product;
 
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
+import app.miniappspring.entity.Feedback;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,4 +23,5 @@ public class ProductDetailDto {
    private int stock;
    private CharacteristicProduct characteristicProduct;
    private String detail;
+   private Feedback feedback;
 }

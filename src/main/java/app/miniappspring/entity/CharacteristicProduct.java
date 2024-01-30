@@ -20,7 +20,6 @@ public class CharacteristicProduct {
     private String producerCountry;
     private int sellerWarranty;
     @ElementCollection(fetch = FetchType.EAGER)
-//    @CollectionTable(name = "images_product", joinColumns = @JoinColumn(name = "images_product_id"))
     @Column(name = "image", nullable = false, columnDefinition = "bytea")
     private List<byte[]> images;
 

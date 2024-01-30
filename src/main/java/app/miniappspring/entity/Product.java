@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 @NoArgsConstructor
@@ -35,5 +37,9 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "characteristic_id", referencedColumnName = "id")
     private CharacteristicProduct characteristicProduct;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "feedback_list", nullable = false)
+    List<Feedback> feedbackList;
 
 }

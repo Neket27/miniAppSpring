@@ -6,9 +6,7 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.dto.product.category.CategoryProductDto;
-import app.miniappspring.entity.CategoryProduct;
-import app.miniappspring.entity.CharacteristicProduct;
-import app.miniappspring.entity.Product;
+import app.miniappspring.entity.*;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.repository.ProductRepo;
@@ -22,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    @Override
     @Transactional
     public Product findProduct(Long id){
         return productRepo.findById(id).orElseThrow(()->new ErrorException("В базе данных нет карточки товара с id= "+id));
@@ -111,11 +107,44 @@ public class ProductServiceImpl implements ProductService {
 
         if (!category.isEmpty()) {
             List<Product> productList = productRepo.findByNameContainsIgnoreCase(category).orElse(Collections.emptyList());
-            List<CategoryProductDto> categoryList = categoryMapper.toListCategoryProductDto(categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptyList()));
-            categoryList.addAll(categoryMapper.toListCategoryProduct(productList));
+
+            Set<CategoryProduct> categoryProductSet = categoryRepo.findAllByStringValueCategoryContainingIgnoreCase(category).orElse(Collections.emptySet());
+
+            CategoryProduct product1 = CategoryProduct.builder()
+                    .id(1L)
+                    .category(Category.TV)
+                    .build();
+            CategoryProduct product2 = CategoryProduct.builder()
+                    .id(2L)
+                    .category(Category.COMPUTERS)
+                    .build();
+            CategoryProduct product3 = CategoryProduct.builder()
+                    .id(1L)
+                    .category(Category.TV)
+                    .build();
+
+
+            Set<CategoryProduct> productSet = new HashSet<>();
+            productSet.add(product1);
+            productSet.add(product2);
+            productSet.add(product3);
+
+            System.out.println("Размер исходного множества: " + productSet.size());
+
+            for (CategoryProduct product : productSet) {
+                System.out.println(product.getCategory().getRussianValue() + ": " + product.getSubcategory());
+            }
+
+
+            Set<CategoryProduct>categorySet=new HashSet<>(categoryProductSet);
+
+            List<CategoryProductDto> categoryList = categoryMapper.toListCategoryProductDto(categorySet);
+//            categoryList= categoryList.stream().filter(categoryProductDto -> categoryProductDto)
+            categoryList.addAll(categoryMapper.toListCategoryProductDto(productList));
             return categoryList;
         }
         return Collections.emptyList();
     }
+
 
 }
