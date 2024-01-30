@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import ProductService from "../../product/service/productService";
 import {CategoryResponse} from "../../product/model/response/CategoryResponse";
 import {transliterate} from "transliteration";
-import {Link, useParams} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {ICategory} from "../../product/model/ICategory";
 import {CategorySearchResponse} from "../../product/model/response/CategorySearchResponse";
 
@@ -33,7 +33,16 @@ const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>
         return map;
     }
 
-
+function operation(category:string):void{
+    let ct: ICategory = {
+        categoryProduct: category,
+        subcategory: "not_supported"
+    }
+    setSearchedProducts([]);
+    setSearchString('');
+    categoryJsx=[];
+    props.OnClickGetListProduct(ct)
+}
 
 useEffect(()=>{
     getMapCategory();
@@ -42,22 +51,32 @@ useEffect(()=>{
 
 
     let categoryJsx:any[]=[];
-    const searchCategoryJsx = searchedProducts.map((category,index)=>
-    <li key={index}>
-        {category.stringValueCategory}
-    </li>
-    );
+    const searchCategoryJsx = searchedProducts.map((category,index)=> {
+        const categoryOnEnglish: string = transliterate(category.stringValueCategory);
+        if (category.idProduct ==null) {
+            return <li key={index}>
+                <Link to={"/category/product/" + categoryOnEnglish} onClick={() => {
+                    operation(category.stringValueCategory);
+                }}>
+                    <i className="fas fa-chevron-right mr-2"></i> {category.stringValueCategory} <span></span>
+                </Link>
+            </li>
+        }
+        return <li key={index}>
+            <Link to={"/category/product/" + categoryOnEnglish} onClick={() => {
+               operation(category.stringValueCategory);
+            }}>
+                <i className="fas fa-chevron-right mr-2"></i> {category.nameProduct} <span></span>
+            </Link>
+              </li>
+    });
 
     categoryMap.forEach((count, category) => {
-        if(count!=0) {
+        if (count != 0) {
             const categoryOnEnglish: string = transliterate(category);
             categoryJsx.push(
                 <li key={categoryOnEnglish} onClick={() => {
-                    let ct: ICategory = {
-                        categoryProduct: category,
-                        subcategory: "not_supported"
-                    }
-                    props.OnClickGetListProduct(ct)
+                   operation(category);
                 }}>
                     <Link to={"/category/product/" + categoryOnEnglish}>
                         <i className="fas fa-chevron-right mr-2"></i> {category} <span>({count})</span>
@@ -65,8 +84,6 @@ useEffect(()=>{
                 </li>)
         }
     });
-
-
 
 
     return (
@@ -92,7 +109,11 @@ useEffect(()=>{
                                        categoryJsx=[];
                                        search(searchString);
 
+                                   }else if(searchString.length==1) {
+                                       setSearchedProducts([]);
+                                       categoryJsx=[];
                                    }
+
                                }
                                }
                                value={searchString}/>

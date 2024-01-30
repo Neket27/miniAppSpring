@@ -1,5 +1,6 @@
 
 export interface ICategory{
-    categoryProduct:string,
-    subcategory:string
+    categoryProduct:string;
+    subcategory:string;
+    stringValueCategory:string;
 }

@@ -21,7 +21,7 @@ import translit from 'cyrillic-to-translit-js';
 const ChooseCategory=()=> {
     const [products,setProducts]=useState<ICardProduct[]>([]);
     async function getProductByCategory(category:ICategory){
-        const response = await ProductService.getProductByCategory(category);
+        const response = await ProductService.getProductsByCategory(category);
         // console.log("res")
         // @ts-ignore
         setProducts(response);
@@ -35,7 +35,8 @@ const ChooseCategory=()=> {
         let categoryOnRussian:string=translit().reverse(typeId);
         let category:ICategory={
             categoryProduct:categoryOnRussian,
-            subcategory:'unsupported'
+            subcategory:'unsupported',
+            stringValueCategory:'mmm'
         }
     getProductByCategory(category);
 },[])

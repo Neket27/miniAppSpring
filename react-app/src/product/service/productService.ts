@@ -22,8 +22,9 @@ export default class ProductService{
             .then(response=>response.data);
     }
 
-    static async getProductByCategory(category:ICategory){
-
+    static async getProductsByCategory(category:ICategory){
+        console.log("categoryInService")
+        console.log(category.categoryProduct)
         return api.post<CardProductResponse>('/api/v1/category/product/'+category.categoryProduct,category)
             .then(response=>response.data);
     }

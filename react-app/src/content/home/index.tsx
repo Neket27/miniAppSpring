@@ -4,21 +4,10 @@ import './../../../css/style.css'
 import './../../../css/bootstrap.min.css'
 import './../../../css/magnify.css'
 import './../../../css/ant107_shop.css'
-
-// import "./../../../js/jquery.magnify.js"
 import Product from "./product";
-import DetailProduct from "../detail/product";
 import Category from "../category";
 import {ICardProduct} from "../../product/model/ICardProduct";
 import ProductService from "../../product/service/productService";
-import {ICategory} from "../../product/model/ICategory";
-// import 'https://fonts.googleapis.com/icon?family=Material+Icons&#038;ver=5.0.3'
-// import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css?ver=5.0.3'
-// import 'https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic&amp;subset=cyrillic'
-//
-// import '../../../js/jquery.js'
-// import '../../../js/jquery-migrate.min.js'
-// import '../../../js/bootstrap.min.js'
 
 
 

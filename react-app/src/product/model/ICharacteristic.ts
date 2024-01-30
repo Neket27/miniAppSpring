@@ -1,4 +1,5 @@
 export interface ICharacteristic{
-    producerCountry:string,
-    sellerWarranty:number
+    producerCountry:string;
+    sellerWarranty:number;
+    images:Array<number>;
 }

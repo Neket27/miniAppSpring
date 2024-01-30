@@ -1,7 +1,9 @@
 import {ICharacteristic} from "../ICharacteristic";
+import {ICategory} from "../ICategory";
 
 export interface ProductDetailResponse{
     id:number,
+    categoryProduct:ICategory,
     name:string,
     cost:number,
     description:string,
