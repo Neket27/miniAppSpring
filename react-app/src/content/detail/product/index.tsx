@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, NavLink, Route, Router, useParams} from "react-router-dom";
 import ProductService from "../../../product/service/productService";
 import {IDetailProduct} from "../../../product/model/IDetailProduct";
 const URL = import.meta.env.VITE_URL;
@@ -10,20 +10,27 @@ import "./../../../../js/jquery.magnify.js"
 import {ICardProduct} from "../../../product/model/ICardProduct";
 import {ICategory} from "../../../product/model/ICategory";
 import FormForDetailProduct from "../form";
+import Review from "./swithBlocks/review";
+import Detail from "./swithBlocks/detail";
+import {IProductCart} from "../../../product/model/IProductCart";
+import CartController from "../../cart/controller/CartController";
+import {ProductCartResponse} from "../../../product/model/response/ProductCartResponse";
 
 const DetailProduct = () => {
     const {typeId} = useParams();
     const [productDetail, setProductDetail] = useState<IDetailProduct>();
+    const [countProductsInBag, setCountProductsInBag] = useState<number>(0);
+
+    const [showBlockDetail, setShowBlockDetail] = useState(true);
+    const [showBlockReview, setShowBlockReview] = useState(false);
+    const [productFromCart, setProductFromCart] = useState<ProductCartResponse>();
 
     //дубляж функции с chooseCategory
     const [relatedProducts,setRelatedProducts]=useState<ICardProduct[]>([]);
     async function getProductByCategory(category:ICategory){
         const response = await ProductService.getProductsByCategory(category);
-        console.log("res")
-        console.log(response)
         // @ts-ignore
         setRelatedProducts(response);
-
     }
 
     async function getProductDetail() {
@@ -38,6 +45,27 @@ const DetailProduct = () => {
             console.log(e.response?.data?.message);
         }
     }
+
+    async function getProductFromCart(idProduct:number,accessToken:string){
+        console.log("getProductFromCart")
+        try {
+            // @ts-ignore
+            const result = await CartController.getProductFromCart(idProduct,accessToken);
+            console.log("Result:", result);
+            setProductFromCart(result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+        const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
+        if (!isNaN(count)) {  // Проверка на то, что count является числом
+            const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
+            // @ts-ignore
+            setProductFromCart(response);
+        } else {
+            console.error("Ошибка: Невалидное значение countProductsInBag");
+        }
+    };
 
     useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
         getProductDetail();
@@ -54,7 +82,23 @@ const DetailProduct = () => {
             stringValueCategory:'mmm'
         }
         getProductByCategory(category)
+
+        // @ts-ignore
+        const product:ProductCartResponse = getProductFromCart(productDetail?.id,localStorage.getItem('token'))
+        console.log("useEffectProduct= "+product)
+        setProductFromCart(product);
+        // setCountProductsInBag(product.count);
+
     }, [productDetail]);
+
+    useEffect(()=>{
+        // @ts-ignore
+        if(productFromCart?.count!=undefined)
+        setCountProductsInBag(productFromCart?.count);
+        console.log("UseEffectProductFromCart?.count= "+productFromCart?.count)
+    },[productDetail,productFromCart]);
+
+
 
 
     const imagesMain = productDetail?.characteristicProduct.images.map(imageBytes=>
@@ -66,32 +110,46 @@ const DetailProduct = () => {
 
     const images =productDetail?.characteristicProduct.images.map(imageBytes =>
         <li>
-            <a data-toggle="tab" href="#ant107_shop-preview1">
+            {/*<a data-toggle="tab" href="#ant107_shop-preview1">*/}
                 <img src={"data:image/png;base64,"+imageBytes} alt=""/>
-            </a>
+            {/*</a>*/}
         </li>
     );
 
     const relatedProductListJsx = relatedProducts.map(product =>{
-        console.log("product")
-        console.log(product)
        return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
             <div className="ant107_shop-shop-box">
                 <div className="ant107_shop-shop-img">
-                    <a href="#!"><img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/></a>
+                    {/*<a href="#!">*/}
+                        <img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/>
+                    {/*</a>*/}
                 </div>
                 <div className="ant107_shop-shop-info">
-                    <h5><a href="#!">{product.name}</a></h5>
+                    <h5><a href="">{product.name}</a></h5>
                     <div className="ant107_shop-price-rating">
                         <span className="ant107_shop-shop-price">{product.cost}</span>
                         <span className="ant107_shop-shop-rating">{product.rating}</span>
-                        <a href="#"><i className="fas fa-shopping-cart"></i></a>
+                        <a href=""><i className="fas fa-shopping-cart"></i></a>
                     </div>
                 </div>
             </div>
      </div>
     } );
 
+
+
+    const showDetail = () => {
+            setShowBlockDetail(false);
+            setShowBlockReview(true);
+    };
+
+    const showReview= () => {
+            setShowBlockDetail(true);
+            setShowBlockReview(false);
+    };
+console.log("productFromCart?.count="+productFromCart?.count)
+    console.log("countProductInBag= "+countProductsInBag)
+    // @ts-ignore
     return (
         <div id="ant107_shop" className="ant107_shop_container">
             <div className="container">
@@ -135,96 +193,73 @@ const DetailProduct = () => {
 
                                 <div className="ant107_shop-product-spinner mt-3">
                                     <div className="ant107_shop-number-input">
-                                        <button className="ant107_shop-minus"></button>
-                                        <input min="1" name="quantity" value="2" type="number"/>
-                                        <button className="ant107_shop-plus"></button>
+                                        <button className="ant107_shop-minus" onClick={()=>{
+                                            setCountProductsInBag(prevCount => {
+                                                const newCount = prevCount - 1;
+                                                //@ts-ignore
+                                                sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
+                                                return newCount;
+                                            });
+                                        }}></button>
+                                        <input min="1" max="50" name="quantity" value={countProductsInBag} onChange={(e)=>setCountProductsInBag(parseInt(e.target.value,10))} type="number"/>
+                                        <button className="ant107_shop-plus" onClick={()=>{
+                                            setCountProductsInBag(prevCount => {
+                                                const newCount = prevCount + 1;
+                                                //@ts-ignore
+                                                sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
+                                                return newCount;
+                                            });
+                                        }} ></button>
                                     </div>
-                                    <a href="cart.html" className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В
-                                        корзину</a>
-                                </div>
+                                    {productFromCart == null || !productFromCart.showInCart||productFromCart.count==0 ?
+                                        <div onClick={() => {
+                                            let cart = productFromCart;
+                                            // @ts-ignore
+                                            cart.showInCart=true;
+                                            setProductFromCart(cart);
+                                            const productCard: IProductCart = {
+                                                // @ts-ignore
+                                                idProduct: productDetail?.id,
+                                                // @ts-ignore
+                                                accessToken: localStorage.getItem('token'),
+                                                count: countProductsInBag
+                                            }
+                                            console.log("productCard")
+                                            console.log(productCard)
+                                            CartController.addProductInCart(productCard)
+                                        }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В корзину</div> :()=> {
+                                            // @ts-ignore
+                                            let cart = productFromCart;
+                                            cart.showInCart=true;
+                                            setProductFromCart(cart);
+                                        <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">Добавлен в корзину</div>
+                                    }
+                                }
+
                             </div>
                         </div>
                     </div>
+            </div>
 
-                    <div className="ant107_shop-product-details-review">
-                        <ul className="nav nav-tabs mb-3 mt-3">
-                            <li><a href="#ant107_shop-details" className="active" data-toggle="tab">Подробности</a>
-                            </li>
-                            <li><a href="#ant107_shop-review" data-toggle="tab" className="">Отзывы</a></li>
-                        </ul>
-                        <div className="tab-content">
-                            <div className="tab-pane active" id="ant107_shop-details">
-                                <p>{productDetail?.detail}</p>
+            <div className="ant107_shop-product-details-review">
+                <ul className="nav nav-tabs mb-3 mt-3">
+                    <li><a className={showBlockDetail ? "active" : ""} onClick={showReview}>Подробности</a>
+                    </li>
+                    <li><a className={showBlockReview ? "active" : ""} onClick={showDetail}>Отзывы</a></li>
+                </ul>
+                <div className="tab-content">
+                    <div>
+                        {showBlockDetail && <Detail productDetail={productDetail}/>}
+                        {showBlockReview && <Review productDetail={productDetail}/>}
+                    </div>
 
-                                <ul className="ant107_shop-list-style-one mt-3 mb-3">
-                                    <li>{productDetail?.characteristicProduct.producerCountry}</li>
-                                    <li>{productDetail?.characteristicProduct.sellerWarranty}</li>
-                                </ul>
-                                <p>Перераспределение бюджета, безусловно, обуславливает институциональный социальный
-                                    статус. Основная стадия проведения рыночного исследования вырождена.
-                                    Ретроконверсия национального наследия по-прежнему востребована. Медиавес основан
-                                    на анализе телесмотрения.</p>
-                            </div>
-                            <div className="tab-pane" id="ant107_shop-review">
-                                <div className="ant107_shop-single-review">
-                                    <div className="ant107_shop-reviewer-img">
-                                        <img src="/img/ant107_shop/avatar.png" alt=""/>
-                                    </div>
-                                    <div className="ant107_shop-reviewer">
-                                        <h6>Иван Дионтьев</h6>
-                                        <p>Точечное воздействие, на первый взгляд, традиционно усиливает
-                                            презентационный материал, полагаясь на инсайдерскую информацию.
-                                            SWOT-анализ последовательно охватывает продвигаемый формирование
-                                            имиджа.</p>
-                                    </div>
-                                    <div className="ant107_shop-reviewer-rating">
-                                        <span>15 мая 2030</span>
-                                        <div className="ant107_shop-ratings">
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="ant107_shop-single-review">
-                                    <div className="ant107_shop-reviewer-img">
-                                        <img src="/img/ant107_shop/avatar2.png" alt=""/>
-                                    </div>
-                                    <div className="ant107_shop-reviewer">
-                                        <h6>Иван Дионтьев</h6>
-                                        <p>Точечное воздействие, на первый взгляд, традиционно усиливает
-                                            презентационный материал, полагаясь на инсайдерскую информацию.
-                                            SWOT-анализ последовательно охватывает продвигаемый формирование
-                                            имиджа.</p>
-                                    </div>
-                                    <div className="ant107_shop-reviewer-rating">
-                                        <span>15 мая 2030</span>
-                                        <div className="ant107_shop-ratings">
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                            <i className="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="ant107_shop-review-form mt-5">
-                                    <div className="mb-4 text-center">
-                                        <h2>Написать отзыв</h2>
-                                    </div>
-
-                                   <FormForDetailProduct/>
-                                </div>
-                            </div>
-                        </div>
+                </div>
                     </div>
 
                     <hr className="mt-5"/>
 
                     <div className="ant107_shop-related-product mt-5">
-                        <h3 className="mb-4">Похожие товары</h3>
+                    <h3 className="mb-4">Похожие товары</h3>
                         <div className="row">
 
                             {relatedProductListJsx}
