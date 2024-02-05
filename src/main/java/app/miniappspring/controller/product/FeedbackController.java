@@ -1,12 +1,12 @@
 package app.miniappspring.controller.product;
 
+import app.miniappspring.dto.feedback.FeedbackCreateDto;
 import app.miniappspring.dto.feedback.FeedbackDto;
 import app.miniappspring.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/feedback")
@@ -15,8 +15,13 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    @PostMapping
-    public FeedbackDto addFeedback(@RequestBody FeedbackDto feedbackDto){
-       return feedbackService.addFeedback(feedbackDto);
+    @PostMapping("/add")
+    public FeedbackDto addFeedback(@RequestBody FeedbackCreateDto feedbackCreateDto){
+       return feedbackService.addFeedback(feedbackCreateDto);
+    }
+
+    @GetMapping
+    public List<FeedbackDto> getFeedbackList(@RequestParam Long idProduct){
+        return feedbackService.getFeedbackList(idProduct);
     }
 }

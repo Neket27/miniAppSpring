@@ -17,9 +17,11 @@ public class Feedback {
     private String nameUser;
     private String email;
     private String message;
+    private float evaluation;
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "feedback_image", nullable = false)
     private List<byte[]> imageList;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
