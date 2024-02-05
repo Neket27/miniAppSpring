@@ -10,7 +10,7 @@ const Product=(props: { products: any, click:any; }) => {
 // console.log(props.products)
     // @ts-ignore
     const cards= props.products.map((card, index) =>
-        // if (card.categoryProduct == typeId)
+        // if (cart.categoryProduct == typeId)
             <div key={card.id} className="col-lg-4 col-md-6">
 
                 <div className="ant107_shop-shop-box">

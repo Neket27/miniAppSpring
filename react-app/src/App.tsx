@@ -14,6 +14,8 @@ import {observer} from "mobx-react-lite";
 import Product from "./content/home/product";
 import DetailProduct from "./content/detail/product";
 import ChooseCategory from "./content/chooseCategory";
+import FormForDetailProduct from "./content/detail/form";
+import Cart from "./content/cart";
 
 
 
@@ -45,6 +47,7 @@ const App:FC=()=> {
                 <Route path="/dashboard" element={<AuthRootComponent/>}></Route>
                 <Route path='/detailProduct/:typeId' element={<DetailProduct/>} />
                 <Route path='/category/product/:typeId' element={<ChooseCategory/>} />
+                <Route path='/cart' element={<Cart/>}/>
             </Routes>
         </div>
     );
