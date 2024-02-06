@@ -56,7 +56,7 @@ const Cart =()=>{
             [id]: Math.max((prevState[id] || 0) - 1, 0), // Ensure the value doesn't go below 0
         }));
         // @ts-ignore
-        sendCountProductInCart(id, inputValues[id]-1,localStorage.getItem('token'))
+        sendCountProductInCart(id, Math.max(inputValues[id]-1,0),localStorage.getItem('token'))
     };
 
     useEffect(() => {
@@ -87,8 +87,9 @@ const Cart =()=>{
             <div className="ant107_shop-number-input">
                 <button className="ant107_shop-minus"
                         onClick={() => handleDecrement(product.idProduct)}></button>
+                {console.log(inputValues[product.idProduct] )}
                 <input key={product.idProduct} className="quantity" min="1" name="quantity"
-                       value={inputValues[product.idProduct] || product.count}
+                       value={inputValues[product.idProduct] || 0}
                        onChange={(e) => handleInputChange(product.idProduct, e.target.value)}
                        type="number"/>
                 <button className="ant107_shop-plus" onClick={() => handleIncrement(product.idProduct)}></button>
