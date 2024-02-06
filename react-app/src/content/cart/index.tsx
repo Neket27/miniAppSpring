@@ -124,7 +124,7 @@ const Cart =()=>{
                                                     className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10"
                                                     type="submit">Применить купон
                                                 </button>
-                                            </form>
+                                            showInCart:true</form>
                                         </div>
                                     </div>
                                     <div className="col-lg-7">
