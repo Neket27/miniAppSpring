@@ -24,6 +24,7 @@ const DetailProduct = () => {
     const [showBlockDetail, setShowBlockDetail] = useState(true);
     const [showBlockReview, setShowBlockReview] = useState(false);
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse>();
+    const [titleCart, setTitleCart] = useState<string>('');
 
     //дубляж функции с chooseCategory
     const [relatedProducts,setRelatedProducts]=useState<ICardProduct[]>([]);
@@ -50,9 +51,9 @@ const DetailProduct = () => {
         console.log("getProductFromCart")
         try {
             // @ts-ignore
-            const result = await CartController.getProductFromCart(idProduct,accessToken);
-            console.log("Result:", result);
-            setProductFromCart(result);
+            const response = await CartController.getProductFromCart(idProduct,accessToken);
+            console.log("response-getProductFromCart: ", response);
+            setProductFromCart(response);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -60,8 +61,6 @@ const DetailProduct = () => {
         const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
         if (!isNaN(count)) {  // Проверка на то, что count является числом
             const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
-            // @ts-ignore
-            setProductFromCart(response);
         } else {
             console.error("Ошибка: Невалидное значение countProductsInBag");
         }
@@ -93,8 +92,12 @@ const DetailProduct = () => {
 
     useEffect(()=>{
         // @ts-ignore
-        if(productFromCart?.count!=undefined)
-        setCountProductsInBag(productFromCart?.count);
+        if(productFromCart?.count!=undefined) {
+            setTitleCart("Добавлен в корзину");
+            setCountProductsInBag(productFromCart?.count);
+        }else {
+            setTitleCart("В корзину");
+        }
         console.log("UseEffectProductFromCart?.count= "+productFromCart?.count)
     },[productDetail,productFromCart]);
 
@@ -149,7 +152,9 @@ const DetailProduct = () => {
     };
 console.log("productFromCart?.count="+productFromCart?.count)
     console.log("countProductInBag= "+countProductsInBag)
-    // @ts-ignore
+
+
+
     return (
         <div id="ant107_shop" className="ant107_shop_container">
             <div className="container">
@@ -196,8 +201,23 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                         <button className="ant107_shop-minus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount - 1;
+                                                // @ts-ignore
+                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
+                                                if(productFromCart?.count==undefined) {
+                                                    const productCard: IProductCart = {
+                                                        // @ts-ignore
+                                                        idProduct: productDetail?.id,
+                                                        // @ts-ignore
+                                                        accessToken: localStorage.getItem('token'),
+                                                        count: newCount,
+                                                        showInCart: true
+                                                    }
+                                                    CartController.addProductInCart(productCard);
+                                                }
                                                 //@ts-ignore
                                                 sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
+                                                // @ts-ignore
+                                                getProductFromCart(productDetail.id,localStorage.getItem('token'));
                                                 return newCount;
                                             });
                                         }}></button>
@@ -205,51 +225,75 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                         <button className="ant107_shop-plus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount + 1;
+                                                // @ts-ignore
+                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
+
+                                                if(productFromCart?.count==undefined) {
+                                                    const productCard: IProductCart = {
+                                                        // @ts-ignore
+                                                        idProduct: productDetail?.id,
+                                                        // @ts-ignore
+                                                        accessToken: localStorage.getItem('token'),
+                                                        count: newCount,
+                                                        showInCart: true
+                                                    }
+                                                    CartController.addProductInCart(productCard);
+                                                }
                                                 //@ts-ignore
                                                 sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
+                                                // @ts-ignore
+                                                getProductFromCart(productDetail.id,localStorage.getItem('token'));
                                                 return newCount;
                                             });
                                         }} ></button>
                                     </div>
-                                    {productFromCart == null || !productFromCart.showInCart||productFromCart.count==0 ?
+                                    {//@ts-ignore
+                                       productFromCart?.count==undefined  ?
                                         <div onClick={() => {
-                                            let cart = productFromCart;
-                                            // @ts-ignore
-                                            cart.showInCart=true;
-                                            setProductFromCart(cart);
                                             const productCard: IProductCart = {
                                                 // @ts-ignore
                                                 idProduct: productDetail?.id,
                                                 // @ts-ignore
                                                 accessToken: localStorage.getItem('token'),
-                                                count: countProductsInBag
+                                                count: countProductsInBag,
+                                                showInCart: true
                                             }
-                                            console.log("productCard")
-                                            console.log(productCard)
-                                            CartController.addProductInCart(productCard)
-                                        }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В корзину</div> :()=> {
-                                            // @ts-ignore
-                                            let cart = productFromCart;
-                                            cart.showInCart=true;
-                                            setProductFromCart(cart);
-                                        <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">Добавлен в корзину</div>
-                                    }
-                                }
 
+                                            // setProductFromCart(cart);
+                                            productCard.count=countProductsInBag||1;
+                                            CartController.addProductInCart(productCard);
+                                            console.log("add "+productCard.count)
+                                            setCountProductsInBag(productCard.count);
+                                            setTitleCart("Добавлен в корзину");
+                                            // @ts-ignore
+                                            getProductFromCart(productDetail.id,localStorage.getItem('token'))
+                                        }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
+
+                                        <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3" onClick={() => {
+                                            console.log("Добавлен в корзину")
+                                            //@ts-ignore
+                                            CartController.removeProductFromCart(productFromCart?.idProduct,localStorage.getItem('token'));
+                                            setCountProductsInBag(0);
+                                          setProductFromCart(undefined);
+                                            setTitleCart("Добавлен в корзину");
+                                        }
+                                        }>{titleCart}</div>
+                                    }
+
+                                </div>
                             </div>
                         </div>
                     </div>
-            </div>
 
-            <div className="ant107_shop-product-details-review">
-                <ul className="nav nav-tabs mb-3 mt-3">
-                    <li><a className={showBlockDetail ? "active" : ""} onClick={showReview}>Подробности</a>
-                    </li>
-                    <li><a className={showBlockReview ? "active" : ""} onClick={showDetail}>Отзывы</a></li>
-                </ul>
-                <div className="tab-content">
-                    <div>
-                        {showBlockDetail && <Detail productDetail={productDetail}/>}
+                    <div className="ant107_shop-product-details-review">
+                        <ul className="nav nav-tabs mb-3 mt-3">
+                            <li><a className={showBlockDetail ? "active" : ""} onClick={showReview}>Подробности</a>
+                            </li>
+                            <li><a className={showBlockReview ? "active" : ""} onClick={showDetail}>Отзывы</a></li>
+                        </ul>
+                        <div className="tab-content">
+                            <div>
+                                {showBlockDetail && <Detail productDetail={productDetail}/>}
                         {showBlockReview && <Review productDetail={productDetail}/>}
                     </div>
 
