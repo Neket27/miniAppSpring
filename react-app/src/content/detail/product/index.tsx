@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, NavLink, Route, Router, useParams} from "react-router-dom";
 import ProductService from "../../../product/service/productService";
 import {IDetailProduct} from "../../../product/model/IDetailProduct";
@@ -15,6 +15,8 @@ import Detail from "./swithBlocks/detail";
 import {IProductCart} from "../../../product/model/IProductCart";
 import CartController from "../../cart/controller/CartController";
 import {ProductCartResponse} from "../../../product/model/response/ProductCartResponse";
+
+import {Button} from "@mui/material";
 
 const DetailProduct = () => {
     const {typeId} = useParams();
@@ -220,7 +222,7 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                             });
                                         }}></button>
                                         <input min="1" max="50" name="quantity" value={countProductsInBag} onChange={(e)=>setCountProductsInBag(parseInt(e.target.value,10))} type="number"/>
-                                        <button className="ant107_shop-plus" onClick={()=>{
+                                        <Button className="ant107_shop-plus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount + 1;
                                                 if(productFromCart?.count==undefined) {
@@ -241,7 +243,7 @@ console.log("productFromCart?.count="+productFromCart?.count)
 
                                                 return newCount;
                                             });
-                                        }} ></button>
+                                        }} />
                                     </div>
                                     {//@ts-ignore
                                        productFromCart?.count==undefined  ?
