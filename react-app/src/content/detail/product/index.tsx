@@ -201,8 +201,6 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                         <button className="ant107_shop-minus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount - 1;
-                                                // @ts-ignore
-                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
                                                 if(productFromCart?.count==undefined) {
                                                     const productCard: IProductCart = {
                                                         // @ts-ignore
@@ -217,7 +215,7 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                                 //@ts-ignore
                                                 sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
                                                 // @ts-ignore
-                                                getProductFromCart(productDetail.id,localStorage.getItem('token'));
+                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
                                                 return newCount;
                                             });
                                         }}></button>
@@ -225,9 +223,6 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                         <button className="ant107_shop-plus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount + 1;
-                                                // @ts-ignore
-                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
-
                                                 if(productFromCart?.count==undefined) {
                                                     const productCard: IProductCart = {
                                                         // @ts-ignore
@@ -241,8 +236,9 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                                 }
                                                 //@ts-ignore
                                                 sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
-                                                // @ts-ignore
-                                                getProductFromCart(productDetail.id,localStorage.getItem('token'));
+                                                // // @ts-ignore
+                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
+
                                                 return newCount;
                                             });
                                         }} ></button>
@@ -262,6 +258,8 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                             // setProductFromCart(cart);
                                             productCard.count=countProductsInBag||1;
                                             CartController.addProductInCart(productCard);
+                                            // @ts-ignore
+                                            localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))+1);
                                             console.log("add "+productCard.count)
                                             setCountProductsInBag(productCard.count);
                                             setTitleCart("Добавлен в корзину");
@@ -273,8 +271,10 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                             console.log("Добавлен в корзину")
                                             //@ts-ignore
                                             CartController.removeProductFromCart(productFromCart?.idProduct,localStorage.getItem('token'));
+                                            // @ts-ignore
+                                            localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))-1);
                                             setCountProductsInBag(0);
-                                          setProductFromCart(undefined);
+                                            setProductFromCart(undefined);
                                             setTitleCart("Добавлен в корзину");
                                         }
                                         }>{titleCart}</div>

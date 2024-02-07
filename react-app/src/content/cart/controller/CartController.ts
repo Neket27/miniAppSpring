@@ -50,4 +50,9 @@ export default class CartController {
         return response;
     }
 
+    static async getCountProductInCart(accessToken: string){
+        const response = await ProductService.getCountProductInCart(accessToken);
+        return response;
+    }
+
 }
