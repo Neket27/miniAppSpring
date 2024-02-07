@@ -91,5 +91,9 @@ export default class ProductService{
             .then(response=>response.data);
     }
 
+    static async getCountProductInCart( accessToken:string){
+        return api.get<number>(`/api/v1/cart/count?accessToken=${accessToken}`)
+            .then(response=>response.data);
+    }
 
 }
