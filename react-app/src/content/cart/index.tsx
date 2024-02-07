@@ -76,6 +76,8 @@ const Cart =()=>{
                 //@ts-ignore
                 removeProductFromCart(product.idProduct, localStorage.getItem('token'));
                 // @ts-ignore
+                localStorage.setItem(localStorage.getItem('countProductInCart')-1);
+                // @ts-ignore
                 getProductsFromCart(localStorage.getItem('token'));
             }}><i className="fas fa-times"></i>
             </button>

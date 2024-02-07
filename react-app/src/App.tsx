@@ -16,6 +16,7 @@ import DetailProduct from "./content/detail/product";
 import ChooseCategory from "./content/chooseCategory";
 import FormForDetailProduct from "./content/detail/form";
 import Cart from "./content/cart";
+import Navbar from "./content/navbar";
 
 
 
@@ -33,6 +34,7 @@ const App:FC=()=> {
 
     return (
         <div className="App">
+            <Navbar/>
             <h1>{store.isAuth?`Пользователь авторизован ${store.user.email}`:'АВТОРИЗУЙТЕСЬ'}</h1>
             <div>{store.isAuth?
                 <button onClick={() => store.logout()}>Выйти</button>:null
