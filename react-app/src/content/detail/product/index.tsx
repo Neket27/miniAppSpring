@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from "react";
-import {Link, NavLink, Route, Router, useParams} from "react-router-dom";
+
+import {useEffect, useState} from "react";
+import {Link, NavLink, Route, Router, useParams, useNavigate, useLocation} from "react-router-dom";
 import ProductService from "../../../product/service/productService";
 import {IDetailProduct} from "../../../product/model/IDetailProduct";
 const URL = import.meta.env.VITE_URL;
@@ -16,51 +17,45 @@ import {IProductCart} from "../../../product/model/IProductCart";
 import CartController from "../../cart/controller/CartController";
 import {ProductCartResponse} from "../../../product/model/response/ProductCartResponse";
 
-import {Button} from "@mui/material";
-
 const DetailProduct = () => {
-    const {typeId} = useParams();
-    const [productDetail, setProductDetail] = useState<IDetailProduct>();
+    const location = useLocation();
+    const { typeId } = useParams<{ typeId: string }>();
+    const [productDetail, setProductDetail] = useState<IDetailProduct | null>(null);
     const [countProductsInBag, setCountProductsInBag] = useState<number>(0);
 
-    const [showBlockDetail, setShowBlockDetail] = useState(true);
-    const [showBlockReview, setShowBlockReview] = useState(false);
-    const [productFromCart, setProductFromCart] = useState<ProductCartResponse>();
+    const [showBlockDetail, setShowBlockDetail] = useState<boolean>(true);
+    const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
+    const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
+    const [relatedProducts, setRelatedProducts] = useState<ICardProduct[]>([]);
 
-    //дубляж функции с chooseCategory
-    const [relatedProducts,setRelatedProducts]=useState<ICardProduct[]>([]);
-    async function getProductByCategory(category:ICategory){
-        const response = await ProductService.getProductsByCategory(category);
-        // @ts-ignore
-        setRelatedProducts(response);
+    async function getProductByCategory(category: string) {
+        try {
+            const response = await ProductService.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
+            setRelatedProducts(response);
+        } catch (error) {
+            console.error("Error fetching related products:", error);
+        }
     }
 
     async function getProductDetail() {
         try {
-            // @ts-ignore
             const response = await ProductService.getProductDetail(parseInt(typeId, 10));
-            // @ts-ignore
             setProductDetail(response);
-
-        } catch (e) {
-            // @ts-ignore
-            console.log(e.response?.data?.message);
+        } catch (error) {
+            console.error("Error fetching product detail:", error);
         }
     }
 
-    async function getProductFromCart(idProduct:number,accessToken:string){
-        console.log("getProductFromCart")
+    async function getProductFromCart(idProduct: number, accessToken: string | null) {
         try {
-            // @ts-ignore
-            const response = await CartController.getProductFromCart(idProduct,accessToken);
-            console.log("response-getProductFromCart: ", response);
+            const response = await CartController.getProductFromCart(idProduct, accessToken);
             setProductFromCart(response);
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error fetching product from cart:", error);
         }
     }
-        const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
+    const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
         if (!isNaN(count)) {  // Проверка на то, что count является числом
             const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
         } else {
@@ -74,36 +69,105 @@ const DetailProduct = () => {
     }, []);
 
     useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
-        console.log("Категория")
-        console.log(productDetail?.categoryProduct.stringValueCategory);
-        let category:ICategory={
-            // @ts-ignore
-            categoryProduct:productDetail?.categoryProduct.stringValueCategory,
-            subcategory:'unsupported',
-            stringValueCategory:'mmm'
-        }
-        getProductByCategory(category)
 
-        // @ts-ignore
-        const product:ProductCartResponse = getProductFromCart(productDetail?.id,localStorage.getItem('token'))
-        console.log("useEffectProduct= "+product)
-        setProductFromCart(product);
-        // setCountProductsInBag(product.count);
+        if (productDetail) {
+            getProductByCategory(productDetail.categoryProduct.stringValueCategory);
+            getProductFromCart(productDetail.id, localStorage.getItem('token'));
+        }
 
     }, [productDetail]);
 
-    useEffect(()=>{
-        // @ts-ignore
-        if(productFromCart?.count!=undefined) {
+    const handleBeforeUnload = () => {
+        console.log("countProductsInBagL = "+(countProductsInBag));
+        // Выполните здесь необходимые действия перед выгрузкой страницы, например, отправку данных на сервер
+        if (countProductsInBag > 1) {
+            setTitleCart("Добавлен в корзину");
+            const productCard = {
+                idProduct: productDetail?.id,
+                accessToken: localStorage.getItem('token'),
+                count: countProductsInBag,
+                showInCart: true
+            };
+            if (productFromCart?.count!=undefined){
+                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+            }else {
+                CartController.addProductInCart(productCard);
+                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+            }
+
+
+        }else {
+            if(productFromCart?.count!=undefined) {
+                CartController.removeProductFromCart(productDetail?.id, localStorage.getItem('token'));
+                setProductFromCart('');
+            }
+            if(countProductsInBag<1)
+                setTitleCart("В корзину");
+
+        }
+        console.log("SEEEEEEEEEEEND")
+    };
+
+
+    useEffect(() => {
+        if (productFromCart?.count != undefined) {
             setTitleCart("Добавлен в корзину");
             setCountProductsInBag(productFromCart?.count);
-        }else {
+        } else {
             setTitleCart("В корзину");
         }
-        console.log("UseEffectProductFromCart?.count= "+productFromCart?.count)
-    },[productDetail,productFromCart]);
+
+    }, [productDetail, productFromCart]);
 
 
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            // Выполните здесь необходимые действия перед переходом на другой URL
+            if (countProductsInBag > 0) {
+                const productCard = {
+                    idProduct: productDetail?.id,
+                    accessToken: localStorage.getItem('token'),
+                    count: countProductsInBag,
+                    showInCart: true
+                };
+                CartController.addProductInCart(productCard);
+                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+                console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
+            }
+        };
+
+        const unlisten = () => {
+            // Вы можете выполнить нужные действия при изменении маршрута здесь
+            console.log('Маршрут изменен:', location.pathname);
+            handleBeforeUnload(); // Вызов функции перед переходом на другой URL
+        };
+
+        return unlisten;
+    }, [countProductsInBag, productDetail,location.pathname]);
+
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            // Выполните здесь необходимые действия перед переходом на другой URL
+            if (countProductsInBag > 0) {
+                const productCard = {
+                    idProduct: productDetail?.id,
+                    accessToken: localStorage.getItem('token'),
+                    count: countProductsInBag,
+                    showInCart: true
+                };
+                CartController.addProductInCart(productCard);
+                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+                console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
+            }
+        };
+
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return ()=>{
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        }
+    }, [countProductsInBag, productDetail]);
 
 
     const imagesMain = productDetail?.characteristicProduct.images.map(imageBytes=>
@@ -116,17 +180,17 @@ const DetailProduct = () => {
     const images =productDetail?.characteristicProduct.images.map(imageBytes =>
         <li>
             {/*<a data-toggle="tab" href="#ant107_shop-preview1">*/}
-                <img src={"data:image/png;base64,"+imageBytes} alt=""/>
+            <img src={"data:image/png;base64,"+imageBytes} alt=""/>
             {/*</a>*/}
         </li>
     );
 
     const relatedProductListJsx = relatedProducts.map(product =>{
-       return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
+        return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
             <div className="ant107_shop-shop-box">
                 <div className="ant107_shop-shop-img">
                     {/*<a href="#!">*/}
-                        <img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/>
+                    <img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/>
                     {/*</a>*/}
                 </div>
                 <div className="ant107_shop-shop-info">
@@ -138,21 +202,21 @@ const DetailProduct = () => {
                     </div>
                 </div>
             </div>
-     </div>
+        </div>
     } );
 
 
 
     const showDetail = () => {
-            setShowBlockDetail(false);
-            setShowBlockReview(true);
+        setShowBlockDetail(false);
+        setShowBlockReview(true);
     };
 
     const showReview= () => {
-            setShowBlockDetail(true);
-            setShowBlockReview(false);
+        setShowBlockDetail(true);
+        setShowBlockReview(false);
     };
-console.log("productFromCart?.count="+productFromCart?.count)
+    console.log("productFromCart?.count="+productFromCart?.count)
     console.log("countProductInBag= "+countProductsInBag)
 
 
@@ -202,84 +266,51 @@ console.log("productFromCart?.count="+productFromCart?.count)
                                     <div className="ant107_shop-number-input">
                                         <button className="ant107_shop-minus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
-                                                const newCount = prevCount - 1;
-                                                if(productFromCart?.count==undefined) {
-                                                    const productCard: IProductCart = {
-                                                        // @ts-ignore
-                                                        idProduct: productDetail?.id,
-                                                        // @ts-ignore
-                                                        accessToken: localStorage.getItem('token'),
-                                                        count: newCount,
-                                                        showInCart: true
-                                                    }
-                                                    CartController.addProductInCart(productCard);
-                                                }
-                                                //@ts-ignore
-                                                sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
-                                                // @ts-ignore
-                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
+
+                                                const newCount = Math.max(prevCount - 1, 0);
+                                                handleBeforeUnload(newCount);
+                                                console.log("countProductInBag= " + newCount);
                                                 return newCount;
                                             });
+
                                         }}></button>
-                                        <input min="1" max="50" name="quantity" value={countProductsInBag} onChange={(e)=>setCountProductsInBag(parseInt(e.target.value,10))} type="number"/>
-                                        <Button className="ant107_shop-plus" onClick={()=>{
+                                        <input min="1" max="50" name="quantity" value={countProductsInBag}  type="number"/>
+                                        <button className="ant107_shop-plus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
                                                 const newCount = prevCount + 1;
-                                                if(productFromCart?.count==undefined) {
-                                                    const productCard: IProductCart = {
-                                                        // @ts-ignore
-                                                        idProduct: productDetail?.id,
-                                                        // @ts-ignore
-                                                        accessToken: localStorage.getItem('token'),
-                                                        count: newCount,
-                                                        showInCart: true
-                                                    }
-                                                    CartController.addProductInCart(productCard);
-                                                }
-                                                //@ts-ignore
-                                                sendCountProductInCart(productDetail?.id, newCount, localStorage.getItem('token'));
-                                                // // @ts-ignore
-                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'));
-
+                                                handleBeforeUnload(newCount);
                                                 return newCount;
                                             });
-                                        }} />
+                                        }} ></button>
                                     </div>
                                     {//@ts-ignore
-                                       productFromCart?.count==undefined  ?
-                                        <div onClick={() => {
-                                            const productCard: IProductCart = {
-                                                // @ts-ignore
-                                                idProduct: productDetail?.id,
-                                                // @ts-ignore
-                                                accessToken: localStorage.getItem('token'),
-                                                count: countProductsInBag,
-                                                showInCart: true
-                                            }
+                                        productFromCart?.count==undefined  ?
+                                            <div onClick={() => {
+                                                const productCard: IProductCart = {
+                                                    // @ts-ignore
+                                                    idProduct: productDetail?.id,
+                                                    // @ts-ignore
+                                                    accessToken: localStorage.getItem('token'),
+                                                    count: countProductsInBag||1,
+                                                    showInCart: true
+                                                }
 
-                                            // setProductFromCart(cart);
-                                            productCard.count=countProductsInBag||1;
-                                            CartController.addProductInCart(productCard);
-                                            // @ts-ignore
-                                            localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))+1);
-                                            console.log("add "+productCard.count)
-                                            setCountProductsInBag(productCard.count);
-                                            setTitleCart("Добавлен в корзину");
-                                            // @ts-ignore
-                                            getProductFromCart(productDetail.id,localStorage.getItem('token'))
-                                        }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
+                                                // @ts-ignore
+                                                localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))+1);
+                                                console.log("add "+productCard.count);
+                                                CartController.addProductInCart(productCard);
+                                                setCountProductsInBag(productCard.count);
+                                                setTitleCart("Добавлен в корзину");
+                                                // @ts-ignore
+                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'))
+                                            }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
 
-                                        <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3" onClick={() => {
-                                            console.log("Добавлен в корзину")
-                                            //@ts-ignore
-                                            CartController.removeProductFromCart(productFromCart?.idProduct,localStorage.getItem('token'));
-                                            // @ts-ignore
-                                            localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))-1);
-                                            setCountProductsInBag(0);
-                                            setProductFromCart(undefined);
-                                            setTitleCart("Добавлен в корзину");
-                                        }
-                                        }>{titleCart}</div>
+
+                                            <Link  to="/cart">
+                                                <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3" >
+                                                    {titleCart}
+                                                </div>
+                                            </Link>
                                     }
 
                                 </div>
@@ -296,16 +327,16 @@ console.log("productFromCart?.count="+productFromCart?.count)
                         <div className="tab-content">
                             <div>
                                 {showBlockDetail && <Detail productDetail={productDetail}/>}
-                        {showBlockReview && <Review productDetail={productDetail}/>}
-                    </div>
+                                {showBlockReview && <Review productDetail={productDetail}/>}
+                            </div>
 
-                </div>
+                        </div>
                     </div>
 
                     <hr className="mt-5"/>
 
                     <div className="ant107_shop-related-product mt-5">
-                    <h3 className="mb-4">Похожие товары</h3>
+                        <h3 className="mb-4">Похожие товары</h3>
                         <div className="row">
 
                             {relatedProductListJsx}
