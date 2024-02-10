@@ -80,7 +80,7 @@ const DetailProduct = () => {
     const handleBeforeUnload = () => {
         console.log("countProductsInBagL = "+(countProductsInBag));
         // Выполните здесь необходимые действия перед выгрузкой страницы, например, отправку данных на сервер
-        if (countProductsInBag > 1) {
+        if (countProductsInBag > 0) {
             setTitleCart("Добавлен в корзину");
             const productCard = {
                 idProduct: productDetail?.id,
@@ -93,6 +93,7 @@ const DetailProduct = () => {
             }else {
                 CartController.addProductInCart(productCard);
                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+                setProductFromCart(productCard);
             }
 
 
@@ -108,33 +109,27 @@ const DetailProduct = () => {
         console.log("SEEEEEEEEEEEND")
     };
 
+    const handleRefresh = () => {
+        window.location.reload();
+    };
+
 
     useEffect(() => {
+        // productFromCart?.count!=undefined?setCountProductsInBag(productFromCart?.count):setCountProductsInBag(0);
         if (productFromCart?.count != undefined) {
             setTitleCart("Добавлен в корзину");
             setCountProductsInBag(productFromCart?.count);
         } else {
             setTitleCart("В корзину");
+            setCountProductsInBag(0);
         }
+
 
     }, [productDetail, productFromCart]);
 
 
     useEffect(() => {
-        const handleBeforeUnload = () => {
-            // Выполните здесь необходимые действия перед переходом на другой URL
-            if (countProductsInBag > 0) {
-                const productCard = {
-                    idProduct: productDetail?.id,
-                    accessToken: localStorage.getItem('token'),
-                    count: countProductsInBag,
-                    showInCart: true
-                };
-                CartController.addProductInCart(productCard);
-                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-                console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
-            }
-        };
+
 
         const unlisten = () => {
             // Вы можете выполнить нужные действия при изменении маршрута здесь
@@ -159,6 +154,7 @@ const DetailProduct = () => {
                 CartController.addProductInCart(productCard);
                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
                 console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
+
             }
         };
 
@@ -286,21 +282,12 @@ const DetailProduct = () => {
                                     {//@ts-ignore
                                         productFromCart?.count==undefined  ?
                                             <div onClick={() => {
-                                                const productCard: IProductCart = {
-                                                    // @ts-ignore
-                                                    idProduct: productDetail?.id,
-                                                    // @ts-ignore
-                                                    accessToken: localStorage.getItem('token'),
-                                                    count: countProductsInBag||1,
-                                                    showInCart: true
-                                                }
-
                                                 // @ts-ignore
                                                 localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))+1);
-                                                console.log("add "+productCard.count);
-                                                CartController.addProductInCart(productCard);
-                                                setCountProductsInBag(productCard.count);
-                                                setTitleCart("Добавлен в корзину");
+                                                console.log("add "+1);
+                                                // CartController.addProductInCart(productCard);
+                                                setCountProductsInBag(1);
+                                                handleBeforeUnload();
                                                 // @ts-ignore
                                                 // getProductFromCart(productDetail.id,localStorage.getItem('token'))
                                             }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
