@@ -8,6 +8,8 @@ import app.miniappspring.repository.MessageRepo;
 import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -99,5 +101,10 @@ private final UserService userService;
         return "photo";
     }
 
-
+//    @MessageMapping("/topic/public")
+//    @SendTo("/topic/greetings")
+//    public String greeting(String message) throws Exception {
+//        Thread.sleep(3000); // simulated delay
+//        return "Hello, " + message + "!";
+//    }
 }

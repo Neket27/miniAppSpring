@@ -22,6 +22,8 @@ public interface CartService {
     ProductCartDto getProductFromCart(Long idProduct, String accessToken);
 
     boolean sendCountProductInCart(Long idProduct, int count, String accessToken);
+
+    int getCountProductInCart(String accessToken);
 }
 
 

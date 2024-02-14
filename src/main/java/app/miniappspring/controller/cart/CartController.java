@@ -49,4 +49,9 @@ public class CartController {
     public boolean  sendCountProductInCart(@RequestParam Long idProduct,@RequestParam int count ,@RequestParam String accessToken){
         return cartService.sendCountProductInCart(idProduct,count, accessToken);
     }
+
+    @GetMapping("/count")
+    public int getCountProductInCart(@RequestParam String accessToken){
+        return cartService.getCountProductInCart(accessToken);
+    }
 }

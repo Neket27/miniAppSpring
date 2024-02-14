@@ -99,4 +99,11 @@ public class CartImp implements CartService {
         return true;
     }
 
+    @Override
+    public int getCountProductInCart(String accessToken) {
+      String username= jwtService.getUserNameFromAccessToken(accessToken);
+
+        return cartRepo.countCartProductByUser_Username(username);
+    }
+
 }

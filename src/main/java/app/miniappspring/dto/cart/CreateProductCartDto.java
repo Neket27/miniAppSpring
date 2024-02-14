@@ -9,5 +9,6 @@ public class CreateProductCartDto {
     private Long idProduct;
     private String accessToken;
     private int count;
+    private boolean showInCart;
 
 }
