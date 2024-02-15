@@ -1,4 +1,4 @@
-import api from "../../http";
+import api, {API_URL} from "../../http";
 import {CardProductResponse} from "../model/response/CardProductResponse";
 import {ProductDetailResponse} from "../model/response/ProductDetailResponse";
 import {CategoryResponse} from "../model/response/CategoryResponse";
@@ -91,9 +91,43 @@ export default class ProductService{
             .then(response=>response.data);
     }
 
-    static async getCountProductInCart( accessToken:string){
-        return api.get<number>(`/api/v1/cart/count?accessToken=${accessToken}`)
-            .then(response=>response.data);
-    }
+    // static async getCountProductInCart( accessToken:string){
+    //     return api.get<number>(`/api/v1/cart/count?accessToken=${accessToken}`)
+    //         .then(response=>response.data);
+    // }
+
+
+// static async getProductCount(){
+//     websocketApi.post('/api/v1/cart/count', { accessToken: localStorage.getItem('token') })
+//         .then((response) => {
+//             console.log('Response:', response);
+//         })
+//         .catch((error) => {
+//             console.error('Error:', error);
+//         });
+// }
+//
+
+    // static async getCountProductInCart( accessToken:string){
+    //     // const socket = io(`/api/v1/cart/count?accessToken=${accessToken}`); // Подключение к серверу WebSocket
+    //     const socket = io(); // Подключение к серверу WebSocket
+    //
+    //     return new Promise<number>((resolve, reject) => {
+    //         // Отправляем запрос на сервер WebSocket
+    //         // socket.emit('getCountProductInCart', accessToken);
+    //         socket.emit('getCountProductInCart', { path: '/api/v1/cart/count', accessToken });
+    //
+    //
+    //         // Обработка ответа от сервера WebSocket
+    //         socket.on('countProductInCart', (count: number) => {
+    //             resolve(count);
+    //         });
+    //
+    //         // Обработка ошибок
+    //         socket.on('error', (error: any) => {
+    //             reject(error);
+    //         });
+    //     });
+    // };
 
 }

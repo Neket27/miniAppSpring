@@ -1,23 +1,26 @@
-
-import {useEffect, useState} from "react";
-import {Link, NavLink, Route, Router, useParams, useNavigate, useLocation} from "react-router-dom";
+import {useContext, useEffect, useState} from "react";
+import '../../../init';
+import {Link, useLocation, useParams} from "react-router-dom";
 import ProductService from "../../../product/service/productService";
 import {IDetailProduct} from "../../../product/model/IDetailProduct";
-const URL = import.meta.env.VITE_URL;
-
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
 import "./../../../../js/jquery.magnify.js"
 import {ICardProduct} from "../../../product/model/ICardProduct";
-import {ICategory} from "../../../product/model/ICategory";
-import FormForDetailProduct from "../form";
 import Review from "./swithBlocks/review";
 import Detail from "./swithBlocks/detail";
-import {IProductCart} from "../../../product/model/IProductCart";
 import CartController from "../../cart/controller/CartController";
 import {ProductCartResponse} from "../../../product/model/response/ProductCartResponse";
+import {observer} from "mobx-react-lite";
+import {Context} from "../../../main";
 
-const DetailProduct = () => {
+const URL = import.meta.env.VITE_URL;
+
+import  {over} from 'stompjs';
+import SockJS from 'sockjs-client';
+
+const DetailProduct = (props:any) => {
+    const {updateCountProductInCart} = useContext(Context);
     const location = useLocation();
     const { typeId } = useParams<{ typeId: string }>();
     const [productDetail, setProductDetail] = useState<IDetailProduct | null>(null);
@@ -28,6 +31,8 @@ const DetailProduct = () => {
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<ICardProduct[]>([]);
+
+
 
     async function getProductByCategory(category: string) {
         try {
@@ -94,6 +99,7 @@ const DetailProduct = () => {
                 CartController.addProductInCart(productCard);
                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
                 setProductFromCart(productCard);
+                // getCountProductInCart();
             }
 
 
@@ -101,9 +107,13 @@ const DetailProduct = () => {
             if(productFromCart?.count!=undefined) {
                 CartController.removeProductFromCart(productDetail?.id, localStorage.getItem('token'));
                 setProductFromCart('');
+                localStorage.setItem('countProductInCart',String(parseInt(localStorage.getItem('token')) - 1));
+                // getCountProductInCart();
             }
-            if(countProductsInBag<1)
+            if(countProductsInBag<1) {
                 setTitleCart("В корзину");
+                // getCountProductInCart();
+            }
 
         }
         console.log("SEEEEEEEEEEEND")
@@ -262,7 +272,6 @@ const DetailProduct = () => {
                                     <div className="ant107_shop-number-input">
                                         <button className="ant107_shop-minus" onClick={()=>{
                                             setCountProductsInBag(prevCount => {
-
                                                 const newCount = Math.max(prevCount - 1, 0);
                                                 handleBeforeUnload(newCount);
                                                 console.log("countProductInBag= " + newCount);
@@ -283,12 +292,16 @@ const DetailProduct = () => {
                                         productFromCart?.count==undefined  ?
                                             <div onClick={() => {
                                                 // @ts-ignore
-                                                localStorage.setItem('countProductInCart',parseInt(localStorage.getItem('countProductInCart'))+1);
+                                                const count=parseInt(localStorage.getItem('countProductInCart'))+1;
+                                                localStorage.setItem('countProductInCart',String(count));
                                                 console.log("add "+1);
                                                 // CartController.addProductInCart(productCard);
                                                 setCountProductsInBag(1);
-                                                handleBeforeUnload();
+                                                // handleBeforeUnload();
+                                                // getCountProductInCart();
+                                                // props.onAdd(productDetail?.id)
                                                 // @ts-ignore
+                                                updateCountProductInCart(count);
                                                 // getProductFromCart(productDetail.id,localStorage.getItem('token'))
                                             }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
 
@@ -299,6 +312,7 @@ const DetailProduct = () => {
                                                 </div>
                                             </Link>
                                     }
+                                    {/*<button onClick={()=>  sendCountProductInCart2()}></button>*/}
 
                                 </div>
                             </div>
@@ -339,4 +353,4 @@ const DetailProduct = () => {
 }
 
 
-export default DetailProduct;
+export default observer(DetailProduct);
