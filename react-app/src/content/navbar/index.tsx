@@ -1,31 +1,23 @@
-import '../../navbar/style.css'
-// import '../../navbar/aos.css'
-// import '../../navbar/bootstrap.min.css'
-// import '../../navbar/jquery-ui.css'
-// import '../../navbar/magnific-popup.css'
-// import '../../navbar/owl.carousel.min.css'
-// import '../../navbar/owl.theme.default.min.css'
-// import '../../navbar/bootstrap/bootstrap-grid.css'
-// import '../../navbar/bootstrap/bootstrap-reboot.css'
-import '../../navbar/fonts/icomoon/style.css'
-import {Link} from "react-router-dom";
-import {useEffect, useState} from "react";
-import CartController from "../cart/controller/CartController";
-const Navbar =()=>{
+import React, {useContext, useEffect, useRef, useState} from "react";
+import '../../init';
+import '../../navbar/style.css';
+import { Link } from "react-router-dom";
+import { Context } from "../../main";
+import {API_URL} from "../../http";
 
-    // const [countProductInCart, setCountProductInCart] = useState(0);
+import  {over} from 'stompjs';
+import SockJS from 'sockjs-client';
+const URL = import.meta.env.VITE_URL;
 
-    async function getCountProductInCart(){
-        // @ts-ignore
-        let countProduct = await CartController.getCountProductInCart(localStorage.getItem('token'));
-        localStorage.setItem('countProductInCart',countProduct.toString());
-    }
 
-    useEffect(()=>{
-        getCountProductInCart();
-    },[]);
+const Navbar = () => {
+    const [countProductInCart, setCountProductInCart] = useState(0);
+    const { updateCountProductInCart } = useContext(Context);
+    const webSocket =useRef(0);
 
-    return(
+
+    return (
+        <>
             <div className="site-navbar bg-white py-2">
 
                 <div className="search-wrap">
@@ -77,16 +69,19 @@ const Navbar =()=>{
                             <a href="#" className="icons-btn d-inline-block"><span className="icon-heart-o"></span></a>
                             <Link to="/cart" className="icons-btn d-inline-block bag">
                                 <span className="icon-shopping-bag"></span>
-                                <span className="number">{localStorage.getItem('countProductInCart')}</span>
+                                <span className="number">{countProductInCart}</span>
                             </Link>
-                            <Link to="/login" className="icons-btn d-inline-block"><span className="icon-person"></span></Link>
+                            <Link to="/login" className="icons-btn d-inline-block"><span
+                                className="icon-person"></span></Link>
                             <a href="#" className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
                                 className="icon-menu"></span></a>
                         </div>
                     </div>
                 </div>
             </div>
+
+        </>
+
     );
 }
-
 export default Navbar;
