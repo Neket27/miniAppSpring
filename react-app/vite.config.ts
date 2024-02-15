@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
+import windicss from 'vite-plugin-windicss';
 export default defineConfig({
   server: {
 
@@ -14,10 +14,17 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
+      '/ws': {
+        target: 'ws://localhost:8080',
+        changeOrigin: true,
+        ws: true,
+      },
     },
   },
-  plugins: [react()],
-
+  plugins: [
+    react(),
+    windicss(),
+  ],
 
 })
 
