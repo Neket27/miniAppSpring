@@ -1,11 +1,12 @@
 package app.miniappspring.service;
 
+import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
+import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CartService {
 
@@ -21,7 +22,11 @@ public interface CartService {
 
     ProductCartDto getProductFromCart(Long idProduct, String accessToken);
 
-    boolean sendCountProductInCart(Long idProduct, int count, String accessToken);
+    boolean sendNumberOfPiecesOfGoods(Long idProduct, int count, String accessToken);
+
+    int sendNumberOfPiecesOfGoods(DtoCountProductInCart dtoCountProductInCart);
+
+    int getNumberOfPiecesOfGoods(CountProductDto countProductDto);
 
     int getCountProductInCart(String accessToken);
 }

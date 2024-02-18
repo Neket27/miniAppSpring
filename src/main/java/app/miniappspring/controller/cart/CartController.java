@@ -1,9 +1,14 @@
 package app.miniappspring.controller.cart;
 
+import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
+import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
 import app.miniappspring.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,11 +52,30 @@ public class CartController {
 
     @GetMapping("/sendCountProductInCart")
     public boolean  sendCountProductInCart(@RequestParam Long idProduct,@RequestParam int count ,@RequestParam String accessToken){
-        return cartService.sendCountProductInCart(idProduct,count, accessToken);
+        return cartService.sendNumberOfPiecesOfGoods(idProduct,count, accessToken);
     }
 
     @GetMapping("/count")
     public int getCountProductInCart(@RequestParam String accessToken){
         return cartService.getCountProductInCart(accessToken);
     }
+
+    @MessageMapping("/sendNumberOfPiecesOfGoods")
+    @SendTo("/shoppingCart/public")
+    public int sendCountProductInCart(@Payload DtoCountProductInCart dtoCountProductInCart){
+       return cartService.sendNumberOfPiecesOfGoods(dtoCountProductInCart);
+    }
+
+    @MessageMapping("/getNumberOfPiecesOfGoods")
+    @SendTo("/shoppingCart/public")
+    public int getNumberOfPiecesOfGoods(CountProductDto countProductDto){
+        return cartService.getNumberOfPiecesOfGoods(countProductDto);
+    }
+
+    @MessageMapping("/getCountProductInCart")
+    @SendTo("/shoppingCartCountProduct/public")
+    public int getCountProductInCart2(@RequestParam String accessToken){
+        return cartService.getCountProductInCart(accessToken);
+    }
+
 }

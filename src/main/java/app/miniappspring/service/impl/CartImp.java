@@ -1,7 +1,10 @@
 package app.miniappspring.service.impl;
 
+import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
+import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
+import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.entity.CartProduct;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.CartRepo;
@@ -47,7 +50,11 @@ public class CartImp implements CartService {
         String username = jwtService.getUserNameFromAccessToken(accessToken);
         List<CartProduct> cartProductList = cartRepo.getAllByUser_UsernameOrderByIdProduct(username).orElse(Collections.emptyList());
         List<ProductCartDto> productCartListDto = cartMapper.toListProductCartDto(cartProductList);
-        return productCartListDto.stream().peek(cartProduct -> cartProduct.setName(productService.getProduct(cartProduct.getIdProduct()).getName())).toList();
+        return productCartListDto.stream().peek(cartProduct -> {
+            ProductCardDto product = productService.getProduct(cartProduct.getIdProduct());
+            cartProduct.setName(product.getName());
+            cartProduct.setCost(product.getCost());
+        }).toList();
     }
 
     @Override
@@ -92,7 +99,7 @@ public class CartImp implements CartService {
 
     @Override
     @Transactional
-    public boolean sendCountProductInCart(Long idProduct, int count, String accessToken) {
+    public boolean sendNumberOfPiecesOfGoods(Long idProduct, int count, String accessToken) {
         CartProduct cartProduct= getProduct(idProduct);
         cartProduct.setCount(count);
         cartRepo.save(cartProduct);
@@ -100,10 +107,40 @@ public class CartImp implements CartService {
     }
 
     @Override
+    @Transactional
+    public int sendNumberOfPiecesOfGoods(DtoCountProductInCart dtoCountProductInCart) {
+        String username= jwtService.getUserNameFromAccessToken(dtoCountProductInCart.getAccessToken());
+        if(dtoCountProductInCart.getCount()!=0) {
+            CartProduct cartProduct = cartRepo.getCartProductByUser_UsernameAndAndIdProduct(username, (dtoCountProductInCart.getIdProduct())).orElse(
+                    new CartProduct(dtoCountProductInCart.getIdProduct(), dtoCountProductInCart.getCount(), true, userService.getByUsername(username)));
+            cartProduct.setCount(dtoCountProductInCart.getCount());
+            cartRepo.save(cartProduct);
+        }else {
+            cartRepo.removeByUser_UsernameAndIdProduct(username, dtoCountProductInCart.getIdProduct());
+        }
+
+        return dtoCountProductInCart.getCount();
+    }
+
+    @Override
+    @Transactional
     public int getCountProductInCart(String accessToken) {
       String username= jwtService.getUserNameFromAccessToken(accessToken);
-
-        return cartRepo.countCartProductByUser_Username(username);
+        return cartRepo.countCartProductByUser_Username(username).orElse(0);
     }
+
+    @Override
+    @Transactional
+    public int getNumberOfPiecesOfGoods(CountProductDto countProductDto) {
+        String username= jwtService.getUserNameFromAccessToken(countProductDto.getAccessToken());
+       CartProduct cartProduct= cartRepo.getCartProductByUser_UsernameAndAndIdProduct(username,countProductDto.getIdProduct()).orElseThrow(()->new ErrorException("Количество штук выбранного не получено. Нет такого продукта у пользователя"));
+        return cartProduct.getCount();
+    }
+
+//    @Override
+//    public int getCountProductInCart(CountProductDto countProductDto) {
+//        String username= jwtService.getUserNameFromAccessToken(countProductDto.getAccessToken());
+//        return cartRepo.countCartProductByUser_Username(username);
+//    }
 
 }
