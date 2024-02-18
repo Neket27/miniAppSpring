@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import '../../init';
 import '../../navbar/style.css';
+import '../../navbar/fonts/icomoon/style.css';
 import { Link } from "react-router-dom";
 import { Context } from "../../main";
 import {API_URL} from "../../http";
@@ -9,12 +10,48 @@ import  {over} from 'stompjs';
 import SockJS from 'sockjs-client';
 const URL = import.meta.env.VITE_URL;
 
+var stompClient =null;
 
 const Navbar = () => {
     const [countProductInCart, setCountProductInCart] = useState(0);
     const { updateCountProductInCart } = useContext(Context);
     const webSocket =useRef(0);
 
+    const connect =()=>{
+        let Sock = new SockJS('http://localhost:8080/ws');
+        stompClient = over(Sock);
+        stompClient.connect({},onConnected, onError);
+    }
+
+    const onConnected = () => {
+       // stompClient.subscribe('/shoppingCart/public', onCountReceived);
+        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
+    sendCountProductInCart();
+    }
+
+    const sendCountProductInCart =()=>{
+        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+    }
+
+    const onCountReceived =(val)=>{
+        console.log("navbar= "+val)
+        setCountProductInCart(parseInt(val.body))
+    }
+
+
+
+    const getShoppingCartCountProduct =(val)=>{
+        console.log("ShoppingCartCountProduct2= "+val.body)
+        setCountProductInCart(parseInt(val.body))
+    }
+
+    const onError = (err) => {
+        console.log(err);
+    }
+
+    useEffect(() => {
+       connect();
+    }, []);
 
     return (
         <>

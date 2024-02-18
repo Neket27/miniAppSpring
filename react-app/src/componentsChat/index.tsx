@@ -28,7 +28,7 @@ const ChatRoom = () => {
         setUserData({...userData,"connected": true});
         stompClient.subscribe('/chatroom/public', onMessageReceived);
         stompClient.subscribe('/countProductInCart/public', onCountReceived);
-       stompClient.subscribe('/user/'+userData.username+'/private', onPrivateMessage);
+        stompClient.subscribe('/user/'+userData.username+'/private', onPrivateMessage);
         userJoin();
     }
 
@@ -44,7 +44,6 @@ const ChatRoom = () => {
         }
 
         stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
-        stompClient.send("/app/count", {}, JSON.stringify(countProductInCart));
     }
 
     const onMessageReceived = (payload)=>{
@@ -100,6 +99,11 @@ const ChatRoom = () => {
             };
             console.log(chatMessage);
             stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
+            stompClient.send("/app/count", {}, JSON.stringify({
+                idProduct: 1,
+                count: 5,
+                accessToken: localStorage.getItem('token')
+            }))
             setUserData({...userData,"message": ""});
         }
     }

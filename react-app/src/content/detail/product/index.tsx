@@ -19,12 +19,14 @@ const URL = import.meta.env.VITE_URL;
 import  {over} from 'stompjs';
 import SockJS from 'sockjs-client';
 
+let stompClient =null;
+
 const DetailProduct = (props:any) => {
     const {updateCountProductInCart} = useContext(Context);
     const location = useLocation();
     const { typeId } = useParams<{ typeId: string }>();
     const [productDetail, setProductDetail] = useState<IDetailProduct | null>(null);
-    const [countProductsInBag, setCountProductsInBag] = useState<number>(0);
+    const [countProductsInCart, setCountProductsInCart] = useState<number>(0);
 
     const [showBlockDetail, setShowBlockDetail] = useState<boolean>(true);
     const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
@@ -32,8 +34,53 @@ const DetailProduct = (props:any) => {
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<ICardProduct[]>([]);
 
+    const connect =()=>{
+        let Sock = new SockJS('http://localhost:8080/ws');
+        stompClient = over(Sock);
+        stompClient.connect({},onConnected, onError);
+    }
 
+    const onConnected = () => {
+        stompClient.subscribe('/shoppingCart/public', getNumberOfPiecesOfGoods);
+        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
+        sendNumberOfPiecesOfGoods();
+    }
 
+    const sendNumberOfPiecesOfGoods =()=>{
+        stompClient.send("/app/getNumberOfPiecesOfGoods", {},JSON.stringify({idProduct:productDetail?.id,accessToken:localStorage.getItem('token')}));
+    }
+
+    const sendCountProductInCart =()=>{
+        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+    }
+
+    const getNumberOfPiecesOfGoods =(val)=>{
+        setCountProductsInCart(parseInt(val.body))
+        console.log("productCount= "+val.body)
+    }
+
+    const getShoppingCartCountProduct =(val)=>{
+        console.log("ShoppingCartCountProduct= "+val.body)
+    }
+
+    const onError = (err) => {
+        console.log("err= "+err);
+    }
+
+    const sendValue=(count:number)=>{
+        if (stompClient) {
+            stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
+                idProduct: productDetail?.id,
+                count: count,
+                accessToken: localStorage.getItem('token')
+            }))
+
+            sendCountProductInCart();
+
+        }else{
+            console.log("стом клиент не создан")
+        }
+    }
     async function getProductByCategory(category: string) {
         try {
             const response = await ProductService.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
@@ -60,7 +107,7 @@ const DetailProduct = (props:any) => {
             console.error("Error fetching product from cart:", error);
         }
     }
-    const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
+    const sendCountProductInCartUser = async (idProduct: number, count: number, accessToken: string) => {
         if (!isNaN(count)) {  // Проверка на то, что count является числом
             const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
         } else {
@@ -73,107 +120,132 @@ const DetailProduct = (props:any) => {
 
     }, []);
 
-    useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
-
-        if (productDetail) {
-            getProductByCategory(productDetail.categoryProduct.stringValueCategory);
-            getProductFromCart(productDetail.id, localStorage.getItem('token'));
-        }
-
+    useEffect(() => {
+        connect();
     }, [productDetail]);
 
-    const handleBeforeUnload = () => {
-        console.log("countProductsInBagL = "+(countProductsInBag));
-        // Выполните здесь необходимые действия перед выгрузкой страницы, например, отправку данных на сервер
-        if (countProductsInBag > 0) {
-            setTitleCart("Добавлен в корзину");
-            const productCard = {
-                idProduct: productDetail?.id,
-                accessToken: localStorage.getItem('token'),
-                count: countProductsInBag,
-                showInCart: true
-            };
-            if (productFromCart?.count!=undefined){
-                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-            }else {
-                CartController.addProductInCart(productCard);
-                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-                setProductFromCart(productCard);
-                // getCountProductInCart();
-            }
 
-
-        }else {
-            if(productFromCart?.count!=undefined) {
-                CartController.removeProductFromCart(productDetail?.id, localStorage.getItem('token'));
-                setProductFromCart('');
-                localStorage.setItem('countProductInCart',String(parseInt(localStorage.getItem('token')) - 1));
-                // getCountProductInCart();
-            }
-            if(countProductsInBag<1) {
-                setTitleCart("В корзину");
-                // getCountProductInCart();
-            }
-
-        }
-        console.log("SEEEEEEEEEEEND")
+    const handleClickMinus = () => {
+        const count =Math.max(countProductsInCart-1,0);
+        setCountProductsInCart(count);
+        sendValue(count);
     };
 
-    const handleRefresh = () => {
-        window.location.reload();
+    const handleClickPlus = () => {
+        const count =countProductsInCart+1;
+        setCountProductsInCart(count);
+        sendValue(count);
     };
 
-
-    useEffect(() => {
-        // productFromCart?.count!=undefined?setCountProductsInBag(productFromCart?.count):setCountProductsInBag(0);
-        if (productFromCart?.count != undefined) {
-            setTitleCart("Добавлен в корзину");
-            setCountProductsInBag(productFromCart?.count);
-        } else {
-            setTitleCart("В корзину");
-            setCountProductsInBag(0);
-        }
+    // const sendCountProductInCartUser=()=>{
+    //     if(countProductsInCart==0)
+    //         sendCountProductInCart(productDetail?.id,countProductsInCart-1,localStorage.getItem('token'));
+    // }
 
 
-    }, [productDetail, productFromCart]);
+    // useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
+    //
+    //     if (productDetail) {
+    //         getProductByCategory(productDetail.categoryProduct.stringValueCategory);
+    //         getProductFromCart(productDetail.id, localStorage.getItem('token'));
+    //     }
+    //
+    // }, [productDetail]);
+
+//     const handleBeforeUnload = () => {
+//         console.log("countProductsInBagL = "+(countProductsInBag));
+//         // Выполните здесь необходимые действия перед выгрузкой страницы, например, отправку данных на сервер
+//         if (countProductsInBag > 0) {
+//             setTitleCart("Добавлен в корзину");
+//             const productCard = {
+//                 idProduct: productDetail?.id,
+//                 accessToken: localStorage.getItem('token'),
+//                 count: countProductsInBag,
+//                 showInCart: true
+//             };
+//             if (productFromCart?.count!=undefined){
+//                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+//                 // stompClient.send("/app/count", {}, JSON.stringify({idProduct:productDetail?.id,count:countProductsInBag,accessToken:localStorage.getItem('token')}));
+//             }else {
+//                 CartController.addProductInCart(productCard);
+// ////////
+// //                 stompClient.send("/app/count", {}, JSON.stsendCountProductInCartringify({idProduct:productDetail?.id,count:countProductsInBag,accessToken:localStorage.getItem('token')}));
+//      /////
+//                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+//                 setProductFromCart(productCard);
+//                 // getCountProductInCart();
+//             }
+//
+//
+//         }else {
+//             if(productFromCart?.count!=undefined) {
+//                 CartController.removeProductFromCart(productDetail?.id, localStorage.getItem('token'));
+//                 setProductFromCart('');
+//                 localStorage.setItem('countProductInCart',String(parseInt(localStorage.getItem('token')) - 1));
+//                 // getCountProductInCart();
+//             }
+//             if(countProductsInBag<1) {
+//                 setTitleCart("В корзину");
+//                 // getCountProductInCart();
+//             }
+//
+//         }
+//         console.log("SEEEEEEEEEEEND")
+//     };
+
+    // const handleRefresh = () => {
+    //     window.location.reload();
+    // };
 
 
-    useEffect(() => {
+    // useEffect(() => {
+    //     // productFromCart?.count!=undefined?setCountProductsInBag(productFromCart?.count):setCountProductsInBag(0);
+    //     if (productFromCart?.count != undefined) {
+    //         setTitleCart("Добавлен в корзину");
+    //         setCountProductsInBag(productFromCart?.count);
+    //     } else {
+    //         setTitleCart("В корзину");
+    //         setCountProductsInBag(0);
+    //     }
+    //
+    //
+    // }, [productDetail, productFromCart]);
+
+    //
+    // useEffect(() => {countProductsInBag-1
+    //     const unlisten = () => {
+    //         // Вы можете выполнить нужные действия при изменении маршрута здесь
+    //         console.log('Маршрут изменен:', location.pathname);
+    //         handleBeforeUnload(); // Вызов функции перед переходом на другой URL
+    //     };
+    //
+    //     return unlisten;
+    // }, [countProductsInBag, productDetail,location.pathname]);
+
+    //
+    // useEffect(() => {
+    //     const handleBeforeUnload = () => {
+    //         // Выполните здесь необходимые действия перед переходом на другой URL
+    //         if (countProductsInBag > 0) {
+    //             const productCard = {
+    //                 idProduct: productDetail?.id,
+    //                 accessToken: localStorage.getItem('token'),
+    //                 count: countProductsInBag,
+    //                 showInCart: true
+    //             };
+    //             CartController.addProductInCart(productCard);
+    //             sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
+    //             console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
+    //
+    //         }
+    //     };
 
 
-        const unlisten = () => {
-            // Вы можете выполнить нужные действия при изменении маршрута здесь
-            console.log('Маршрут изменен:', location.pathname);
-            handleBeforeUnload(); // Вызов функции перед переходом на другой URL
-        };
-
-        return unlisten;
-    }, [countProductsInBag, productDetail,location.pathname]);
-
-
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            // Выполните здесь необходимые действия перед переходом на другой URL
-            if (countProductsInBag > 0) {
-                const productCard = {
-                    idProduct: productDetail?.id,
-                    accessToken: localStorage.getItem('token'),
-                    count: countProductsInBag,
-                    showInCart: true
-                };
-                CartController.addProductInCart(productCard);
-                sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-                console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
-
-            }
-        };
-
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return ()=>{
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        }
-    }, [countProductsInBag, productDetail]);
+    //     window.addEventListener('beforeunload', handleBeforeUnload);
+    //     return ()=>{
+    //         window.removeEventListener('beforeunload', handleBeforeUnload);
+    //     }
+    // }, [countProductsInBag, productDetail]);
 
 
     const imagesMain = productDetail?.characteristicProduct.images.map(imageBytes=>
@@ -222,13 +294,11 @@ const DetailProduct = (props:any) => {
         setShowBlockDetail(true);
         setShowBlockReview(false);
     };
-    console.log("productFromCart?.count="+productFromCart?.count)
-    console.log("countProductInBag= "+countProductsInBag)
-
-
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
+            {/*<button onClick={connect}>con</button>*/}
+            <button onClick={sendCountProductInCart}>knob</button>
             <div className="container">
 
                 <main>
@@ -238,9 +308,9 @@ const DetailProduct = (props:any) => {
                                 <div className="tab-content">
                                     <div className="tab-pane" id="ant107_shop-preview1">
                                         <img
-                                            src={URL+"/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}
+                                            src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}
                                             alt=""
-                                            data-magnify-src={URL+"/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
+                                            data-magnify-src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
                                     </div>
 
                                     {/*{imagesMain}*/}
@@ -266,54 +336,39 @@ const DetailProduct = (props:any) => {
                                 <h6>Бренд: <span>{productDetail?.brand}</span></h6>
                                 <h6>Артикул: <span>{productDetail?.article}</span></h6>
                                 <h6>Наличие: <span>{productDetail?.stock}</span></h6>
-                                <h6>Участвует в акции: <span>{productDetail?.available?"Да":"Нет"}</span></h6>
+                                <h6>Участвует в акции: <span>{productDetail?.available ? "Да" : "Нет"}</span></h6>
 
                                 <div className="ant107_shop-product-spinner mt-3">
                                     <div className="ant107_shop-number-input">
-                                        <button className="ant107_shop-minus" onClick={()=>{
-                                            setCountProductsInBag(prevCount => {
-                                                const newCount = Math.max(prevCount - 1, 0);
-                                                handleBeforeUnload(newCount);
-                                                console.log("countProductInBag= " + newCount);
-                                                return newCount;
-                                            });
-
-                                        }}></button>
-                                        <input min="1" max="50" name="quantity" value={countProductsInBag}  type="number"/>
-                                        <button className="ant107_shop-plus" onClick={()=>{
-                                            setCountProductsInBag(prevCount => {
-                                                const newCount = prevCount + 1;
-                                                handleBeforeUnload(newCount);
-                                                return newCount;
-                                            });
-                                        }} ></button>
+                                        <button className="ant107_shop-minus" onClick={() => {handleClickMinus()}}></button>
+                                        <input min="1" max="50" name="quantity" value={countProductsInCart}
+                                               type="number"/>
+                                        <button className="ant107_shop-plus" onClick={() => {handleClickPlus()}}></button>
                                     </div>
-                                    {//@ts-ignore
-                                        productFromCart?.count==undefined  ?
-                                            <div onClick={() => {
-                                                // @ts-ignore
-                                                const count=parseInt(localStorage.getItem('countProductInCart'))+1;
-                                                localStorage.setItem('countProductInCart',String(count));
-                                                console.log("add "+1);
-                                                // CartController.addProductInCart(productCard);
-                                                setCountProductsInBag(1);
-                                                // handleBeforeUnload();
-                                                // getCountProductInCart();
-                                                // props.onAdd(productDetail?.id)
-                                                // @ts-ignore
-                                                updateCountProductInCart(count);
-                                                // getProductFromCart(productDetail.id,localStorage.getItem('token'))
-                                            }} className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">{titleCart}</div> :
+                                    {
+                                        countProductsInCart==0 ?
+                                            <div onClick={()=>{
+                                                if (stompClient) {
+                                                    stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
+                                                        idProduct: productDetail?.id,
+                                                        count: 1,
+                                                        accessToken: localStorage.getItem('token')
+                                                    }))
 
+                                                    sendCountProductInCart();
 
-                                            <Link  to="/cart">
-                                                <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3" >
-                                                    {titleCart}
+                                                }else{
+                                                    console.log("стом клиент не создан")
+                                                }
+                                            }}
+                                                 className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В корзину</div> :
+
+                                            <Link to="/cart">
+                                                <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">
+                                                    Добавлен в корзину
                                                 </div>
                                             </Link>
                                     }
-                                    {/*<button onClick={()=>  sendCountProductInCart2()}></button>*/}
-
                                 </div>
                             </div>
                         </div>

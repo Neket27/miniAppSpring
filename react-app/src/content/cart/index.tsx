@@ -3,10 +3,45 @@ import {ProductCartResponse} from "../../product/model/response/ProductCartRespo
 import CartController from "./controller/CartController";
 import {Link} from "react-router-dom";
 
+import  {over} from 'stompjs';
+import SockJS from 'sockjs-client';
+const URL = import.meta.env.VITE_URL;
+
+var stompClient =null;
+
 const Cart =()=>{
 
     const [products, setProducts] = useState<Array<ProductCartResponse>>([])
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+
+
+    const connect =()=>{
+        let Sock = new SockJS('http://localhost:8080/ws');
+        stompClient = over(Sock);
+        stompClient.connect({},onConnected, onError);
+    }
+
+    const onConnected = () => {
+        // stompClient.subscribe('/shoppingCart/public', onCountReceived);
+        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
+        sendCountProductInCart2();
+    }
+
+    const sendCountProductInCart2 =()=>{
+        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+    }
+
+
+    const getShoppingCartCountProduct =(val)=>{
+        console.log("ShoppingCartCountProduct3= "+val.body)
+
+    }
+
+    const onError = (err) => {
+        console.log(err);
+    }
+
 
     async function removeProductFromCart(idProduct:number, accessToken:string) {
         const response = await CartController.removeProductFromCart(idProduct, accessToken)
@@ -34,6 +69,7 @@ const Cart =()=>{
     useEffect(()=>{
         // @ts-ignore
         getProductsFromCart(localStorage.getItem('token'));
+        connect();
 
     },[]);
 
@@ -46,27 +82,46 @@ const Cart =()=>{
             ...prevState,
             [id]: (prevState[id] || 0) + 1,
         }));
-        // @ts-ignore
-        sendCountProductInCart(id, inputValues[id]+1,localStorage.getItem('token'))
+        const updatedCount = inputValues[id] + 1;
+        sendCountProductInCart(id, updatedCount, localStorage.getItem('token'));
+        updateTotalPrice(id, updatedCount);
     };
 
     const handleDecrement = (id:number) => {
         setInputValues(prevState => ({
             ...prevState,
-            [id]: Math.max((prevState[id] || 0) - 1, 0), // Ensure the value doesn't go below 0
+            [id]: Math.max((prevState[id] || 0) - 1, 0),
         }));
-        // @ts-ignore
-        sendCountProductInCart(id, Math.max(inputValues[id]-1,0),localStorage.getItem('token'))
+        const updatedCount = Math.max(inputValues[id] - 1, 0);
+        sendCountProductInCart(id, updatedCount, localStorage.getItem('token'));
+        updateTotalPrice(id, updatedCount);
     };
 
+    const updateTotalPrice = (id: number, count: number) => {
+        const product = products.find(product => product.idProduct === id);
+        if (product) {
+            const productIndex = products.indexOf(product);
+            const updatedProducts = [...products];
+            updatedProducts[productIndex] = { ...product, count };
+            setProducts(updatedProducts);
+
+            const totalPrice = updatedProducts.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
+            setTotalPrice(totalPrice);
+        }
+    };
+
+
     useEffect(() => {
-        // Предположим, что products - это состояние, содержащее ваш массив продуктов
+        // products - это состояние, содержащее массив продуктов
         products.forEach((product) => {
             setInputValues((prevInputValues) => ({
                 ...prevInputValues,
                 [product.idProduct]: product.count
             }));
         });
+
+        const totalPrice = products.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
+        setTotalPrice(totalPrice);
     }, [products]);
 
 
@@ -75,12 +130,12 @@ const Cart =()=>{
             <button type="button" className="close" onClick={() => {
                 //@ts-ignore
                 removeProductFromCart(product.idProduct, localStorage.getItem('token'));
-                // @ts-ignore
-                localStorage.setItem(localStorage.getItem('countProductInCart')-1);
+                // // @ts-ignore
+                // localStorage.setItem(localStorage.getItem('countProductInCart')-1);
                 // @ts-ignore
                 getProductsFromCart(localStorage.getItem('token'));
             }}><i className="fas fa-times"></i>
-            </button>
+            </button><button onClick={sendCountProductInCart2}>bbb</button>
             <div className="ant107_shop-product-img">
                 <img src="/img/ant107_shop/img72.jpg" alt=""/>
             </div>
@@ -96,7 +151,7 @@ const Cart =()=>{
                        type="number"/>
                 <button className="ant107_shop-plus" onClick={() => handleIncrement(product.idProduct)}></button>
             </div>
-            <h5 className="ant107_shop-product-total-price">{product.cost * product.cost}</h5>
+            <h5 className="ant107_shop-product-total-price">{product.cost * product.count}</h5>
         </div>
     );
 
@@ -148,21 +203,21 @@ const Cart =()=>{
                                 <div className="row">
                                     <div className="col-xl-5 col-lg-6">
                                         <div className="ant107_shop-total-item-wrap">
-                                            <div className="ant107_shop-total-item ant107_shop-sub-total">
-                                                <span className="ant107_shop-title">Подытог</span>
-                                                <span className="ant107_shop-price">340</span>
-                                            </div>
-                                            <div className="ant107_shop-total-item ant107_shop-shipping">
-                                                <span className="ant107_shop-title">Доставка</span>
-                                                <span className="ant107_shop-price">100</span>
-                                            </div>
-                                            <div className="ant107_shop-total-item ant107_shop-discount">
-                                                <span className="ant107_shop-title">Скидка</span>
-                                                <span className="ant107_shop-price">20</span>
-                                            </div>
+                                            {/*<div className="ant107_shop-total-item ant107_shop-sub-total">*/}
+                                            {/*    <span className="ant107_shop-title">Подытог</span>*/}
+                                            {/*    <span className="ant107_shop-price">{totalPrice}</span>*/}
+                                            {/*</div>*/}
+                                            {/*/!*<div className="ant107_shop-total-item ant107_shop-shipping">*!/*/}
+                                            {/*    <span className="ant107_shop-title">Доставка</span>*/}
+                                            {/*    <span className="ant107_shop-price">100</span>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="ant107_shop-total-item ant107_shop-discount">*/}
+                                            {/*    <span className="ant107_shop-title">Скидка</span>*/}
+                                            {/*    <span className="ant107_shop-price">20</span>*/}
+                                            {/*</div>*/}
                                             <div className="ant107_shop-total-item ant107_shop-total">
                                                 <span className="ant107_shop-title mb-0">Итого</span>
-                                                <span className="ant107_shop-price mb-0">420</span>
+                                                <span className="ant107_shop-price mb-0">{totalPrice}</span>
                                             </div>
                                         </div>
                                     </div>
