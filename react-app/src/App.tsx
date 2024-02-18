@@ -42,7 +42,7 @@ const App:FC=()=> {
 
     return (
         <div className="App">
-            {/*<Navbar />*/}
+            <Navbar />
             {/*<WebSocketComponent/>*/}
             <ComponentsChat/>
             <h1>{store.isAuth?`Пользователь авторизован ${store.user.email}`:'АВТОРИЗУЙТЕСЬ'}</h1>
