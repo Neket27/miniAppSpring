@@ -3,42 +3,41 @@ import {ProductCartResponse} from "../../product/model/response/ProductCartRespo
 import CartController from "./controller/CartController";
 import {Link} from "react-router-dom";
 
-import  {over} from 'stompjs';
+import {Client, Frame, over} from 'stompjs';
 import SockJS from 'sockjs-client';
 const URL = import.meta.env.VITE_URL;
 
-var stompClient =null;
+let stompClient:Client;
 
 const Cart =()=>{
 
     const [products, setProducts] = useState<Array<ProductCartResponse>>([])
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
     const [totalPrice, setTotalPrice] = useState<number>(0);
-
+    const token:string|null =localStorage.getItem('token');
 
     const connect =()=>{
         let Sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(Sock);
-        stompClient.connect({},onConnected, onError);
+        stompClient.connect({},(frame) => {onConnected();}, (error:Frame|string) => {onError(error);});
     }
 
     const onConnected = () => {
         // stompClient.subscribe('/shoppingCart/public', onCountReceived);
-        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
+        stompClient.subscribe('/shoppingCartCountProduct/public');
         sendCountProductInCart2();
     }
 
+
     const sendCountProductInCart2 =()=>{
-        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+        if (token!=null)
+            stompClient.send("/app/getCountProductInCart", {},token);
+        else
+            console.log("Токен для sendCountProductInCart2 = "+token)
     }
 
 
-    const getShoppingCartCountProduct =(val)=>{
-        console.log("ShoppingCartCountProduct3= "+val.body)
-
-    }
-
-    const onError = (err) => {
+    const onError = (err: Frame | string) => {
         console.log(err);
     }
 
@@ -49,9 +48,7 @@ const Cart =()=>{
     }
     async function getProductsFromCart(accessToken:string){
         try {
-            // @ts-ignore
             const result = await CartController.getProductsFromCart(accessToken);
-            console.log("Result:", result);
             setProducts(result);
         } catch (error) {
             console.error("Error:", error);
@@ -67,8 +64,8 @@ const Cart =()=>{
     };
 
     useEffect(()=>{
-        // @ts-ignore
-        getProductsFromCart(localStorage.getItem('token'));
+        if (token!=null)
+            getProductsFromCart(token);
         connect();
 
     },[]);
@@ -83,8 +80,11 @@ const Cart =()=>{
             [id]: (prevState[id] || 0) + 1,
         }));
         const updatedCount = inputValues[id] + 1;
-        sendCountProductInCart(id, updatedCount, localStorage.getItem('token'));
-        updateTotalPrice(id, updatedCount);
+        if(token!=null) {
+            sendCountProductInCart(id, updatedCount, token);
+            updateTotalPrice(id, updatedCount);
+        }else
+            console.log("Токен для handleIncrement = "+token);
     };
 
     const handleDecrement = (id:number) => {
@@ -93,8 +93,11 @@ const Cart =()=>{
             [id]: Math.max((prevState[id] || 0) - 1, 0),
         }));
         const updatedCount = Math.max(inputValues[id] - 1, 0);
-        sendCountProductInCart(id, updatedCount, localStorage.getItem('token'));
+        if(token!=null) {
+        sendCountProductInCart(id, updatedCount,token);
         updateTotalPrice(id, updatedCount);
+        }else
+            console.log("Токен для handleIncrement = "+token);
     };
 
     const updateTotalPrice = (id: number, count: number) => {
@@ -137,14 +140,12 @@ const Cart =()=>{
             }}><i className="fas fa-times"></i>
             </button><button onClick={sendCountProductInCart2}>bbb</button>
             <div className="ant107_shop-product-img">
-                <img src="/img/ant107_shop/img72.jpg" alt=""/>
+                <img src={"data:image/png;base64,"+product.imageDtoList.at(0)?.base64} alt=""   style={{ width: "100px", height: "100px" }} />
             </div>
             <h5 className="ant107_shop-product-name">{product.name}</h5>
             <h5 className="ant107_shop-product-price">{product.cost}</h5>
             <div className="ant107_shop-number-input">
-                <button className="ant107_shop-minus"
-                        onClick={() => handleDecrement(product.idProduct)}></button>
-                {console.log(inputValues[product.idProduct] )}
+                <button className="ant107_shop-minus" onClick={() => handleDecrement(product.idProduct)}></button>
                 <input key={product.idProduct} className="quantity" min="1" name="quantity"
                        value={inputValues[product.idProduct] || 0}
                        onChange={(e) => handleInputChange(product.idProduct, e.target.value)}
@@ -203,18 +204,18 @@ const Cart =()=>{
                                 <div className="row">
                                     <div className="col-xl-5 col-lg-6">
                                         <div className="ant107_shop-total-item-wrap">
-                                            {/*<div className="ant107_shop-total-item ant107_shop-sub-total">*/}
-                                            {/*    <span className="ant107_shop-title">Подытог</span>*/}
-                                            {/*    <span className="ant107_shop-price">{totalPrice}</span>*/}
-                                            {/*</div>*/}
-                                            {/*/!*<div className="ant107_shop-total-item ant107_shop-shipping">*!/*/}
-                                            {/*    <span className="ant107_shop-title">Доставка</span>*/}
-                                            {/*    <span className="ant107_shop-price">100</span>*/}
-                                            {/*</div>*/}
-                                            {/*<div className="ant107_shop-total-item ant107_shop-discount">*/}
-                                            {/*    <span className="ant107_shop-title">Скидка</span>*/}
-                                            {/*    <span className="ant107_shop-price">20</span>*/}
-                                            {/*</div>*/}
+                                            <div className="ant107_shop-total-item ant107_shop-sub-total">
+                                                <span className="ant107_shop-title">Подытог</span>
+                                                <span className="ant107_shop-price">{totalPrice}</span>
+                                            </div>
+                                            <div className="ant107_shop-total-item ant107_shop-shipping">
+                                                <span className="ant107_shop-title">Доставка</span>
+                                                <span className="ant107_shop-price">100</span>
+                                            </div>
+                                            <div className="ant107_shop-total-item ant107_shop-discount">
+                                                <span className="ant107_shop-title">Скидка</span>
+                                                <span className="ant107_shop-price">20</span>
+                                            </div>
                                             <div className="ant107_shop-total-item ant107_shop-total">
                                                 <span className="ant107_shop-title mb-0">Итого</span>
                                                 <span className="ant107_shop-price mb-0">{totalPrice}</span>

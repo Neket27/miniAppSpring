@@ -5,7 +5,6 @@ import {transliterate} from "transliteration";
 import {Link} from "react-router-dom";
 import {ICategory} from "../../product/model/ICategory";
 import {CategorySearchResponse} from "../../product/model/response/CategorySearchResponse";
-import {ICardProduct} from "../../product/model/ICardProduct";
 
 const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>{
     const [categoryMap,setCategoryMap]=useState<Map<string,number>>(new Map());

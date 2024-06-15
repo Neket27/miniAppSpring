@@ -1,6 +1,5 @@
 import api, {API_URL} from "../../http";
 import {CardProductResponse} from "../model/response/CardProductResponse";
-import {ProductDetailResponse} from "../model/response/ProductDetailResponse";
 import {CategoryResponse} from "../model/response/CategoryResponse";
 import {ICategory} from "../model/ICategory";
 import {CategorySearchResponse} from "../model/response/CategorySearchResponse";
@@ -8,6 +7,7 @@ import {FeedbackResponse} from "../../content/rating/response/FeedbackResponse";
 import {IFeedback} from "../../content/rating/model/IFeedback";
 import {IProductCart} from "../model/IProductCart";
 import {ProductCartResponse} from "../model/response/ProductCartResponse";
+import {IDetailProduct} from "../model/IDetailProduct";
 
 export default class ProductService{
     static async getCardsProduct(){
@@ -16,7 +16,7 @@ export default class ProductService{
     }
 
     static async getProductDetail(id:number){
-        return api.get<ProductDetailResponse>('/api/v1/productDetail?id='+id)
+        return api.get<IDetailProduct>('/api/v1/productDetail?id='+id)
             .then(response =>response.data);
     }
 

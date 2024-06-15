@@ -8,6 +8,7 @@ import Product from "./product";
 import Category from "../category";
 import {ICardProduct} from "../../product/model/ICardProduct";
 import ProductService from "../../product/service/productService";
+import {CardProductResponse} from "../../product/model/response/CardProductResponse";
 
 
 const Home=()=> {
@@ -15,7 +16,7 @@ const Home=()=> {
 
     async function getListProductOnHomePage(){
         try{
-            const response =await ProductService.getCardsProduct();
+            const response:CardProductResponse =await ProductService.getCardsProduct();
             // @ts-ignore
             setProduct(response);
 
@@ -32,6 +33,9 @@ const Home=()=> {
     products.forEach(e=>console.log("e= "+e.name));
 
     // console.log(" +products= "+products?.at(0)?.imageDtoList.at(0)?.base64);
+    const handleClick = (product: ICardProduct) => {
+        console.log('Product clicked:', product);
+    };
 
     return (
         <div>
@@ -42,7 +46,9 @@ const Home=()=> {
                         <main className="col-xl-9 col-md-8">
                             <div className="ant107_shop-shop-items">
                                 <div className="row">
-                                    <Product products={products} />
+                                    {// @ts-ignore
+                                    <Product products={products}  />
+                                    }
                                 </div>
                                 <nav className="ant107_shop-pazination mt-4">
                                     <ul>
