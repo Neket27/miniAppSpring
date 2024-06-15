@@ -3,20 +3,24 @@ package app.miniappspring.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
+@Entity
 public class Image {
-    @Column(name = "name_image")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private Long id;
     private String name;
 //    private String originalFileName;
 //    private Long size;
     private String contentType;
     @Lob
     private byte[] bytes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 }

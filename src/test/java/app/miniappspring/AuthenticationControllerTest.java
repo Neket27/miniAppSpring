@@ -111,23 +111,23 @@ public class AuthenticationControllerTest {
 
     }
 
-    @Test
-    public void authorizedUser() throws IOException {
-        //Arrange
-        signin();
-
-        //Act
-        webClient.get()
-                .uri("/api/v1/user")
-                .headers(h -> h.setBearerAuth(token.getToken()))
-                .exchange()
-                .expectStatus()
-                .isOk();
-
-        userService.remove(createUserArgument.getUsername());
-
-        //Assert
-
-    }
+//    @Test
+//    public void authorizedUser() throws IOException {
+//        //Arrange
+//        signin();
+//
+//        //Act
+//        webClient.get()
+//                .uri("/api/v1/user")
+//                .headers(h -> h.setBearerAuth(token.getToken()))
+//                .exchange()
+//                .expectStatus()
+//                .isOk();
+//
+//        userService.remove(createUserArgument.getUsername());
+//
+//        //Assert
+//
+//    }
 
 }

@@ -1,8 +1,11 @@
 package app.miniappspring.dto.product;
 
+import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -15,6 +18,5 @@ public class ProductCardDto {
     private String name;
     private float cost;
     private float rating;
-    @Schema(type = "string", format = "binary", description = "Binary data")
-    byte[] image;
+    private List<ImageDto>imageDtoList;
 }

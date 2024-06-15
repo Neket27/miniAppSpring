@@ -10,8 +10,10 @@ import app.miniappspring.entity.*;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.repository.ProductRepo;
+import app.miniappspring.service.ImageProductService;
 import app.miniappspring.service.ProductService;
 import app.miniappspring.utils.jwtToken.mapper.CategoryMapper;
+import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
 import app.miniappspring.utils.jwtToken.mapper.ProductArgumentMapper;
 import app.miniappspring.utils.jwtToken.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
     private final ProductArgumentMapper productArgumentMapper;
+    private final ImageMapper imageMapper;
+    private final ImageProductService imageProductService;
 
     @Override
     @Transactional
@@ -51,10 +55,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public List<ProductCardDto> getListCardProduct(){
        List<Product>products=productRepo.findAll();
-        List<ProductCardDto>productCardDtos=products.stream().map(product -> {
-            return productMapper.toProductCardDto(product);
-        }).toList();
-        return productCardDtos;
+       if(products.isEmpty())
+           return new ArrayList<>();
+
+        return products.stream().map(productMapper::toProductCardDto).toList();
     }
 
     @Override
@@ -74,15 +78,30 @@ public class ProductServiceImpl implements ProductService {
         CategoryProduct categoryProduct =categoryMapper.toCategoryProduct(createProductArgument);
         product.setCategoryProduct(categoryProduct);
         product.setCharacteristicProduct(characteristic);
-        productRepo.save(product);
-        return getListCardProduct();
+        Product productFromBD = productRepo.save(product);
+       List<Image> images =  imageProductService.saveAllAndGetListImage(createProductArgument.getCreateImageDtoList(),productFromBD);
+       productFromBD.setImageList(images);
+       productRepo.save(productFromBD);
+       // product.setImageList(imageMapper.toImageList(createProductArgument.getCreateImageDtoList()));
+
+       return getListCardProduct();
+       // return new ArrayList<>();
     }
 
     @Override
     @Transactional
     public void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException {
         Product product = findProduct(idCardPhoto);
-        product.setImage(photoCardProduct.getBytes());
+        if(product.getImageList()==null)
+            product.setImageList(new ArrayList<>());
+
+        Image image = Image.builder()
+                .bytes(photoCardProduct.getBytes())
+                .build();
+
+        List<Image>images=product.getImageList();
+        images.add(image);
+        product.setImageList(images);
         productRepo.save(product);
     }
 

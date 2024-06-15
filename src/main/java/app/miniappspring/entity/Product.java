@@ -26,20 +26,23 @@ public class Product {
     private boolean available;
     private int stock;
     private String detail;
-    @Column(name = "image")
-    private byte[] image;
+//    @Column(name = "image")
+//    private byte[] image;
 //    @Enumerated(EnumType.STRING)
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_product_id", referencedColumnName = "id")
+    @JoinColumn(name = "category_product_id")
     private CategoryProduct categoryProduct;
     private String subcategory;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Image> imageList;
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "characteristic_id", referencedColumnName = "id")
+    @JoinColumn(name = "characteristic_id")
     private CharacteristicProduct characteristicProduct;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "feedback_list", nullable = false)
-    List<Feedback> feedbackList;
+    private List<Feedback> feedbackList;
 
 }

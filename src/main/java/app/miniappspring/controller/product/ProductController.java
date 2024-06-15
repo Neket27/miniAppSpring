@@ -1,8 +1,10 @@
 package app.miniappspring.controller.product;
 
 import app.miniappspring.arguments.CreateProductArgument;
+import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.product.CreateProductDto;
 import app.miniappspring.dto.product.ProductCardDto;
+import app.miniappspring.entity.Image;
 import app.miniappspring.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -37,10 +39,10 @@ public class ProductController {
             value = "/get-image-with-media-type",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
-    public  byte[] getImage(@RequestParam Long id) {
+    public ImageDto getImage(@RequestParam Long id) {
 //        InputStream in = getClass()
 //                .getResourceAsStream("/image/avatar.png");
-        return productService.getProduct(id).getImage();
+        return productService.getProduct(id).getImageDtoList().get(0);
     }
 
 

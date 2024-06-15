@@ -1,8 +1,10 @@
 package app.miniappspring.arguments;
 
+import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.entity.Category;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
+import app.miniappspring.entity.Image;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -26,11 +28,8 @@ public class CreateProductArgument {
     private boolean available;
     private int stock;
     private String detail;
-//    @Schema(type = "string", format = "binary", description = "Binary data")
-    private byte[] image;
     private String producerCountry;
     private int sellerWarranty;
-//    @ArraySchema(schema = @Schema(type = "string", format = "binary"))
-    private List<byte[]> images;
+    private List<CreateImageDto> createImageDtoList;
 
 }

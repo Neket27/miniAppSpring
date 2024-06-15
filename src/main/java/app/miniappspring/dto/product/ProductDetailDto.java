@@ -1,15 +1,20 @@
 package app.miniappspring.dto.product;
 
+import app.miniappspring.dto.characteristic.CharacteristicProductDto;
+import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Feedback;
+import app.miniappspring.entity.Image;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
+@Builder
 public class ProductDetailDto {
    private final Long id;
    private CategoryProduct categoryProduct;
@@ -21,7 +26,8 @@ public class ProductDetailDto {
    private String article;
    private boolean available;
    private int stock;
-   private CharacteristicProduct characteristicProduct;
+   private CharacteristicProductDto characteristicProductDto;
    private String detail;
    private Feedback feedback;
+   List<ImageDto> imageDtoList;
 }
