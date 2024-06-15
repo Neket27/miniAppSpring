@@ -1,6 +1,6 @@
 import {IDetailProduct} from "../../../../../product/model/IDetailProduct";
 
-const Detail = (props: {productDetail:IDetailProduct}) => {
+const Detail = (props: {productDetail:IDetailProduct|undefined}) => {
 
     return (
         <div className="tab-pane active" id="ant107_shop-details">

@@ -19,6 +19,7 @@ const URL = import.meta.env.VITE_URL;
 import {Client, Frame, Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
 import {CardProductResponse} from "../../../product/model/response/CardProductResponse";
+import {ProductDetailResponse} from "../../../product/model/response/ProductDetailResponse";
 
 let stompClient:Client;
 
@@ -26,7 +27,7 @@ const DetailProduct = (props:any) => {
     const {updateCountProductInCart} = useContext(Context);
     const location = useLocation();
     const { typeId } = useParams<{ typeId: string }>();
-    const [productDetail, setProductDetail] = useState<IDetailProduct | null>(null);
+    const [productDetail, setProductDetail] = useState<IDetailProduct|undefined>(undefined);
     const [countProductsInCart, setCountProductsInCart] = useState<number>(0);
 
     const [showBlockDetail, setShowBlockDetail] = useState<boolean>(true);
@@ -40,14 +41,8 @@ const DetailProduct = (props:any) => {
         stompClient = over(Sock);
         stompClient.connect(
             {},
-            (frame) => {
-                console.log('Connected: ' + frame);
-                onConnected();
-            },
-            (error:Frame|string) => {
-                console.error('Connection error: ' + error);
-                onError(error);
-            }
+            (frame) => {onConnected();},
+            (error:Frame|string) => {onError(error);}
         );
     }
 
@@ -108,7 +103,7 @@ const DetailProduct = (props:any) => {
     async function getProductDetail() {
         try {
                 if(typeId!=undefined) {
-                    const response = await ProductService.getProductDetail(parseInt(typeId, 10));
+                    const response:IDetailProduct = await ProductService.getProductDetail(parseInt(typeId, 10));
                     setProductDetail(response);
                 }else {
                     console.error("TypeId for 'getProductDetail'= ", typeId);

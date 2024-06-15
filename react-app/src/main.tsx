@@ -15,15 +15,17 @@ interface State {
     updateCountProductInCart: any
     // productCardController:CardProductController
 }
-const updateCountProductInCart = async () => {
+const updateCountProductInCart = async ():Promise<any> => {
+    const token =localStorage.getItem('token');
+    if(token!=null){
     try {
-        const count = await CartController.getCountProductInCart(localStorage.getItem('token'));
+        const count = await CartController.getCountProductInCart(token);
         localStorage.setItem('countProductInCart',count);
-        console.log("countMAin= "+count)
         return count;
     } catch (error) {
         console.error('Ошибка при обновлении количества товаров в корзине:', error);
         throw error;
+    }
     }
 };
 export const Context = createContext<State>({
