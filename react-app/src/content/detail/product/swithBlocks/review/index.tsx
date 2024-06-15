@@ -1,7 +1,7 @@
 import FormForDetailProduct from "../../../form";
 import {IDetailProduct} from "../../../../../product/model/IDetailProduct";
 
-const Review =(props: {productDetail:IDetailProduct|undefined})=>{
+const Review =(props: {productDetail:IDetailProduct|null})=>{
     return (
         <div className="tab-pane" id="ant107_shop-review">
             <div className="ant107_shop-single-review">

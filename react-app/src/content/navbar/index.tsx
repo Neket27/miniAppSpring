@@ -4,13 +4,11 @@ import '../../navbar/style.css';
 import '../../navbar/fonts/icomoon/style.css';
 import { Link } from "react-router-dom";
 import { Context } from "../../main";
-import {API_URL} from "../../http";
-
-import  {over} from 'stompjs';
+import {Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
 const URL = import.meta.env.VITE_URL;
 
-var stompClient =null;
+var stompClient:any =null;
 
 const Navbar = () => {
     const [countProductInCart, setCountProductInCart] = useState(0);
@@ -33,19 +31,19 @@ const Navbar = () => {
         stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
     }
 
-    const onCountReceived =(val)=>{
+    const onCountReceived =(val:Message)=>{
         console.log("navbar= "+val)
         setCountProductInCart(parseInt(val.body))
     }
 
 
 
-    const getShoppingCartCountProduct =(val)=>{
-        console.log("ShoppingCartCountProduct2= "+val.body)
+    const getShoppingCartCountProduct =(val:Message)=>{
+        console.log("ShoppingCartCountProduct2>= "+ val)
         setCountProductInCart(parseInt(val.body))
     }
 
-    const onError = (err) => {
+    const onError = (err:string):void => {
         console.log(err);
     }
 
