@@ -16,10 +16,11 @@ import {Context} from "../../../main";
 
 const URL = import.meta.env.VITE_URL;
 
-import  {over} from 'stompjs';
+import {Client, Frame, Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
+import {CardProductResponse} from "../../../product/model/response/CardProductResponse";
 
-let stompClient =null;
+let stompClient:Client;
 
 const DetailProduct = (props:any) => {
     const {updateCountProductInCart} = useContext(Context);
@@ -32,12 +33,22 @@ const DetailProduct = (props:any) => {
     const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
-    const [relatedProducts, setRelatedProducts] = useState<ICardProduct[]>([]);
+    const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
 
     const connect =()=>{
         let Sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(Sock);
-        stompClient.connect({},onConnected, onError);
+        stompClient.connect(
+            {},
+            (frame) => {
+                console.log('Connected: ' + frame);
+                onConnected();
+            },
+            (error:Frame|string) => {
+                console.error('Connection error: ' + error);
+                onError(error);
+            }
+        );
     }
 
     const onConnected = () => {
@@ -51,19 +62,23 @@ const DetailProduct = (props:any) => {
     }
 
     const sendCountProductInCart =()=>{
-        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+        let token:string|null =localStorage.getItem('token');
+        if(token!=null)
+            stompClient.send("/app/getCountProductInCart", {},token);
+        else
+            onError("Токен == null");
     }
 
-    const getNumberOfPiecesOfGoods =(val)=>{
+    const getNumberOfPiecesOfGoods =(val:Message)=>{
         setCountProductsInCart(parseInt(val.body))
         console.log("productCount= "+val.body)
     }
 
-    const getShoppingCartCountProduct =(val)=>{
+    const getShoppingCartCountProduct =(val:Message)=>{
         console.log("ShoppingCartCountProduct= "+val.body)
     }
 
-    const onError = (err) => {
+    const onError = (err:Frame|string) => {
         console.log("err= "+err);
     }
 
@@ -83,7 +98,7 @@ const DetailProduct = (props:any) => {
     }
     async function getProductByCategory(category: string) {
         try {
-            const response = await ProductService.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
+            const response:CardProductResponse = await ProductService.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
             setRelatedProducts(response);
         } catch (error) {
             console.error("Error fetching related products:", error);
@@ -92,14 +107,18 @@ const DetailProduct = (props:any) => {
 
     async function getProductDetail() {
         try {
-            const response = await ProductService.getProductDetail(parseInt(typeId, 10));
-            setProductDetail(response);
+                if(typeId!=undefined) {
+                    const response = await ProductService.getProductDetail(parseInt(typeId, 10));
+                    setProductDetail(response);
+                }else {
+                    console.error("TypeId for 'getProductDetail'= ", typeId);
+                }
         } catch (error) {
             console.error("Error fetching product detail:", error);
         }
     }
 
-    async function getProductFromCart(idProduct: number, accessToken: string | null) {
+    async function getProductFromCart(idProduct: number, accessToken: string) {
         try {
             const response = await CartController.getProductFromCart(idProduct, accessToken);
             setProductFromCart(response);
@@ -137,138 +156,27 @@ const DetailProduct = (props:any) => {
         sendValue(count);
     };
 
-    // const sendCountProductInCartUser=()=>{
-    //     if(countProductsInCart==0)
-    //         sendCountProductInCart(productDetail?.id,countProductsInCart-1,localStorage.getItem('token'));
-    // }
-
-
-    // useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
-    //
-    //     if (productDetail) {
-    //         getProductByCategory(productDetail.categoryProduct.stringValueCategory);
-    //         getProductFromCart(productDetail.id, localStorage.getItem('token'));
-    //     }
-    //
-    // }, [productDetail]);
-
-//     const handleBeforeUnload = () => {
-//         console.log("countProductsInBagL = "+(countProductsInBag));
-//         // Выполните здесь необходимые действия перед выгрузкой страницы, например, отправку данных на сервер
-//         if (countProductsInBag > 0) {
-//             setTitleCart("Добавлен в корзину");
-//             const productCard = {
-//                 idProduct: productDetail?.id,
-//                 accessToken: localStorage.getItem('token'),
-//                 count: countProductsInBag,
-//                 showInCart: true
-//             };
-//             if (productFromCart?.count!=undefined){
-//                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-//                 // stompClient.send("/app/count", {}, JSON.stringify({idProduct:productDetail?.id,count:countProductsInBag,accessToken:localStorage.getItem('token')}));
-//             }else {
-//                 CartController.addProductInCart(productCard);
-// ////////
-// //                 stompClient.send("/app/count", {}, JSON.stsendCountProductInCartringify({idProduct:productDetail?.id,count:countProductsInBag,accessToken:localStorage.getItem('token')}));
-//      /////
-//                 sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-//                 setProductFromCart(productCard);
-//                 // getCountProductInCart();
-//             }
-//
-//
-//         }else {
-//             if(productFromCart?.count!=undefined) {
-//                 CartController.removeProductFromCart(productDetail?.id, localStorage.getItem('token'));
-//                 setProductFromCart('');
-//                 localStorage.setItem('countProductInCart',String(parseInt(localStorage.getItem('token')) - 1));
-//                 // getCountProductInCart();
-//             }
-//             if(countProductsInBag<1) {
-//                 setTitleCart("В корзину");
-//                 // getCountProductInCart();
-//             }
-//
-//         }
-//         console.log("SEEEEEEEEEEEND")
-//     };
-
-    // const handleRefresh = () => {
-    //     window.location.reload();
-    // };
-
-
-    // useEffect(() => {
-    //     // productFromCart?.count!=undefined?setCountProductsInBag(productFromCart?.count):setCountProductsInBag(0);
-    //     if (productFromCart?.count != undefined) {
-    //         setTitleCart("Добавлен в корзину");
-    //         setCountProductsInBag(productFromCart?.count);
-    //     } else {
-    //         setTitleCart("В корзину");
-    //         setCountProductsInBag(0);
-    //     }
-    //
-    //
-    // }, [productDetail, productFromCart]);
-
-    //
-    // useEffect(() => {countProductsInBag-1
-    //     const unlisten = () => {
-    //         // Вы можете выполнить нужные действия при изменении маршрута здесь
-    //         console.log('Маршрут изменен:', location.pathname);
-    //         handleBeforeUnload(); // Вызов функции перед переходом на другой URL
-    //     };
-    //
-    //     return unlisten;
-    // }, [countProductsInBag, productDetail,location.pathname]);
-
-    //
-    // useEffect(() => {
-    //     const handleBeforeUnload = () => {
-    //         // Выполните здесь необходимые действия перед переходом на другой URL
-    //         if (countProductsInBag > 0) {
-    //             const productCard = {
-    //                 idProduct: productDetail?.id,
-    //                 accessToken: localStorage.getItem('token'),
-    //                 count: countProductsInBag,
-    //                 showInCart: true
-    //             };
-    //             CartController.addProductInCart(productCard);
-    //             sendCountProductInCart(productDetail?.id, countProductsInBag, localStorage.getItem('token'));
-    //             console.log("Данные о количестве товаров отправлены на сервер перед переходом на другой URL");
-    //
-    //         }
-    //     };
-
-
-    //     window.addEventListener('beforeunload', handleBeforeUnload);
-    //     return ()=>{
-    //         window.removeEventListener('beforeunload', handleBeforeUnload);
-    //     }
-    // }, [countProductsInBag, productDetail]);
-
-
-    const imagesMain = productDetail?.characteristicProduct.images.map(imageBytes=>
+    const imagesMain = productDetail?.imageDtoList.map(image=>
         <div className="tab-pane active" id="ant107_shop-preview2">
-            <img src={"data:image/png;base64," +imageBytes } alt=""
-                 data-magnify-src={"data:image/png;base64," +imageBytes}/>
+            <img src={"data:image/png;base64," +image.base64 } alt=""
+                 data-magnify-src={"data:image/png;base64," +image.base64}/>
         </div>
     );
 
-    const images =productDetail?.characteristicProduct.images.map(imageBytes =>
+    const images =productDetail?.imageDtoList.map(image =>
         <li>
             {/*<a data-toggle="tab" href="#ant107_shop-preview1">*/}
-            <img src={"data:image/png;base64,"+imageBytes} alt=""/>
+            <img src={"data:image/png;base64,"+image.base64} alt=""/>
             {/*</a>*/}
         </li>
     );
 
-    const relatedProductListJsx = relatedProducts.map(product =>{
+    const relatedProductListJsx = relatedProducts?.cardsProduct.map(product =>{
         return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
             <div className="ant107_shop-shop-box">
                 <div className="ant107_shop-shop-img">
                     {/*<a href="#!">*/}
-                    <img src={URL+"/api/v1/home/get-image-with-media-type?id="+product.id} alt=""/>
+                    <img src={"data:image/png;base64,"+product.imageDtoList.at(0)?.base64} alt=""/>
                     {/*</a>*/}
                 </div>
                 <div className="ant107_shop-shop-info">
@@ -282,7 +190,6 @@ const DetailProduct = (props:any) => {
             </div>
         </div>
     } );
-
 
 
     const showDetail = () => {
@@ -313,13 +220,13 @@ const DetailProduct = (props:any) => {
                                             data-magnify-src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
                                     </div>
 
-                                    {/*{imagesMain}*/}
-                                    {/*<div className="tab-pane active" id="ant107_shop-preview2">*/}
-                                    {/*    <img*/}
-                                    {/*        src={"data:image/png;base64," + productDetail?.characteristicProduct.images[0]}*/}
-                                    {/*        alt=""*/}
-                                    {/*        data-magnify-src={"data:image/png;base64," + productDetail?.characteristicProduct.images[0]}/>*/}
-                                    {/*</div>*/}
+                                    {imagesMain}
+                                    <div className="tab-pane active" id="ant107_shop-preview2">
+                                        {/*<img*/}
+                                        {/*    src={"data:image/png;base64," + productDetail?.imageDtoList.at(0)?.base64}*/}
+                                        {/*    alt=""*/}
+                                        {/*    data-magnify-src={"data:image/png;base64," + productDetail?.imageDtoList.at(0)?.base64}/>*/}
+                                    </div>
 
                                 </div>
 

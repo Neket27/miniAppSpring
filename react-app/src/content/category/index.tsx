@@ -5,6 +5,7 @@ import {transliterate} from "transliteration";
 import {Link} from "react-router-dom";
 import {ICategory} from "../../product/model/ICategory";
 import {CategorySearchResponse} from "../../product/model/response/CategorySearchResponse";
+import {ICardProduct} from "../../product/model/ICardProduct";
 
 const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>{
     const [categoryMap,setCategoryMap]=useState<Map<string,number>>(new Map());
@@ -34,9 +35,10 @@ const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>
     }
 
 function operation(category:string):void{
-    let ct: ICategory = {
+    let ct:ICategory = {
         categoryProduct: category,
-        subcategory: "not_supported"
+        subcategory: "not_supported",
+        stringValueCategory: " stringValueCategory"
     }
     setSearchedProducts([]);
     setSearchString('');

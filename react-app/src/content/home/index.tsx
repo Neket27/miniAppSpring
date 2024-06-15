@@ -29,7 +29,9 @@ const Home=()=> {
         useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
         getListProductOnHomePage();
     }, []);
+    products.forEach(e=>console.log("e= "+e.name));
 
+    // console.log(" +products= "+products?.at(0)?.imageDtoList.at(0)?.base64);
 
     return (
         <div>

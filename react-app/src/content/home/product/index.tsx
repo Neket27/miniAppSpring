@@ -5,18 +5,20 @@ import {Link, useParams} from "react-router-dom";
 import DetailProduct from "../../detail/product";
 import Store from "../../../auth/store/Store";
 
-const Product=(props: { products: any, click:any; }) => {
+const Product=(props: { products: Array<ICardProduct>, click:any; }) => {
 //     console.log("prop")
 // console.log(props.products)
-    // @ts-ignore
-    const cards= props.products.map((card, index) =>
-        // if (cart.categoryProduct == typeId)
-            <div key={card.id} className="col-lg-4 col-md-6">
+    props.products.forEach(e=>console.log(e.imageDtoList.at(0)?.base64))
+//     console.log(" +products= "+props?.products.at(0)?.imageDtoList.at(0)?.base64);
+    const cards= props.products.map((card:ICardProduct, index) => {
+            // if (cart.categoryProduct == typeId)
+        // console.log("card.imageList.get(0).base64= "+card.imageList);
+           return <div key={card.id} className="col-lg-4 col-md-6">
 
                 <div className="ant107_shop-shop-box">
                     <div className="ant107_shop-shop-img">
                         <Link to={"/detailProduct/" + card.id}>
-                            <img src={"http://localhost:8080/api/v1/home/get-image-with-media-type?id=" + card.id}
+                            <img src={"data:image/png;base64,"+card.imageDtoList.at(0)?.base64}
                                  alt=""/>
                         </Link>
                     </div>
@@ -30,7 +32,7 @@ const Product=(props: { products: any, click:any; }) => {
                     </div>
                 </div>
             </div>
-
+        }
     );
 
     return cards;

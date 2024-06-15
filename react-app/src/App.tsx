@@ -1,10 +1,4 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-// import './App.css'
-// import '../css/style.css'
-// import '../css/bootstrap.min.css'
-// import 'https://fonts.googleapis.com/icon?family=Material+Icons&#038;ver=5.0.3'
-// import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css?ver=5.0.3'
-// import 'https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic&amp;subset=cyrillic'
 import AuthRootComponent from "./auth";
 import {Route, Routes} from "react-router-dom";
 import {Context} from "./main";
@@ -13,8 +7,6 @@ import DetailProduct from "./content/detail/product";
 import ChooseCategory from "./content/chooseCategory";
 import Cart from "./content/cart";
 import Navbar from "./content/navbar";
-import CartController from "./content/cart/controller/CartController";
-import WebSocketComponent from "./content/WebSocketComponent";
 import ComponentsChat from "./componentsChat";
 
 // // @ts-ignore
