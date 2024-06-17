@@ -8,7 +8,7 @@ const RegisterPage=()=>{
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] =useState<string>('');
 
-    const {store} =useContext(Context);
+    const {authService} =useContext(Context);
     return(
         <div>
             <h1>Register page</h1>
@@ -25,7 +25,7 @@ const RegisterPage=()=>{
                 type="password"
                 placeholder="Password"
             />
-            <button onClick={() => store.registration(username, password)}>Зарегистрироваться</button>
+            <button onClick={() => authService.registration(username, password)}>Зарегистрироваться</button>
             <button>  <Link to="/login">Войти</Link></button>
         </div>
     );

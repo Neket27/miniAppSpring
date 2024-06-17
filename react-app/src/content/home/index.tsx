@@ -6,43 +6,37 @@ import './../../../css/magnify.css'
 import './../../../css/ant107_shop.css'
 import Product from "./product";
 import Category from "../category";
-import {ICardProduct} from "../../product/model/ICardProduct";
-import ProductService from "../../product/service/productService";
-import {CardProductResponse} from "../../product/model/response/CardProductResponse";
+import {ICardProduct} from "../../model/product/ICardProduct";
+import ProductControllerP from "../../controller/productControllerP";
+import ProductService from "../../service/product/ProductService";
 
 
 const Home=()=> {
     const [products,setProduct]=useState<ICardProduct[]>([]);
 
+    // async function getListProductOnHomePage(){
+    //     try{
+    //         const response:ICardProduct[] = await ProductControllerP.getCardsProduct();
+    //         setProduct(response);
+    //
+    //     }catch (e){
+    //         // @ts-ignore
+    //         console.log("Ошибка получения данных в getListProductOnHomePage() = "+response);
+    //     }
+    // }
     async function getListProductOnHomePage(){
-        try{
-            const response:CardProductResponse =await ProductService.getCardsProduct();
-            // @ts-ignore
-            setProduct(response);
-
-        }catch (e){
-            // @ts-ignore
-            console.log(e.response?.data?.message);
-        }
+        setProduct(await ProductService.getListProductOnHomePage())
     }
 
-
         useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
-        getListProductOnHomePage();
+          getListProductOnHomePage();
     }, []);
-    products.forEach(e=>console.log("e= "+e.name));
-
-    // console.log(" +products= "+products?.at(0)?.imageDtoList.at(0)?.base64);
-    const handleClick = (product: ICardProduct) => {
-        console.log('Product clicked:', product);
-    };
 
     return (
         <div>
             <div id="ant107_shop" className="ant107_shop_container">
                 <div className="container">
                     <div className="row">
-
                         <main className="col-xl-9 col-md-8">
                             <div className="ant107_shop-shop-items">
                                 <div className="row">
@@ -59,9 +53,7 @@ const Home=()=> {
                                 </nav>
                             </div>
                         </main>
-
                         <Category OnClickGetListProduct={getListProductOnHomePage}/>
-
                     </div>
                 </div>
 

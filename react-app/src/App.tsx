@@ -1,21 +1,16 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
 import AuthRootComponent from "./auth";
 import {Route, Routes} from "react-router-dom";
-import {Context} from "./main";
+import {Context, State} from "./main";
 import {observer} from "mobx-react-lite";
 import DetailProduct from "./content/detail/product";
 import ChooseCategory from "./content/chooseCategory";
 import Cart from "./content/cart";
 import Navbar from "./content/navbar";
-import ComponentsChat from "./componentsChat";
 
-// // @ts-ignore
-// const CountProductContext = React.createContext();
 const App:FC=()=> {
-    const {store} = useContext(Context);
+    const state:State= useContext(Context);
     const [orders, setOrders] = useState<Array<any>>([]);
-
-
 
     function addToOrder(item:any){
         // setState({orders:[...this.state.orders,item]})
@@ -25,21 +20,21 @@ const App:FC=()=> {
 
     useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
        if(localStorage.getItem('token')) { //если пользователь авторизован, то у него есть токен
-           store.checkAuth();
+           state.authService.checkAuth();
        }
     }, []);
 
-    if(store.isLoading)
+    if(state.authService.isLoading)
         return <div>Загрузка...</div>
 
     return (
         <div className="App">
             <Navbar />
             {/*<WebSocketComponent/>*/}
-            <ComponentsChat/>
-            <h1>{store.isAuth?`Пользователь авторизован ${store.user.email}`:'АВТОРИЗУЙТЕСЬ'}</h1>
-            <div>{store.isAuth?
-                <button onClick={() => store.logout()}>Выйти</button>:null
+            {/*<ComponentsChat/>*/}
+            <h1>{state.authService.isAuth?`Пользователь авторизован ${state.authService.user.email}`:'АВТОРИЗУЙТЕСЬ'}</h1>
+            <div>{state.authService.isAuth?
+                <button onClick={() => state.authService.logout()}>Выйти</button>:null
                  }
             </div>
 

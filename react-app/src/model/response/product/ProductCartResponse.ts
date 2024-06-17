@@ -1,4 +1,4 @@
-import {IImageProduct} from "../IImageProduct";
+import {IImageProduct} from "../../product/IImageProduct";
 
 export interface ProductCartResponse{
     idProduct:number,

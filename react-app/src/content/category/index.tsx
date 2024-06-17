@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import ProductService from "../../product/service/productService";
-import {CategoryResponse} from "../../product/model/response/CategoryResponse";
+import ProductControllerP from "../../controller/productControllerP";
+import {CategoryResponse} from "../../model/response/product/CategoryResponse";
 import {transliterate} from "transliteration";
 import {Link} from "react-router-dom";
-import {ICategory} from "../../product/model/ICategory";
-import {CategorySearchResponse} from "../../product/model/response/CategorySearchResponse";
+import {ICategory} from "../../model/product/ICategory";
+import {CategorySearchResponse} from "../../model/response/product/CategorySearchResponse";
 
 const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>{
     const [categoryMap,setCategoryMap]=useState<Map<string,number>>(new Map());
@@ -12,13 +12,13 @@ const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>
     const [searchedProducts, setSearchedProducts] = useState<CategorySearchResponse[]>([]);
 
     async function getMapCategory(){
-        const response = ProductService.getMapCategory();
+        const response = ProductControllerP.getMapCategory();
         const jsonCategoryResponse=await response.then(r => r);
         setCategoryMap(jsonToMap(jsonCategoryResponse));
     }
 
     async function search(searchValue:string){
-        const response = await ProductService.search(searchValue);
+        const response = await ProductControllerP.search(searchValue);
         // console.log(response)
         setSearchedProducts([]);
         setSearchedProducts(response);

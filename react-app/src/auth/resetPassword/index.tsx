@@ -5,7 +5,7 @@ const ResetPassword=()=> {
     const [password, setUsername] = useState<string>('');
     const [newPassword, setPassword] =useState<string>('');
 
-    const {store} =useContext(Context);
+    const {authService} =useContext(Context);
     return (
         <div>
             <h1>ResetPassword page</h1>
@@ -22,7 +22,7 @@ const ResetPassword=()=> {
                     type="text"
                     placeholder="Новый пароль"
                 />
-                <button onClick={() => store.resetPassword(password,newPassword)}>Обновить пороль</button>
+                <button onClick={() => authService.resetPassword(password,newPassword)}>Обновить пороль</button>
         </div>
     );
 }
