@@ -1,4 +1,4 @@
-import {IDetailProduct} from "../../../../../product/model/IDetailProduct";
+import {IDetailProduct} from "../../../../../model/product/IDetailProduct";
 
 const Detail = (props: {productDetail:IDetailProduct|undefined}) => {
 
@@ -13,7 +13,8 @@ const Detail = (props: {productDetail:IDetailProduct|undefined}) => {
             <p>Перераспределение бюджета, безусловно, обуславливает институциональный социальный
                 статус. Основная стадия проведения рыночного исследования вырождена.
                 Ретроконверсия национального наследия по-прежнему востребована. Медиавес основан
-                на анализе телесмотрения.</p>
+                на анализе телесмотрения.
+            </p>
         </div>
     );
 }

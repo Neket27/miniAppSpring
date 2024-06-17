@@ -1,8 +1,8 @@
-import {IUser} from "../model/IUser";
-import AuthService from "../service/AuthService";
-import { makeAutoObservable} from "mobx";
+import {IUser} from "../../model/user/IUser";
+import {makeAutoObservable} from "mobx";
+import AuthController from "../../controller/AuthController";
 
-export default class Store{
+export default class AuthService{
     user={} as IUser;
     isAuth = false;
     isLoading=false;
@@ -24,46 +24,44 @@ export default class Store{
 
     async login(username:string,password:string){
         try{
-            const response =await AuthService.login(username,password);
-            console.log(response);
-            localStorage.setItem("token",response.data.accessToken);
+            const response =await AuthController.login(username,password);
+            localStorage.setItem("token",response.accessToken);
             this.setAuth(true);
-            this.setUser(response.data.user);
+            this.setUser(response.user);
             let user:IUser={
-                id:'1',
-                email:'nik@gmail.com',
-                isActivated:true,
+                id: response.user.id,
+                email:response.user.email,
+                isActivated:response.user.isActivated,
             };
 
             this.setUser(user);
         }catch (e){
             // @ts-ignore
-            console.log(e.response?.data?.message);
+            console.log(e.response.message);
         }
     }
 
     async registration(username:string,password:string){
         try{
-            const response =await AuthService.registration(username,password);
+            const response =await AuthController.registration(username,password);
             console.log(response);
-            localStorage.setItem('token',response.data.accessToken);
+            localStorage.setItem('token',response.accessToken);
             this.setAuth(true);
-            // this.setUser(response.data.user);
             let user:IUser={
-                id:'1',
-                email:'nik@gmail.com',
-                isActivated:true,
+                id: response.user.id,
+                email:response.user.email,
+                isActivated:response.user.isActivated,
             };
             this.setUser(user);
         }catch (e){
             // @ts-ignore
-            console.log(e.response?.data?.message);
+            console.log(e.response.message);
         }
     }
 
     async logout(){
         try{
-            const response =await AuthService.logout();
+            const response =await AuthController.logout();
             console.log(response);
             localStorage.removeItem('token');
             this.setAuth(false);
@@ -76,16 +74,14 @@ export default class Store{
 
     async resetPassword(password:string,newPassword:string){
         try {
-            const response =await AuthService.resetPassword(password,newPassword);
-            console.log(response);
-
-            localStorage.setItem("token",response.data.accessToken);
+            const response =await AuthController.resetPassword(password,newPassword);
+            localStorage.setItem("token",response.accessToken);
             this.setAuth(true);
-            this.setUser(response.data.user);
-            let user:IUser={
-                id:'1',
-                email:'nik@gmail.com',
-                isActivated:true,
+            this.setUser(response.user);
+            const user:IUser={
+                id: response.user.id,
+                email:response.user.email,
+                isActivated:response.user.isActivated,
             };
 
             this.setUser(user);
@@ -102,22 +98,17 @@ export default class Store{
     async checkAuth(){
         this.setLoading(true);
         try {
-           // const response = await axios.post<AuthResponse>(`${API_URL}/api/v1/auth/refresh`,{withCredentials:true});
-            const response = await AuthService.refresh();
-            console.log(response);
-            console.log("------------------------");
-            localStorage.setItem('token',response.data.accessToken);
+            // const response = await axios.post<AuthResponse>(`${API_URL}/api/v1/auth/refresh`,{withCredentials:true});
+            const response = await AuthController.refresh();
+            localStorage.setItem('token',response.accessToken);
             this.setAuth(true);
-            // this.setUser(response.data.user);
-            let user:IUser={
-                id:'1',
-                email:'nik@gmail.com',
-                isActivated:true,
+            const user:IUser={
+                id: response.user.id,
+                email:response.user.email,
+                isActivated:response.user.isActivated,
             };
             this.setUser(user);
-            }catch (e){
-            // @ts-ignore
-            console.log(e.response?.data?.message);
+        }catch (e){
             console.log("Пользователь не авторизован или срок действия refresh токена истёк, пройдите авторизацию заново");
         }finally {
             this.setLoading(false);

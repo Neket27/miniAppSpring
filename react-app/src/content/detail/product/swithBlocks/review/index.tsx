@@ -1,5 +1,5 @@
 import FormForDetailProduct from "../../../form";
-import {IDetailProduct} from "../../../../../product/model/IDetailProduct";
+import {IDetailProduct} from "../../../../../model/product/IDetailProduct";
 
 const Review =(props: {productDetail:IDetailProduct|undefined})=>{
     return (
@@ -35,7 +35,8 @@ const Review =(props: {productDetail:IDetailProduct|undefined})=>{
                     <p>Точечное воздействие, на первый взгляд, традиционно усиливает
                         презентационный материал, полагаясь на инсайдерскую информацию.
                         SWOT-анализ последовательно охватывает продвигаемый формирование
-                        имиджа.</p>
+                        имиджа.
+                    </p>
                 </div>
                 <div className="ant107_shop-reviewer-rating">
                     <span>15 мая 2030</span>
@@ -52,8 +53,10 @@ const Review =(props: {productDetail:IDetailProduct|undefined})=>{
                 <div className="mb-4 text-center">
                     <h2>Написать отзыв</h2>
                 </div>
-
+                <p>gg</p>
+                {// @ts-ignore
                 <FormForDetailProduct idProduct={props.productDetail?.id}/>
+                }
             </div>
         </div>
     );

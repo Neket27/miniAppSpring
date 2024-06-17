@@ -1,16 +1,15 @@
 import React from "react";
-import {ICardProduct} from "../../../product/model/ICardProduct";
+import {ICardProduct} from "../../../model/product/ICardProduct";
 import {Link} from "react-router-dom";
 
 const Product=(props: { products: Array<ICardProduct> }) => {
-    const cards= props.products.map((card:ICardProduct, index) => {
+    return props.products.map((card: ICardProduct, index) => {
 
-           return (<div key={card.id} className="col-lg-4 col-md-6">
+            return (<div key={card.id} className="col-lg-4 col-md-6">
                 <div className="ant107_shop-shop-box">
                     <div className="ant107_shop-shop-img">
                         <Link to={"/detailProduct/" + card.id}>
-                            <img src={"data:image/png;base64,"+card.imageDtoList.at(0)?.base64}
-                                 alt=""/>
+                            <img src={"data:image/png;base64," + card.imageDtoList.at(0)?.base64} alt=""/>
                         </Link>
                     </div>
                     <div className="ant107_shop-shop-info">
@@ -22,10 +21,8 @@ const Product=(props: { products: Array<ICardProduct> }) => {
                         </div>
                     </div>
                 </div>
-            </div>)
+            </div>);
         }
     );
-
-    return cards;
 }
 export default Product;

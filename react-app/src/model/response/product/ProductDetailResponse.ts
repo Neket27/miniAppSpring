@@ -1,5 +1,5 @@
-import {ICharacteristic} from "../ICharacteristic";
-import {ICategory} from "../ICategory";
+import {ICharacteristic} from "../../product/ICharacteristic";
+import {ICategory} from "../../product/ICategory";
 
 export interface ProductDetailResponse{
     id:number,

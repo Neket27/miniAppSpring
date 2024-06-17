@@ -1,4 +1,4 @@
-import {ICategory} from "../ICategory";
+import {ICategory} from "../../product/ICategory";
 
 export interface CategoryResponse{
 
