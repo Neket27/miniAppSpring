@@ -1,9 +1,7 @@
 import {SetStateAction, useState} from "react";
 import {Rating} from "../../rating/Rating";
-import ProductService from "../../../product/service/productService";
-import {IFeedback} from "../../rating/model/IFeedback";
-import {IProductCart} from "../../../product/model/IProductCart";
-
+import {IFeedback} from "../../../model/rating/IFeedback";
+import ProductService from "../../../service/product/ProductService";
 
 const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
 
@@ -12,9 +10,8 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
     const [message, setMessage] = useState<string>('');
     const [images, setImages] = useState<Array<string>>([]);
     const [evaluation, setEvaluation] = useState<number>(0);
-    async function addFeedback(idProduct:number|undefined){
-        const rating:IFeedback ={
-            // @ts-ignore
+    async function addFeedback(idProduct:number){
+        const feedback:IFeedback ={
             idProduct:idProduct,
             nameUser:name,
             email:email,
@@ -22,14 +19,13 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
             evaluation:evaluation,
             imageList:images
         }
-        const response = await ProductService.addRating(rating);
-        console.log("Ответ")
-        console.log(response)
+        const response = await ProductService.addRating(feedback);
+    //     console.log("Ответ")
+    //     console.log(response)
     }
 
     const handleFileChange = (event: { target: { files: any; }; }) => {
         const files = event.target.files;
-        console.log("files= "+files)
         if (files.length > 0) {
             const imageArray: SetStateAction<any[]> = [];
 
@@ -38,14 +34,11 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     // Сохраняем содержимое файла в массиве
-                    // @ts-ignore
-                    const imageDataWithoutPrefix = reader.result.replace(/^data:image\/(jpeg|jpg|png);base64,/, '');
-                    // @ts-ignore
-                    console.log(reader.result.split(',')[1])
-                    console.log("__________________________________________________________________________________________________");
-
-                    imageArray.push(imageDataWithoutPrefix);
-
+                    const fileReading = reader.result;
+                    if (typeof (fileReading) === "string") {
+                        const imageDataWithoutPrefix = fileReading.replace(/^data:image\/(jpeg|jpg|png);base64,/, '');
+                        imageArray.push(imageDataWithoutPrefix);
+                }
                     // Если все файлы обработаны, обновляем состояние
                     if (imageArray.length === files.length) {
                         setImages(imageArray);
@@ -54,13 +47,15 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
                 reader.readAsDataURL(file as Blob);
             });
         }
+
     };
 
     const ratingChanged = (value: SetStateAction<number>) => {
         setEvaluation(value);
     }
 
-                return <form id="ant107_shop-contact-form" className="ant107_shop-contact-form"
+                return(
+        <form id="ant107_shop-contact-form" className="ant107_shop-contact-form"
                      action="#" method="POST">
             <div className="row clearfix">
                 <div className="col-md-6">
@@ -92,15 +87,13 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
                                   required
                                   value={message}
                                   onChange={(e) => setMessage(e.target.value)}>
-                    </textarea>
+                        </textarea>
                     </div>
                 </div>
                 <div className="col-md-4 d-flex">
                     <div className="ant107_shop-your-rating d-flex align-items-center">
                         <h6 className="mb-0 mr-2">Ваша оценка:</h6>
-                        <div className="ant107_shop-ratings"
-                             id="ant107_shop-your-rating">
-
+                        <div className="ant107_shop-ratings" id="ant107_shop-your-rating">
                             <Rating activeColor={"#ffd700"} value={evaluation} count={5} size={24}
                                     onChange={ratingChanged}/>
                         </div>
@@ -125,15 +118,20 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
                 <div className="col-md-4">
                     <div className="form-group text-left text-md-right mb-0">
                         <button className="ant107_shop-theme-btn ant107_shop-br-30"
-                                // type="submit"
-                                onClick={()=>addFeedback(props.idProduct)}
+                                onClick={()=> {
+                                    if(props.idProduct!=undefined)
+                                        addFeedback(props.idProduct)
+                                    else
+                                        console.log("ID продукта = "+props.idProduct);
+                                }
+                        }
                         >Отправить
                         </button>
                     </div>
                 </div>
             </div>
         </form>
+                );
 
-    }
-
+}
 export default FormForDetailProduct;

@@ -1,45 +1,24 @@
 import React, {createContext} from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import Store from "./auth/store/Store";
-import { BrowserRouter } from 'react-router-dom';
-import CardProductController from "./product/controller/CardProductController";
-import CartController from "./content/cart/controller/CartController";
+import {BrowserRouter} from 'react-router-dom';
+import AuthService from "./service/auth/AuthService";
 
-
-const store =new Store();
-// const productCardController = new CardProductController();
-
-interface State {
-    store:Store
-    updateCountProductInCart: any
-    // productCardController:CardProductController
+export interface State {
+    authService:AuthService
 }
-const updateCountProductInCart = async ():Promise<any> => {
-    const token =localStorage.getItem('token');
-    if(token!=null){
-    try {
-        const count = await CartController.getCountProductInCart(token);
-        localStorage.setItem('countProductInCart',count);
-        return count;
-    } catch (error) {
-        console.error('Ошибка при обновлении количества товаров в корзине:', error);
-        throw error;
-    }
-    }
-};
-export const Context = createContext<State>({
-    store,
-    updateCountProductInCart
-    // productCardController
-});
 
+const authService = new AuthService();
+
+export const Context = createContext<State>({
+    authService
+});
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
       <BrowserRouter>
-      <Context.Provider value={{store,updateCountProductInCart}}>
+      <Context.Provider value={{authService}}>
         <App/>
       </Context.Provider>
       </BrowserRouter>

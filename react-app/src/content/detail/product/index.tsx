@@ -1,16 +1,16 @@
 import {useContext, useEffect, useState} from "react";
 import '../../../init';
 import {Link, useLocation, useParams} from "react-router-dom";
-import ProductService from "../../../product/service/productService";
-import {IDetailProduct} from "../../../product/model/IDetailProduct";
+import ProductControllerP from "../../../controller/productControllerP";
+import {IDetailProduct} from "../../../model/product/IDetailProduct";
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
 import "./../../../../js/jquery.magnify.js"
-import {ICardProduct} from "../../../product/model/ICardProduct";
+import {ICardProduct} from "../../../model/product/ICardProduct";
 import Review from "./swithBlocks/review";
 import Detail from "./swithBlocks/detail";
-import CartController from "../../cart/controller/CartController";
-import {ProductCartResponse} from "../../../product/model/response/ProductCartResponse";
+import CartController from "../../../controller/CartController";
+import {ProductCartResponse} from "../../../model/response/product/ProductCartResponse";
 import {observer} from "mobx-react-lite";
 import {Context} from "../../../main";
 
@@ -18,8 +18,9 @@ const URL = import.meta.env.VITE_URL;
 
 import {Client, Frame, Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
-import {CardProductResponse} from "../../../product/model/response/CardProductResponse";
-import {ProductDetailResponse} from "../../../product/model/response/ProductDetailResponse";
+import {CardProductResponse} from "../../../model/response/product/CardProductResponse";
+import {ProductDetailResponse} from "../../../model/response/product/ProductDetailResponse";
+import ProductService from "../../../service/product/ProductService";
 
 let stompClient:Client;
 
@@ -35,6 +36,7 @@ const DetailProduct = (props:any) => {
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
+    const accessToken:string|null =localStorage.getItem('token');
 
     const connect =()=>{
         let Sock = new SockJS('http://localhost:8080/ws');
@@ -53,7 +55,7 @@ const DetailProduct = (props:any) => {
     }
 
     const sendNumberOfPiecesOfGoods =()=>{
-        stompClient.send("/app/getNumberOfPiecesOfGoods", {},JSON.stringify({idProduct:productDetail?.id,accessToken:localStorage.getItem('token')}));
+        stompClient.send("/app/getNumberOfPiecesOfGoods", {},JSON.stringify({idProduct:productDetail?.id,accessToken:accessToken}));
     }
 
     const sendCountProductInCart =()=>{
@@ -61,7 +63,7 @@ const DetailProduct = (props:any) => {
         if(token!=null)
             stompClient.send("/app/getCountProductInCart", {},token);
         else
-            onError("Токен == null");
+            onError("Токен в sendCountProductInCart == null");
     }
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
@@ -88,46 +90,59 @@ const DetailProduct = (props:any) => {
             sendCountProductInCart();
 
         }else{
-            console.log("стом клиент не создан")
+            console.log("Стом клиент не создан")
         }
     }
-    async function getProductByCategory(category: string) {
-        try {
-            const response:CardProductResponse = await ProductService.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
-            setRelatedProducts(response);
-        } catch (error) {
-            console.error("Error fetching related products:", error);
-        }
-    }
+    // async function getProductByCategory(category: string) {
+    //     try {
+    //         const response:CardProductResponse = await ProductControllerP.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
+    //         setRelatedProducts(response);
+    //     } catch (error) {
+    //         console.error("Error fetching related products:", error);
+    //     }
+    // }
+    //
+    // async function getProductDetail() {
+    //     try {
+    //             if(typeId!=undefined) {
+    //                 const response:IDetailProduct = await ProductControllerP.getProductDetail(parseInt(typeId, 10));
+    //                 setProductDetail(response);
+    //             }else {
+    //                 console.error("TypeId for 'getProductDetail'= ", typeId);
+    //             }
+    //     } catch (error) {
+    //         console.error("Error fetching product detail:", error);
+    //     }
+    // }
+    //
+    // async function getProductFromCart(idProduct: number, accessToken: string) {
+    //     try {
+    //         const response = await CartController.getProductFromCart(idProduct, accessToken);
+    //         setProductFromCart(response);
+    //     } catch (error) {
+    //         console.error("Error fetching product from cart:", error);
+    //     }
+    // }
+    // const sendCountProductInCartUser = async (idProduct: number, count: number, accessToken: string) => {
+    //     if (!isNaN(count)) {  // Проверка на то, что count является числом
+    //         const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
+    //     } else {
+    //         console.error("Ошибка: Невалидное значение countProductsInBag");
+    //     }
+    // };
 
-    async function getProductDetail() {
-        try {
-                if(typeId!=undefined) {
-                    const response:IDetailProduct = await ProductService.getProductDetail(parseInt(typeId, 10));
-                    setProductDetail(response);
-                }else {
-                    console.error("TypeId for 'getProductDetail'= ", typeId);
-                }
-        } catch (error) {
-            console.error("Error fetching product detail:", error);
-        }
-    }
+   // async function getProductDetail(){
+   //      if(typeId!=undefined) {
+   //          const response = await ProductControllerP.getProductDetail(parseInt(typeId, 10));
+   //          setProductDetail(response);
+   //      }
+   //  }
 
-    async function getProductFromCart(idProduct: number, accessToken: string) {
-        try {
-            const response = await CartController.getProductFromCart(idProduct, accessToken);
-            setProductFromCart(response);
-        } catch (error) {
-            console.error("Error fetching product from cart:", error);
-        }
+    async function getProductDetail(){
+        // @ts-ignore
+        const response = await ProductService.getProductDetail(parseInt(typeId, 10))
+        setProductDetail(response);
     }
-    const sendCountProductInCartUser = async (idProduct: number, count: number, accessToken: string) => {
-        if (!isNaN(count)) {  // Проверка на то, что count является числом
-            const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
-        } else {
-            console.error("Ошибка: Невалидное значение countProductsInBag");
-        }
-    };
 
     useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
         getProductDetail();
@@ -151,18 +166,18 @@ const DetailProduct = (props:any) => {
         sendValue(count);
     };
 
-    const imagesMain = productDetail?.imageDtoList.map(image=>
+    const imagesMain =(
         <div className="tab-pane active" id="ant107_shop-preview2">
-            <img src={"data:image/png;base64," +image.base64 } alt=""
-                 data-magnify-src={"data:image/png;base64," +image.base64}/>
+            <img src={"data:image/png;base64," +productDetail?.imageDtoList.at(0)?.base64 } alt=""
+                 data-magnify-src={"data:image/png;base64," +productDetail?.imageDtoList.at(0)?.base64}/>
         </div>
     );
 
     const images =productDetail?.imageDtoList.map(image =>
         <li>
-            {/*<a data-toggle="tab" href="#ant107_shop-preview1">*/}
+            <a data-toggle="tab" href="#ant107_shop-preview1">
             <img src={"data:image/png;base64,"+image.base64} alt=""/>
-            {/*</a>*/}
+            </a>
         </li>
     );
 
@@ -170,9 +185,9 @@ const DetailProduct = (props:any) => {
         return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
             <div className="ant107_shop-shop-box">
                 <div className="ant107_shop-shop-img">
-                    {/*<a href="#!">*/}
+                    <a href="#!">
                     <img src={"data:image/png;base64,"+product.imageDtoList.at(0)?.base64} alt=""/>
-                    {/*</a>*/}
+                    </a>
                 </div>
                 <div className="ant107_shop-shop-info">
                     <h5><a href="">{product.name}</a></h5>
@@ -199,22 +214,17 @@ const DetailProduct = (props:any) => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
-            {/*<button onClick={connect}>con</button>*/}
-            <button onClick={sendCountProductInCart}>knob</button>
+            {/*<button onClick={sendCountProductInCart}>knob</button>*/}
             <div className="container">
-
                 <main>
                     <div className="row">
                         <div className="col-lg-6">
                             <div className="ant107_shop-product-preview-wrap">
                                 <div className="tab-content">
                                     <div className="tab-pane" id="ant107_shop-preview1">
-                                        <img
-                                            src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}
-                                            alt=""
+                                        <img src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id} alt=""
                                             data-magnify-src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
                                     </div>
-
                                     {imagesMain}
                                     <div className="tab-pane active" id="ant107_shop-preview2">
                                         {/*<img*/}
@@ -224,10 +234,7 @@ const DetailProduct = (props:any) => {
                                     </div>
 
                                 </div>
-
-                                <ul className="nav nav-tabs d-flex align-content-between">
-                                    {images}
-                                </ul>
+                                <ul className="nav nav-tabs d-flex align-content-between">{images}</ul>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -254,15 +261,16 @@ const DetailProduct = (props:any) => {
                                                     stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
                                                         idProduct: productDetail?.id,
                                                         count: 1,
-                                                        accessToken: localStorage.getItem('token')
+                                                        accessToken: accessToken
                                                     }))
 
                                                     sendCountProductInCart();
 
                                                 }else{
-                                                    console.log("стом клиент не создан")
+                                                    console.log("Стом клиент не создан")
                                                 }
-                                            }}
+                                            }
+                                        }
                                                  className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В корзину</div> :
 
                                             <Link to="/cart">
@@ -287,7 +295,6 @@ const DetailProduct = (props:any) => {
                                 {showBlockDetail && <Detail productDetail={productDetail}/>}
                                 {showBlockReview && <Review productDetail={productDetail}/>}
                             </div>
-
                         </div>
                     </div>
 
@@ -296,13 +303,10 @@ const DetailProduct = (props:any) => {
                     <div className="ant107_shop-related-product mt-5">
                         <h3 className="mb-4">Похожие товары</h3>
                         <div className="row">
-
                             {relatedProductListJsx}
-
                         </div>
                     </div>
                 </main>
-
             </div>
         </div>
     );

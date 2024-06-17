@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import {ProductCartResponse} from "../../product/model/response/ProductCartResponse";
-import CartController from "./controller/CartController";
+import {ProductCartResponse} from "../../model/response/product/ProductCartResponse";
+import CartController from "../../controller/CartController";
 import {Link} from "react-router-dom";
 
 import {Client, Frame, over} from 'stompjs';
@@ -14,7 +14,7 @@ const Cart =()=>{
     const [products, setProducts] = useState<Array<ProductCartResponse>>([])
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
     const [totalPrice, setTotalPrice] = useState<number>(0);
-    const token:string|null =localStorage.getItem('token');
+    const accessToken:string|null =localStorage.getItem('token');
 
     const connect =()=>{
         let Sock = new SockJS('http://localhost:8080/ws');
@@ -30,10 +30,10 @@ const Cart =()=>{
 
 
     const sendCountProductInCart2 =()=>{
-        if (token!=null)
-            stompClient.send("/app/getCountProductInCart", {},token);
+        if (accessToken!=null)
+            stompClient.send("/app/getCountProductInCart", {},accessToken);
         else
-            console.log("Токен для sendCountProductInCart2 = "+token)
+            console.log("Токен для sendCountProductInCart2 = "+accessToken)
     }
 
 
@@ -46,6 +46,7 @@ const Cart =()=>{
         const response = await CartController.removeProductFromCart(idProduct, accessToken)
         setProducts(response);
     }
+
     async function getProductsFromCart(accessToken:string){
         try {
             const result = await CartController.getProductsFromCart(accessToken);
@@ -64,8 +65,8 @@ const Cart =()=>{
     };
 
     useEffect(()=>{
-        if (token!=null)
-            getProductsFromCart(token);
+        if (accessToken!=null)
+            getProductsFromCart(accessToken);
         connect();
 
     },[]);
@@ -80,11 +81,11 @@ const Cart =()=>{
             [id]: (prevState[id] || 0) + 1,
         }));
         const updatedCount = inputValues[id] + 1;
-        if(token!=null) {
-            sendCountProductInCart(id, updatedCount, token);
+        if(accessToken!=null) {
+            sendCountProductInCart(id, updatedCount, accessToken);
             updateTotalPrice(id, updatedCount);
         }else
-            console.log("Токен для handleIncrement = "+token);
+            console.log("Токен для handleIncrement = "+accessToken);
     };
 
     const handleDecrement = (id:number) => {
@@ -93,11 +94,11 @@ const Cart =()=>{
             [id]: Math.max((prevState[id] || 0) - 1, 0),
         }));
         const updatedCount = Math.max(inputValues[id] - 1, 0);
-        if(token!=null) {
-        sendCountProductInCart(id, updatedCount,token);
+        if(accessToken!=null) {
+        sendCountProductInCart(id, updatedCount,accessToken);
         updateTotalPrice(id, updatedCount);
         }else
-            console.log("Токен для handleIncrement = "+token);
+            console.log("Токен для handleIncrement = "+accessToken);
     };
 
     const updateTotalPrice = (id: number, count: number) => {
@@ -132,13 +133,14 @@ const Cart =()=>{
         <div key={index} className="ant107_shop-cart-single-item">
             <button type="button" className="close" onClick={() => {
                 //@ts-ignore
-                removeProductFromCart(product.idProduct, localStorage.getItem('token'));
+                removeProductFromCart(product.idProduct, token);
                 // // @ts-ignore
                 // localStorage.setItem(localStorage.getItem('countProductInCart')-1);
                 // @ts-ignore
                 getProductsFromCart(localStorage.getItem('token'));
             }}><i className="fas fa-times"></i>
-            </button><button onClick={sendCountProductInCart2}>bbb</button>
+            </button>
+            {/*<button onClick={sendCountProductInCart2}>bbb</button>*/}
             <div className="ant107_shop-product-img">
                 <img src={"data:image/png;base64,"+product.imageDtoList.at(0)?.base64} alt=""   style={{ width: "100px", height: "100px" }} />
             </div>
@@ -179,11 +181,10 @@ const Cart =()=>{
                                         <div className="ant107_shop-discount-wrapper">
                                             <form action="#" className="d-lg-block">
                                                 <input className="ant107_shop-br-10" type="text" placeholder="Купон"/>
-                                                <button
-                                                    className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10"
+                                                <button className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10"
                                                     type="submit">Применить купон
                                                 </button>
-                                            showInCart:true</form>
+                                            </form>
                                         </div>
                                     </div>
                                     <div className="col-lg-7">

@@ -1,21 +1,23 @@
-import api, {API_URL} from "../../http";
-import {CardProductResponse} from "../model/response/CardProductResponse";
-import {CategoryResponse} from "../model/response/CategoryResponse";
-import {ICategory} from "../model/ICategory";
-import {CategorySearchResponse} from "../model/response/CategorySearchResponse";
-import {FeedbackResponse} from "../../content/rating/response/FeedbackResponse";
-import {IFeedback} from "../../content/rating/model/IFeedback";
-import {IProductCart} from "../model/IProductCart";
-import {ProductCartResponse} from "../model/response/ProductCartResponse";
-import {IDetailProduct} from "../model/IDetailProduct";
+import api, {API_URL} from "../http";
+import {CardProductResponse} from "../model/response/product/CardProductResponse";
+import {CategoryResponse} from "../model/response/product/CategoryResponse";
+import {ICategory} from "../model/product/ICategory";
+import {CategorySearchResponse} from "../model/response/product/CategorySearchResponse";
+import {FeedbackResponse} from "../model/response/rating/FeedbackResponse";
+import {IFeedback} from "../model/rating/IFeedback";
+import {IProductCart} from "../model/product/IProductCart";
+import {ProductCartResponse} from "../model/response/product/ProductCartResponse";
+import {IDetailProduct} from "../model/product/IDetailProduct";
+import {ICardProduct} from "../model/product/ICardProduct";
 
-export default class ProductService{
-    static async getCardsProduct(){
-        return  api.get<CardProductResponse>('/api/v1/home/products')
+export default class ProductControllerP {
+
+    static async getCardsProduct():Promise<Array<ICardProduct>>{
+        return api.get<ICardProduct[]>('/api/v1/home/products')
             .then(response=>response.data);
     }
 
-    static async getProductDetail(id:number){
+    static async getProductDetail(id:number):Promise<IDetailProduct>{
         return api.get<IDetailProduct>('/api/v1/productDetail?id='+id)
             .then(response =>response.data);
     }
@@ -25,9 +27,7 @@ export default class ProductService{
             .then(response=>response.data);
     }
 
-    static async getProductsByCategory(category:ICategory){
-        console.log("categoryInService")
-        console.log(category.categoryProduct)
+    static async getProductsByCategory(category:ICategory):Promise<CardProductResponse>{
         return api.post<CardProductResponse>('/api/v1/category/product/'+category.categoryProduct,category)
             .then(response=>response.data);
     }
@@ -63,29 +63,21 @@ export default class ProductService{
     }
 
     static async increaseProductInCart(idProduct:number,accessToken:string){
-        console.log("Токен");
-        console.log(accessToken)
         return api.get<boolean>(`/api/v1/cart/increase?idProduct=${idProduct}&accessToken=${accessToken}`)
             .then(response=>response.data);
     }
 
     static async decreaseProductInCart(idProduct:number, accessToken:string){
-        console.log("Токен");
-        console.log(accessToken)
         return api.get<boolean>(`/api/v1/cart/decrease?idProduct=${idProduct}&accessToken=${accessToken}`)
             .then(response=>response.data);
     }
 
     static async sendCountProductInCart(idProduct:number,count:number,accessToken:string){
-        console.log("Токен");
-        console.log(accessToken)
         return api.get<boolean>(`/api/v1/cart/sendCountProductInCart?idProduct=${idProduct}&count=${count}&accessToken=${accessToken}`)
             .then(response=>response.data);
     }
 
     static async removeProductFromCart(idProduct:number,accessToken:string){
-        console.log("Токен");
-        console.log(accessToken)
         return api.get<Array<ProductCartResponse>>(`/api/v1/cart/remove?idProduct=${idProduct}&accessToken=${accessToken}`)
             .then(response=>response.data);
     }

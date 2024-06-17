@@ -9,6 +9,7 @@ import './../../login/vendor/css-hamburgers/hamburgers.min.css'
 import './../../login/vendor/select2/select2.min.css'
 import './../../login/css/util.css'
 import './../../login/css/main.css'
+import AuthService from "../../service/auth/AuthService";
 // import './../../login/vendor/jquery/jquery-3.2.1.min.js'
 // import './../../login/vendor/bootstrap/js/popper.js'
 // import './../../login/vendor/bootstrap/js/bootstrap.min.js'
@@ -20,7 +21,7 @@ const LoginPage: FC=()=>{
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] =useState<string>('');
 
-    const {store} =useContext(Context);
+    const {authService} =useContext(Context);
 
     return(
             <div className="limiter">
@@ -66,7 +67,7 @@ const LoginPage: FC=()=>{
 
                                 <div className="container-login100-form-btn">
                                     <button className="login100-form-btn"
-                                            onClick={() => store.login(username, password)}>
+                                            onClick={() => authService.login(username, password)}>
                                         Войти
                                     </button>
                                 </div>
