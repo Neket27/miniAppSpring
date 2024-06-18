@@ -7,7 +7,7 @@ import './../../../css/ant107_shop.css'
 import Product from "./product";
 import Category from "../category";
 import {ICardProduct} from "../../model/product/ICardProduct";
-import ProductControllerP from "../../controller/productControllerP";
+import ProductController from "../../controller/ProductController";
 import ProductService from "../../service/product/ProductService";
 
 
@@ -16,7 +16,7 @@ const Home=()=> {
 
     // async function getListProductOnHomePage(){
     //     try{
-    //         const response:ICardProduct[] = await ProductControllerP.getCardsProduct();
+    //         const response:ICardProduct[] = await ProductController.getCardsProduct();
     //         setProduct(response);
     //
     //     }catch (e){

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import ProductControllerP from "../../controller/productControllerP";
+import ProductController from "../../controller/ProductController";
 import {CategoryResponse} from "../../model/response/product/CategoryResponse";
 import {transliterate} from "transliteration";
 import {Link} from "react-router-dom";
@@ -12,13 +12,13 @@ const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>
     const [searchedProducts, setSearchedProducts] = useState<CategorySearchResponse[]>([]);
 
     async function getMapCategory(){
-        const response = ProductControllerP.getMapCategory();
+        const response = ProductController.getMapCategory();
         const jsonCategoryResponse=await response.then(r => r);
         setCategoryMap(jsonToMap(jsonCategoryResponse));
     }
 
     async function search(searchValue:string){
-        const response = await ProductControllerP.search(searchValue);
+        const response = await ProductController.search(searchValue);
         // console.log(response)
         setSearchedProducts([]);
         setSearchedProducts(response);

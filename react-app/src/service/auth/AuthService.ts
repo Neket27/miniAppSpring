@@ -25,7 +25,7 @@ export default class AuthService{
     async login(username:string,password:string){
         try{
             const response =await AuthController.login(username,password);
-            localStorage.setItem("token",response.accessToken);
+            localStorage.setItem("accessToken",response.accessToken);
             this.setAuth(true);
             this.setUser(response.user);
             let user:IUser={
@@ -45,7 +45,7 @@ export default class AuthService{
         try{
             const response =await AuthController.registration(username,password);
             console.log(response);
-            localStorage.setItem('token',response.accessToken);
+            localStorage.setItem('accessToken',response.accessToken);
             this.setAuth(true);
             let user:IUser={
                 id: response.user.id,
@@ -63,7 +63,7 @@ export default class AuthService{
         try{
             const response =await AuthController.logout();
             console.log(response);
-            localStorage.removeItem('token');
+            localStorage.removeItem('accessToken');
             this.setAuth(false);
             this.setUser({} as IUser);
         }catch (e){
@@ -75,7 +75,7 @@ export default class AuthService{
     async resetPassword(password:string,newPassword:string){
         try {
             const response =await AuthController.resetPassword(password,newPassword);
-            localStorage.setItem("token",response.accessToken);
+            localStorage.setItem("accessToken",response.accessToken);
             this.setAuth(true);
             this.setUser(response.user);
             const user:IUser={
@@ -100,7 +100,7 @@ export default class AuthService{
         try {
             // const response = await axios.post<AuthResponse>(`${API_URL}/api/v1/auth/refresh`,{withCredentials:true});
             const response = await AuthController.refresh();
-            localStorage.setItem('token',response.accessToken);
+            localStorage.setItem('accessToken',response.accessToken);
             this.setAuth(true);
             const user:IUser={
                 id: response.user.id,

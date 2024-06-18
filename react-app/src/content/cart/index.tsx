@@ -5,19 +5,21 @@ import {Link} from "react-router-dom";
 
 import {Client, Frame, over} from 'stompjs';
 import SockJS from 'sockjs-client';
+import {IProductCart} from "../../model/product/IProductCart";
+import CartService from "../../service/card/CartService";
 const URL = import.meta.env.VITE_URL;
 
 let stompClient:Client;
 
 const Cart =()=>{
 
-    const [products, setProducts] = useState<Array<ProductCartResponse>>([])
+    const [products, setProducts] = useState<Array<IProductCart>>()
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
     const [totalPrice, setTotalPrice] = useState<number>(0);
-    const accessToken:string|null =localStorage.getItem('token');
+    const accessToken:string|null =localStorage.getItem('accessToken');
 
     const connect =()=>{
-        let Sock = new SockJS('http://localhost:8080/ws');
+        let Sock = new SockJS(URL+"/ws");
         stompClient = over(Sock);
         stompClient.connect({},(frame) => {onConnected();}, (error:Frame|string) => {onError(error);});
     }
@@ -25,11 +27,11 @@ const Cart =()=>{
     const onConnected = () => {
         // stompClient.subscribe('/shoppingCart/public', onCountReceived);
         stompClient.subscribe('/shoppingCartCountProduct/public');
-        sendCountProductInCart2();
+        sendCountProductsInCart();
     }
 
 
-    const sendCountProductInCart2 =()=>{
+    const sendCountProductsInCart=()=>{
         if (accessToken!=null)
             stompClient.send("/app/getCountProductInCart", {},accessToken);
         else
@@ -43,14 +45,15 @@ const Cart =()=>{
 
 
     async function removeProductFromCart(idProduct:number, accessToken:string) {
-        const response = await CartController.removeProductFromCart(idProduct, accessToken)
-        setProducts(response);
+        const response:ProductCartResponse = await CartService.removeProductFromCart(idProduct, accessToken)
+        setProducts(response.productsInCard);
+        sendCountProductsInCart();
     }
 
     async function getProductsFromCart(accessToken:string){
         try {
-            const result = await CartController.getProductsFromCart(accessToken);
-            setProducts(result);
+            const result:ProductCartResponse = await CartService.getProductsFromCart(accessToken);
+            setProducts(result.productsInCard);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -58,7 +61,7 @@ const Cart =()=>{
 
     const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
         if (!isNaN(count)) {  // Проверка на то, что count является числом
-            const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
+            const response = await CartService.sendCountProductInCart(idProduct, count, accessToken);
         } else {
             console.error("Ошибка: Невалидное значение countProductsInBag");
         }
@@ -102,11 +105,13 @@ const Cart =()=>{
     };
 
     const updateTotalPrice = (id: number, count: number) => {
-        const product = products.find(product => product.idProduct === id);
+        const product:IProductCart|undefined = products?.find(product => product.idProduct === id);
         if (product) {
-            const productIndex = products.indexOf(product);
-            const updatedProducts = [...products];
-            updatedProducts[productIndex] = { ...product, count };
+            const productIndex:number|undefined = products?.indexOf(product);
+            // @ts-ignore
+            const updatedProducts:Array<IProductCart> = [...products];
+            if(productIndex!=undefined)
+                updatedProducts[productIndex] = { ...product, count };
             setProducts(updatedProducts);
 
             const totalPrice = updatedProducts.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
@@ -117,28 +122,27 @@ const Cart =()=>{
 
     useEffect(() => {
         // products - это состояние, содержащее массив продуктов
-        products.forEach((product) => {
+        products?.forEach((product) => {
             setInputValues((prevInputValues) => ({
                 ...prevInputValues,
                 [product.idProduct]: product.count
             }));
         });
 
-        const totalPrice = products.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
-        setTotalPrice(totalPrice);
+
+        const totalPrice:number|undefined = products?.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
+        if(totalPrice!=undefined)
+            setTotalPrice(totalPrice);
     }, [products]);
 
 
-    const productsJsx = products.map((product,index) =>
+    const productsJsx = products?.map((product, index) =>
         <div key={index} className="ant107_shop-cart-single-item">
             <button type="button" className="close" onClick={() => {
-                //@ts-ignore
-                removeProductFromCart(product.idProduct, token);
-                // // @ts-ignore
-                // localStorage.setItem(localStorage.getItem('countProductInCart')-1);
-                // @ts-ignore
-                getProductsFromCart(localStorage.getItem('token'));
-            }}><i className="fas fa-times"></i>
+                if(accessToken!=null)
+                    removeProductFromCart(product.idProduct, accessToken);
+            }}>
+                <i className="fas fa-times"></i>
             </button>
             {/*<button onClick={sendCountProductInCart2}>bbb</button>*/}
             <div className="ant107_shop-product-img">
