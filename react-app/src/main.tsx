@@ -4,14 +4,18 @@ import App from './App'
 import {BrowserRouter} from 'react-router-dom';
 import AuthService from "./service/auth/AuthService";
 
+
 export interface State {
-    authService:AuthService
+    authService:AuthService;
+    // websocketApi:WebsocketApi;
 }
 
 const authService = new AuthService();
+// const websocketApi = new WebsocketApi();
 
 export const Context = createContext<State>({
-    authService
+    authService,
+    // websocketApi,
 });
 
 

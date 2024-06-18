@@ -1,69 +1,35 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, { useEffect, useState } from "react";
 import '../../init';
 import '../../fileTemplate/navbar/style.css';
 import '../../fileTemplate/navbar/fonts/icomoon/style.css';
-
-import '../../fileTemplate/navbar/aos.css'
-import '../../fileTemplate/navbar/bootstrap/bootstrap-grid.css'
-import '../../fileTemplate/navbar/bootstrap/bootstrap-reboot.css'
-import '../../fileTemplate/navbar/bootstrap.min.css'
-import '../../fileTemplate/navbar/jquery-ui.css'
-import '../../fileTemplate/navbar/magnific-popup.css'
-import '../../fileTemplate/navbar/owl.carousel.min.css'
-import '../../fileTemplate/navbar/owl.theme.default.min.css'
-import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css'
-// import '../../navbar/fonts/icomoon/demo-files/demo.js'
-// import '../../navbar/fonts/icomoon'
-
+import '../../fileTemplate/navbar/aos.css';
+import '../../fileTemplate/navbar/bootstrap/bootstrap-grid.css';
+import '../../fileTemplate/navbar/bootstrap/bootstrap-reboot.css';
+import '../../fileTemplate/navbar/bootstrap.min.css';
+import '../../fileTemplate/navbar/jquery-ui.css';
+import '../../fileTemplate/navbar/magnific-popup.css';
+import '../../fileTemplate/navbar/owl.carousel.min.css';
+import '../../fileTemplate/navbar/owl.theme.default.min.css';
+import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css';
 import { Link } from "react-router-dom";
-import { Context } from "../../main";
-import {Client, Frame, Message, over} from 'stompjs';
-import SockJS from 'sockjs-client';
-const URL = import.meta.env.VITE_URL;
-
-let stompClient:Client;
+import WebsocketApi from "../../websocketApi";
+import {Message} from "stompjs";
 
 const Navbar = () => {
     const [countProductInCart, setCountProductInCart] = useState(0);
-    const accessToken = localStorage.getItem('accessToken');
+    const websocket = new WebsocketApi();
 
-    const connect =()=>{
-        let Sock = new SockJS(URL+'/ws');
-        stompClient = over(Sock);
-        stompClient.connect({},(frame) => {onConnected();}, (error:Frame|string) => {onError(error);});
-    }
-
-    const onConnected = () => {
-        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
-        sendCountProductsInCart();
-    }
-
-    const sendCountProductsInCart =()=>{
-        if(accessToken!=null)
-            stompClient.send("/app/getCountProductInCart", {},accessToken);
-    }
-
-    const onCountReceived =(val:Message)=>{
-        setCountProductInCart(parseInt(val.body))
-    }
-
-
-
-    const getShoppingCartCountProduct =(val:Message)=>{
-        setCountProductInCart(parseInt(val.body))
-    }
-
-    const onError = (err:Frame|string):void => {
-        console.log(err);
-    }
+    const getShoppingCartCountProduct = (val: Message) => {
+        setCountProductInCart(parseInt(val.body));
+    };
 
     useEffect(() => {
-       connect();
+      let c= websocket.connect('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
+      //  c.send('/app/getCountProductInCart',{},localStorage.getItem('accessToken'));
     }, []);
 
     return (
         <div className="site-navbar bg-white py-2">
-
             <div className="search-wrap">
                 <div className="container">
                     <a href="#" className="search-close js-search-close"><span className="icon-close2"></span></a>
@@ -102,8 +68,6 @@ const Navbar = () => {
 
                                 <li className="active"><a href="shop.html">Shop</a></li>
                                 <li><Link to="/dashboard">Catalogue</Link></li>
-                                {/*<li><a href="#">New Arrivals</a></li>*/}
-                                {/*<li><a href="contact.html">Contact</a></li>*/}
                             </ul>
                         </nav>
                     </div>
@@ -117,7 +81,6 @@ const Navbar = () => {
                                      className="bi bi-bag" viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
                                 </svg>
                             </span>
-
                             <span className="number">{countProductInCart}</span>
                         </Link>
                         <Link to="/login" className="icons-btn d-inline-block">
@@ -146,5 +109,6 @@ const Navbar = () => {
                     crossOrigin="anonymous"></script>
         </div>
     );
-}
+};
+
 export default Navbar;
