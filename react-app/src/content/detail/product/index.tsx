@@ -1,31 +1,24 @@
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import '../../../init';
 import {Link, useLocation, useParams} from "react-router-dom";
-import ProductControllerP from "../../../controller/productControllerP";
 import {IDetailProduct} from "../../../model/product/IDetailProduct";
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
 import "./../../../../js/jquery.magnify.js"
-import {ICardProduct} from "../../../model/product/ICardProduct";
 import Review from "./swithBlocks/review";
 import Detail from "./swithBlocks/detail";
-import CartController from "../../../controller/CartController";
 import {ProductCartResponse} from "../../../model/response/product/ProductCartResponse";
 import {observer} from "mobx-react-lite";
-import {Context} from "../../../main";
-
-const URL = import.meta.env.VITE_URL;
-
 import {Client, Frame, Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
 import {CardProductResponse} from "../../../model/response/product/CardProductResponse";
-import {ProductDetailResponse} from "../../../model/response/product/ProductDetailResponse";
 import ProductService from "../../../service/product/ProductService";
+
+const URL = import.meta.env.VITE_URL;
 
 let stompClient:Client;
 
 const DetailProduct = (props:any) => {
-    const {updateCountProductInCart} = useContext(Context);
     const location = useLocation();
     const { typeId } = useParams<{ typeId: string }>();
     const [productDetail, setProductDetail] = useState<IDetailProduct|undefined>(undefined);
@@ -36,7 +29,8 @@ const DetailProduct = (props:any) => {
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
-    const accessToken:string|null =localStorage.getItem('token');
+    const accessToken:string|null =localStorage.getItem('accessToken');
+
 
     const connect =()=>{
         let Sock = new SockJS('http://localhost:8080/ws');
@@ -58,21 +52,20 @@ const DetailProduct = (props:any) => {
         stompClient.send("/app/getNumberOfPiecesOfGoods", {},JSON.stringify({idProduct:productDetail?.id,accessToken:accessToken}));
     }
 
-    const sendCountProductInCart =()=>{
-        let token:string|null =localStorage.getItem('token');
-        if(token!=null)
-            stompClient.send("/app/getCountProductInCart", {},token);
+    const sendCountProductsInCart =()=>{
+        if(accessToken!=null)
+            stompClient.send("/app/getCountProductInCart", {},accessToken);
         else
             onError("Токен в sendCountProductInCart == null");
     }
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
         setCountProductsInCart(parseInt(val.body))
-        console.log("productCount= "+val.body)
+        sendCountProductsInCart();
     }
 
     const getShoppingCartCountProduct =(val:Message)=>{
-        console.log("ShoppingCartCountProduct= "+val.body)
+      //  console.log("ShoppingCartCountProduct= "+val.body)
     }
 
     const onError = (err:Frame|string) => {
@@ -84,64 +77,21 @@ const DetailProduct = (props:any) => {
             stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
                 idProduct: productDetail?.id,
                 count: count,
-                accessToken: localStorage.getItem('token')
+                accessToken: accessToken
             }))
-
-            sendCountProductInCart();
 
         }else{
             console.log("Стом клиент не создан")
         }
     }
-    // async function getProductByCategory(category: string) {
-    //     try {
-    //         const response:CardProductResponse = await ProductControllerP.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
-    //         setRelatedProducts(response);
-    //     } catch (error) {
-    //         console.error("Error fetching related products:", error);
-    //     }
-    // }
-    //
-    // async function getProductDetail() {
-    //     try {
-    //             if(typeId!=undefined) {
-    //                 const response:IDetailProduct = await ProductControllerP.getProductDetail(parseInt(typeId, 10));
-    //                 setProductDetail(response);
-    //             }else {
-    //                 console.error("TypeId for 'getProductDetail'= ", typeId);
-    //             }
-    //     } catch (error) {
-    //         console.error("Error fetching product detail:", error);
-    //     }
-    // }
-    //
-    // async function getProductFromCart(idProduct: number, accessToken: string) {
-    //     try {
-    //         const response = await CartController.getProductFromCart(idProduct, accessToken);
-    //         setProductFromCart(response);
-    //     } catch (error) {
-    //         console.error("Error fetching product from cart:", error);
-    //     }
-    // }
-    // const sendCountProductInCartUser = async (idProduct: number, count: number, accessToken: string) => {
-    //     if (!isNaN(count)) {  // Проверка на то, что count является числом
-    //         const response = await CartController.sendCountProductInCart(idProduct, count, accessToken);
-    //     } else {
-    //         console.error("Ошибка: Невалидное значение countProductsInBag");
-    //     }
-    // };
-
-   // async function getProductDetail(){
-   //      if(typeId!=undefined) {
-   //          const response = await ProductControllerP.getProductDetail(parseInt(typeId, 10));
-   //          setProductDetail(response);
-   //      }
-   //  }
 
     async function getProductDetail(){
-        // @ts-ignore
-        const response = await ProductService.getProductDetail(parseInt(typeId, 10))
-        setProductDetail(response);
+        if(typeId!=undefined) {
+            const response = await ProductService.getProductDetail(parseInt(typeId, 10))
+            setProductDetail(response);
+        }else {
+            console.log("ID продукта в getProductDetail == undefined")
+        }
     }
 
     useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
@@ -214,7 +164,6 @@ const DetailProduct = (props:any) => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
-            {/*<button onClick={sendCountProductInCart}>knob</button>*/}
             <div className="container">
                 <main>
                     <div className="row">
@@ -263,8 +212,6 @@ const DetailProduct = (props:any) => {
                                                         count: 1,
                                                         accessToken: accessToken
                                                     }))
-
-                                                    sendCountProductInCart();
 
                                                 }else{
                                                     console.log("Стом клиент не создан")

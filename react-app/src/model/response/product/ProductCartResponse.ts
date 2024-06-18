@@ -1,10 +1,5 @@
-import {IImageProduct} from "../../product/IImageProduct";
+import {IProductCart} from "../../product/IProductCart";
 
 export interface ProductCartResponse{
-    idProduct:number,
-    name:string;
-    cost:number;
-    count:number;
-    showInCart:boolean
-    imageDtoList:Array<IImageProduct>
+   productsInCard:Array<IProductCart>
 }

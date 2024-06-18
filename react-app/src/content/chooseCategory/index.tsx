@@ -7,7 +7,7 @@ import './../../../css/ant107_shop.css'
 import Category from "../category";
 import Product from "../home/product";
 import {ICategory} from "../../model/product/ICategory";
-import ProductControllerP from "../../controller/productControllerP";
+import ProductController from "../../controller/ProductController";
 import {ICardProduct} from "../../model/product/ICardProduct";
 import {useParams} from "react-router-dom";
 import translit from 'cyrillic-to-translit-js';
@@ -17,7 +17,7 @@ import {CardProductResponse} from "../../model/response/product/CardProductRespo
 const ChooseCategory=()=> {
     const [products,setProducts]=useState<ICardProduct[]>([]);
     async function getProductByCategory(category:ICategory){
-        const response:CardProductResponse = await ProductControllerP.getProductsByCategory(category);
+        const response:CardProductResponse = await ProductController.getProductsByCategory(category);
         setProducts(response);
     }
 
