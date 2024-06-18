@@ -1,5 +1,5 @@
 import {ICardProduct} from "../../model/product/ICardProduct";
-import ProductControllerP from "../../controller/productControllerP";
+import ProductController from "../../controller/ProductController";
 import {CardProductResponse} from "../../model/response/product/CardProductResponse";
 import {IDetailProduct} from "../../model/product/IDetailProduct";
 import CartController from "../../controller/CartController";
@@ -11,7 +11,7 @@ export default class ProductService {
    // @ts-ignore
     static async getListProductOnHomePage(): Promise<ICardProduct[]> {
         try{
-            const response:Promise<Array<ICardProduct>> = ProductControllerP.getCardsProduct();
+            const response:Promise<Array<ICardProduct>> = ProductController.getCardsProduct();
             if(response!=undefined)
                 return response;
 
@@ -25,7 +25,7 @@ export default class ProductService {
     // @ts-ignore
     static async getProductByCategory(category: string):Promise<CardProductResponse> {
         try {
-            const response:CardProductResponse = await ProductControllerP.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
+            const response:CardProductResponse = await ProductController.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
             return response
         } catch (error) {
             console.error("Error fetching related products:", error);
@@ -36,7 +36,7 @@ export default class ProductService {
     static async getProductDetail(idProduct:number): Promise<IDetailProduct> {
         try {
             if(idProduct!=undefined)
-                return await ProductControllerP.getProductDetail(idProduct);
+                return await ProductController.getProductDetail(idProduct);
             else
                 console.error("TypeId for 'getProductDetail'= ", idProduct);
 
@@ -63,6 +63,6 @@ export default class ProductService {
         }
     };
     static async addRating(feedback:IFeedback):Promise<void>{
-        await ProductControllerP.addRating(feedback);
+        await ProductController.addRating(feedback);
     };
 }

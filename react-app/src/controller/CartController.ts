@@ -1,55 +1,42 @@
-import ProductControllerP from "./productControllerP";
+import ProductController from "./ProductController";
 import {IProductCart} from "../model/product/IProductCart";
 import {ProductCartResponse} from "../model/response/product/ProductCartResponse";
+import api from "../http";
 
 export default class CartController {
-  static  async  getProductsFromCart(accessToken: string) {
-        try {
-            const response = await ProductControllerP.getProductsFromCart(accessToken);
-            return response; // Возвращаем response
-        } catch (error) {
-            console.error("Error fetching products from cart:", error);
-            throw error;
-        }
+    static async addProductInCart(productCart:IProductCart){
+        return api.post<Array<ProductCartResponse>>('/api/v1/cart/add',productCart)
+            .then(response=>response.data);
     }
 
-    static  async  getProductFromCart(idProduct:number,accessToken: string):Promise<ProductCartResponse> {
-        try {
-            return await ProductControllerP.getProductFromCart(idProduct, accessToken); // Возвращаем response
-        } catch (error) {
-            console.error("Error fetching products from cart:", error);
-            throw error;
-        }
+    static async getProductFromCart(idProduct:number, accessToken:string){
+        return api.get<ProductCartResponse>(`/api/v1/cart/getProduct?idProduct=${idProduct}&accessToken=${accessToken}`)
+            .then(response=>response.data);
     }
 
- static   async addProductInCart(productCart:IProductCart){
-     const response =   await ProductControllerP.addProductInCart(productCart);
-     return response;
+    static async getProductsFromCart(accessToken:string):Promise<Array<IProductCart>>{
+        return api.get<Array<IProductCart>>('/api/v1/cart?accessToken=' + accessToken)
+            .then(response => response.data);
     }
 
-  static  async  removeProductFromCart(idProduct: number, accessToken: string) {
-        const response = await ProductControllerP.removeProductFromCart(idProduct, accessToken);
-        return response;
+    static async increaseProductInCart(idProduct:number,accessToken:string){
+        return api.get<boolean>(`/api/v1/cart/increase?idProduct=${idProduct}&accessToken=${accessToken}`)
+            .then(response=>response.data);
     }
 
-    static  async  increaseProductInCart(idProduct: number, accessToken: string) {
-        const response = await ProductControllerP.increaseProductInCart(idProduct, accessToken);
-        return response;
+    static async decreaseProductInCart(idProduct:number, accessToken:string){
+        return api.get<boolean>(`/api/v1/cart/decrease?idProduct=${idProduct}&accessToken=${accessToken}`)
+            .then(response=>response.data);
     }
 
-    static  async  decreaseProductInCart(idProduct: number,  accessToken: string) {
-        const response = await ProductControllerP.decreaseProductInCart(idProduct, accessToken);
-        return response;
+    static async sendCountProductInCart(idProduct:number,count:number,accessToken:string){
+        return api.get<boolean>(`/api/v1/cart/sendCountProductInCart?idProduct=${idProduct}&count=${count}&accessToken=${accessToken}`)
+            .then(response=>response.data);
     }
 
-    static  async  sendCountProductInCart(idProduct: number,count:number, accessToken: string) {
-        const response = await ProductControllerP.sendCountProductInCart(idProduct,count, accessToken);
-        return response;
+    static async removeProductFromCart(idProduct:number,accessToken:string):Promise<Array<IProductCart>>{
+        return api.get<Array<IProductCart>>(`/api/v1/cart/remove?idProduct=${idProduct}&accessToken=${accessToken}`)
+            .then(response=>response.data);
     }
-
-    // static async getCountProductInCart(accessToken: string){
-    //     const response = await ProductControllerP.getCountProductInCart(accessToken);
-    //     return response;
-    // }
 
 }

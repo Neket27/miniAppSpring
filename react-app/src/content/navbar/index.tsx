@@ -17,31 +17,30 @@ import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css'
 
 import { Link } from "react-router-dom";
 import { Context } from "../../main";
-import {Message, over} from 'stompjs';
+import {Client, Frame, Message, over} from 'stompjs';
 import SockJS from 'sockjs-client';
 const URL = import.meta.env.VITE_URL;
 
-var stompClient:any =null;
+let stompClient:Client;
 
 const Navbar = () => {
     const [countProductInCart, setCountProductInCart] = useState(0);
-    const { updateCountProductInCart } = useContext(Context);
-    const webSocket =useRef(0);
+    const accessToken = localStorage.getItem('accessToken');
 
     const connect =()=>{
-        let Sock = new SockJS('http://localhost:8080/ws');
+        let Sock = new SockJS(URL+'/ws');
         stompClient = over(Sock);
-        stompClient.connect({},onConnected, onError);
+        stompClient.connect({},(frame) => {onConnected();}, (error:Frame|string) => {onError(error);});
     }
 
     const onConnected = () => {
-       // stompClient.subscribe('/shoppingCart/public', onCountReceived);
         stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
-    sendCountProductInCart();
+        sendCountProductsInCart();
     }
 
-    const sendCountProductInCart =()=>{
-        stompClient.send("/app/getCountProductInCart", {},localStorage.getItem('token'));
+    const sendCountProductsInCart =()=>{
+        if(accessToken!=null)
+            stompClient.send("/app/getCountProductInCart", {},accessToken);
     }
 
     const onCountReceived =(val:Message)=>{
@@ -54,7 +53,7 @@ const Navbar = () => {
         setCountProductInCart(parseInt(val.body))
     }
 
-    const onError = (err:string):void => {
+    const onError = (err:Frame|string):void => {
         console.log(err);
     }
 
