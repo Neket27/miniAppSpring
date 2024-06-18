@@ -1,38 +1,54 @@
-// import io from 'socket.io-client';
-//
-// const socket = io(); // Подключение к текущему хосту (или к вашему серверу WebSocket)
-//
-// export const websocketApi = {
-//     post: (path: string, data: any) => {
-//         return new Promise((resolve, reject) => {
-//             socket.emit('post', { path, data });
-//
-//             socket.on('response', (responseData: any) => {
-//                 resolve(responseData);
-//             });
-//
-//             socket.on('error', (error: any) => {
-//                 reject(error);
-//             });
-//         });
-//     }
-// };
-//
-//
-//
-// export const getCountProductInCart = async (accessToken: string) => {
-//     return new Promise<number>((resolve, reject) => {
-//         // Отправляем запрос на сервер WebSocket с указанием пути и токена доступа
-//         socket.emit('getCountProductInCart', `/api/v1/cart/count?accessToken=${accessToken}`);
-//
-//         // Обработка ответа от сервера WebSocket
-//         socket.on('countProductInCart', (count: number) => {
-//             resolve(count);
-//         });
-//
-//         // Обработка ошибок
-//         socket.on('error', (error: any) => {
-//             reject(error);
-//         });
-//     });
-// };
+import { Client, Frame, Message, over } from "stompjs";
+import SockJS from "sockjs-client";
+
+const URL = import.meta.env.VITE_URL;
+
+class WebsocketApi {
+    private stompClient: Client | null;
+    private accessToken: string | null;
+
+    constructor() {
+        this.stompClient = null;
+        this.accessToken = localStorage.getItem('accessToken');
+    }
+
+    public connect(destination: string, callback: (message: Message) => void) {
+        const sock = new SockJS(`${URL}/ws`);
+        this.stompClient = over(sock);
+        this.stompClient.connect({}, () => { this.onConnected(destination, callback); }, this.onError);
+    return this.stompClient;
+    }
+
+    private onConnected(destination: string, callback: (message: Message) => void): void {
+        if (this.stompClient) {
+            this.stompClient.subscribe(destination, callback);
+            this.sendCountProductsInCart('/app/getCountProductInCart');
+        }
+    }
+
+    private sendCountProductsInCart(path: string): void {
+        if (this.stompClient && this.accessToken) {
+            this.stompClient.send(path, {}, this.accessToken);
+        }
+    }
+
+    private onError(error: Frame | string): void {
+        console.error("WebSocket error:", error);
+    }
+
+    public send(destination: string, body: any): void {
+        if (this.stompClient) {
+            this.stompClient.send(destination, {}, body);
+        }
+    }
+
+    public disconnect(): void {
+        if (this.stompClient) {
+            this.stompClient.disconnect(() => {
+                console.log("WebSocket disconnected");
+            });
+        }
+    }
+}
+
+export default WebsocketApi;
