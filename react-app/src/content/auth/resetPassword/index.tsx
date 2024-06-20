@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Context} from "../../main";
+import {Context} from "../../../main";
 
 const ResetPassword=()=> {
     const [password, setUsername] = useState<string>('');

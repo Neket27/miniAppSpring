@@ -4,6 +4,7 @@ import windicss from 'vite-plugin-windicss';
 export default defineConfig({
   server: {
 
+
     // cors: {
     //   origin: false
     // },
@@ -15,6 +16,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
       '/ws': {
+        target: 'ws://localhost:8080',
+        changeOrigin: true,
+        ws: true,
+      },
+      '/socket.io': {
         target: 'ws://localhost:8080',
         changeOrigin: true,
         ws: true,

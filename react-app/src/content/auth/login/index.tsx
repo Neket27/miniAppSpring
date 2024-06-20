@@ -1,15 +1,15 @@
 import React, { FC, useContext, useState} from 'react';
-import {Context} from "../../main";
+import {Context} from "../../../main";
 import {Link} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 
-import './../../login/vendor/bootstrap/css/bootstrap.min.css'
-import './../../login/vendor/animate/animate.css'
-import './../../login/vendor/css-hamburgers/hamburgers.min.css'
-import './../../login/vendor/select2/select2.min.css'
-import './../../login/css/util.css'
-import './../../login/css/main.css'
-import AuthService from "../../service/auth/AuthService";
+import '../../../login/vendor/bootstrap/css/bootstrap.min.css'
+import '../../../login/vendor/animate/animate.css'
+import '../../../login/vendor/css-hamburgers/hamburgers.min.css'
+import '../../../login/vendor/select2/select2.min.css'
+import '../../../login/css/util.css'
+import '../../../login/css/main.css'
+import AuthService from "../../../service/auth/AuthService";
 // import './../../login/vendor/jquery/jquery-3.2.1.min.js'
 // import './../../login/vendor/bootstrap/js/popper.js'
 // import './../../login/vendor/bootstrap/js/bootstrap.min.js'
@@ -90,25 +90,6 @@ const LoginPage: FC=()=>{
                     </div>
                 </div>
             </div>
-
-        // <div>
-        //     <h1>Login page</h1>
-        //     <input
-        //         onChange={e => setUsername(e.target.value)}
-        //         value={username}
-        //         type="text"
-        //         placeholder="Username"
-        //     />
-        //
-        //     <input
-        //         onChange={e => setPassword(e.target.value)}
-        //         value={password}
-        //         type="password"
-        //         placeholder="Password"
-        //     />
-        //     <button onClick={() => store.login(username, password)}>Войти</button>
-        //     <button><Link to="/register">Регистрация</Link></button>
-        // </div>
 
     );
 
