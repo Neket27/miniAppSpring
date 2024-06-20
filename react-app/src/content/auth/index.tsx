@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Home from "../content/home";
+import Home from "../home";
 import LoginPage from "./login";
 import RegisterPage from "./registreition";
 import ResetPassword from "./resetPassword";

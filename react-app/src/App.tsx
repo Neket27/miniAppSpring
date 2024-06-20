@@ -1,5 +1,4 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import AuthRootComponent from "./auth";
 import {Route, Routes} from "react-router-dom";
 import {Context, State} from "./main";
 import {observer} from "mobx-react-lite";
@@ -7,10 +6,17 @@ import DetailProduct from "./content/detail/product";
 import ChooseCategory from "./content/chooseCategory";
 import Cart from "./content/cart";
 import Navbar from "./content/navbar";
+import AuthRootComponent from "./content/auth";
+import {Client, Message} from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
+
 
 const App:FC=()=> {
     const state:State= useContext(Context);
     const [orders, setOrders] = useState<Array<any>>([]);
+
+
 
     function addToOrder(item:any){
         // setState({orders:[...this.state.orders,item]})

@@ -243,6 +243,20 @@ iframe {
   padding: 0 30px 0 68px;
 }
 
+.temporary-block{
+  font-family: Poppins-Medium;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #666666;
+
+  display: block;
+  width: 100%;
+  background: #e6e6e6;
+  height: 25px;
+  border-radius: 25px;
+  padding: 0 10px 0 5px;
+}
+
 
 /*------------------------------------------------------------------
 [ Focus ]*/

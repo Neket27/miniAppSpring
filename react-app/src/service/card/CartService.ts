@@ -1,8 +1,16 @@
 import {ProductCartResponse} from "../../model/response/product/ProductCartResponse";
 import {IProductCart} from "../../model/product/IProductCart";
 import CartController from "../../controller/CartController";
+import WebsocketApi from "../../websocketApi";
+import WebSocketService from "../ws/WebSocketService";
+import {Client, Message} from '@stomp/stompjs';
+import {Context, State} from "../../main";
+import {useContext} from "react";
+
 
 export default class CartService {
+
+
     static  async  getProductsFromCart(accessToken: string):Promise<ProductCartResponse> {
         try {
             const response = await CartController.getProductsFromCart(accessToken);
@@ -47,5 +55,21 @@ export default class CartService {
         return await CartController.sendCountProductInCart(idProduct, count, accessToken);
     }
 
+   static getCountProductInCart(callback: (message: Message) => void){
+        const webSocketService = new WebSocketService();
+       webSocketService.connect('/shoppingCartCountProduct/public', callback);
+       // this.sendCountProductCart(websocketApi, localStorage.getItem('accessToken'));
+    }
+
+    static sendCountProductCart(context:State): void {
+        console.log("sendCountProductCart");
+        context.stompClient.activate();
+        console.log("client con2= "+context.stompClient.connected);
+        if(context.stompClient.connected && context.stompClient.active){} {
+            // @ts-ignore
+            context.stompClient.publish({destination: '/app/getCountProductInCart', body: localStorage.getItem('accessToken')});
+            console.log("SEND")
+        }
+        }
 
 }
