@@ -3,32 +3,33 @@ import SockJS from "sockjs-client";
 
 const URL = import.meta.env.VITE_URL;
 
+export let stompClient: Client | null;
+
 class WebsocketApi {
-    private stompClient: Client | null;
     private accessToken: string | null;
 
     constructor() {
-        this.stompClient = null;
+        stompClient = null;
         this.accessToken = localStorage.getItem('accessToken');
     }
 
     public connect(destination: string, callback: (message: Message) => void) {
         const sock = new SockJS(`${URL}/ws`);
-        this.stompClient = over(sock);
-        this.stompClient.connect({}, () => { this.onConnected(destination, callback); }, this.onError);
-    return this.stompClient;
+        stompClient = over(sock);
+        stompClient.connect({}, () => { this.onConnected(destination, callback); }, this.onError);
+        return stompClient
     }
 
     private onConnected(destination: string, callback: (message: Message) => void): void {
-        if (this.stompClient) {
-            this.stompClient.subscribe(destination, callback);
-            this.sendCountProductsInCart('/app/getCountProductInCart');
+        if (stompClient) {
+            stompClient.subscribe(destination, callback);
+           // this.sendCountProductsInCart('/app/getCountProductInCart');
         }
     }
 
     private sendCountProductsInCart(path: string): void {
-        if (this.stompClient && this.accessToken) {
-            this.stompClient.send(path, {}, this.accessToken);
+        if (stompClient && this.accessToken) {
+            stompClient.send(path, {}, this.accessToken);
         }
     }
 
@@ -37,18 +38,31 @@ class WebsocketApi {
     }
 
     public send(destination: string, body: any): void {
-        if (this.stompClient) {
-            this.stompClient.send(destination, {}, body);
+        // if (stompClient) {
+        //     stompClient.send(destination, {}, body);
+        // }
+
+        if (stompClient?.ws && stompClient.ws.readyState === SockJS.OPEN) {
+            stompClient.send('/app/getCountProductInCart', {}, body);
+        } else {
+            console.error('WebSocket is not open. ReadyState:', stompClient?.ws.readyState);
         }
     }
 
+
     public disconnect(): void {
-        if (this.stompClient) {
-            this.stompClient.disconnect(() => {
+        if (stompClient) {
+            stompClient.disconnect(() => {
                 console.log("WebSocket disconnected");
             });
         }
     }
+
+
+
+
+
+
 }
 
 export default WebsocketApi;

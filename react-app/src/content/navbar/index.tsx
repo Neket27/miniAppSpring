@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import '../../init';
 import '../../fileTemplate/navbar/style.css';
 import '../../fileTemplate/navbar/fonts/icomoon/style.css';
@@ -11,25 +11,69 @@ import '../../fileTemplate/navbar/magnific-popup.css';
 import '../../fileTemplate/navbar/owl.carousel.min.css';
 import '../../fileTemplate/navbar/owl.theme.default.min.css';
 import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css';
-import { Link } from "react-router-dom";
-import WebsocketApi from "../../websocketApi";
+import {Link} from "react-router-dom";
 import {Message} from "stompjs";
+
+import {Socket} from "socket.io-client";
+import CartService from "../../service/card/CartService";
+import webSocketService from "../../service/ws/WebSocketService";
+import WebSocketService from "../../service/ws/WebSocketService";
+import {Context, State} from "../../main";
+
+let socket:Socket|null = null;
 
 const Navbar = () => {
     const [countProductInCart, setCountProductInCart] = useState(0);
-    const websocket = new WebsocketApi();
-
+    const webSocketService = new WebSocketService();
+    const context:State = useContext(Context);
     const getShoppingCartCountProduct = (val: Message) => {
         setCountProductInCart(parseInt(val.body));
     };
 
+
+    // const sendMessage = ()=>{
+    //     SocketAPI.socket?.emit("/shoppingCartCountProduct/public",getShoppingCartCountProduct);
+    // }
+
+const handler =()=>CartService.sendCountProductCart(context);
+
+ // function createConnection(){
+ //        socket = io("http://localhost:8080");
+ //
+ //        socket.on("connect",()=>{
+ //            console.log("Connected");
+ //        });
+ //
+ //        socket.on("disconnect",(e)=>{
+ //            console.log("Disconnected");
+ //        });
+ //    }
+
+
+
+    // useConnectedSocket();
+    // sendMessage();
+    CartService.getCountProductInCart(getShoppingCartCountProduct);
+
     useEffect(() => {
-      let c= websocket.connect('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
-      //  c.send('/app/getCountProductInCart',{},localStorage.getItem('accessToken'));
+        // CartService.getCountProductInCart(getShoppingCartCountProduct);
+
+
+// createConnection();
+        // socket?.emit("/shoppingCartCountProduct/public",getShoppingCartCountProduct);
+
+      // if(  stompClient?.ws.OPEN  ){
+      //     console.log("ws status= "+ stompClient.ws.OPEN )
+      // stompClient.send('/app/getCountProductInCart',{},localStorage.getItem('accessToken'));
+      //     }
+
     }, []);
 
     return (
         <div className="site-navbar bg-white py-2">
+            <button onClick={()=>{handler()
+            console.log("kl")
+            }}>hhh</button>
             <div className="search-wrap">
                 <div className="container">
                     <a href="#" className="search-close js-search-close"><span className="icon-close2"></span></a>
