@@ -1,5 +1,5 @@
-import {IProductCart} from "../../product/IProductCart";
+import {IProductBag} from "../../product/IProductBag";
 
 export interface ProductCartResponse{
-   productsInCard:Array<IProductCart>
+   productsInCard:Array<IProductBag>
 }

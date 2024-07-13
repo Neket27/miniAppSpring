@@ -13,7 +13,7 @@ const api = axios.create({
 api.interceptors.request.use((config:any)=>{
 //     let refreshToken=localStorage.getItem('token');
 //     if(refreshToken)
-    config.headers.Authorization=`Bearer ${localStorage.getItem('token')}`;
+    config.headers.Authorization=`Bearer ${localStorage.getItem('accessToken')}`;
     return config;
 });
 
