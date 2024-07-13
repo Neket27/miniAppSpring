@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import './../../../css/style.css'
 import './../../../css/bootstrap.min.css'
@@ -7,30 +7,22 @@ import './../../../css/ant107_shop.css'
 import Product from "./product";
 import Category from "../category";
 import {ICardProduct} from "../../model/product/ICardProduct";
-import ProductController from "../../controller/ProductController";
-import ProductService from "../../service/product/ProductService";
-
+import productService from "../../service/product/ProductService";
+import {useLocation} from "react-router-dom";
+import {ContextService} from "../../main";
 
 const Home=()=> {
+    let context = useContext(ContextService)
+    const location = useLocation();
     const [products,setProduct]=useState<ICardProduct[]>([]);
 
-    // async function getListProductOnHomePage(){
-    //     try{
-    //         const response:ICardProduct[] = await ProductController.getCardsProduct();
-    //         setProduct(response);
-    //
-    //     }catch (e){
-    //         // @ts-ignore
-    //         console.log("Ошибка получения данных в getListProductOnHomePage() = "+response);
-    //     }
-    // }
     async function getListProductOnHomePage(){
-        setProduct(await ProductService.getListProductOnHomePage())
+        setProduct(await context.productService.getListProductOnHomePage())
     }
 
         useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
           getListProductOnHomePage();
-    }, []);
+    }, [location]);
 
     return (
         <div>

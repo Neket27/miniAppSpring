@@ -1,10 +1,11 @@
-import {SetStateAction, useState} from "react";
+import {SetStateAction, useContext, useState} from "react";
 import {Rating} from "../../rating/Rating";
 import {IFeedback} from "../../../model/rating/IFeedback";
 import ProductService from "../../../service/product/ProductService";
+import {ContextService} from "../../../main";
 
 const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
-
+    const context = useContext(ContextService);
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [message, setMessage] = useState<string>('');
@@ -19,7 +20,7 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
             evaluation:evaluation,
             imageList:images
         }
-        const response = await ProductService.addRating(feedback);
+        const response = await context.productService.addRating(feedback);
     //     console.log("Ответ")
     //     console.log(response)
     }

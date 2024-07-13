@@ -1,11 +1,11 @@
 import React, {useContext, useState} from 'react';
-import {Context} from "../../../main";
+import {ContextService} from "../../../main";
 
 const ResetPassword=()=> {
     const [password, setUsername] = useState<string>('');
     const [newPassword, setPassword] =useState<string>('');
 
-    const {authService} =useContext(Context);
+    const {authService} =useContext(ContextService);
     return (
         <div>
             <h1>ResetPassword page</h1>

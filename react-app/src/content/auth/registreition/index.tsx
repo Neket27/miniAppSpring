@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Context } from "../../../main";
+import { ContextService } from "../../../main";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
@@ -8,13 +8,12 @@ const RegisterPage = () => {
     const [password, setPassword] = useState<string>('');
     const [passwordRepeat, setPasswordRepeat] = useState<string>('');
     const [showTemporaryBlock, setShowTemporaryBlock] = useState<boolean>(false);
-    const { authService } = useContext(Context);
+    const { authService } = useContext(ContextService);
 
     const handleLoginClick = () => {
         if (passwordRepeat === password)
             authService.registration(username, password);
         else {
-            // Показать блок на 1 секунду
             setShowTemporaryBlock(true);
             setTimeout(() => {
                 setShowTemporaryBlock(false);

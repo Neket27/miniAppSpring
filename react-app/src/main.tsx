@@ -3,33 +3,32 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import {BrowserRouter} from 'react-router-dom';
 import AuthService from "./service/auth/AuthService";
-import {Client, Message} from "@stomp/stompjs";
-import SockJS from "sockjs-client";
-
+import ProductService from "./service/product/ProductService";
+import BagService from "./service/bag/BagService";
 
 export interface State {
     authService:AuthService;
-    stompClient:Client;
-    // websocketApi:WebsocketApi;
+    productService:ProductService;
+    bagService:BagService;
 }
 
-const stompClient:Client = new Client();
-const authService = new AuthService();
-// const websocketApi = new WebsocketApi();
+const authService:AuthService = new AuthService();
+const productService:ProductService = new ProductService();
+const bagService:BagService = new BagService();
 
-
-export const Context = createContext<State>({
+export const ContextService:React.Context<State> = createContext<State>({
     authService,
-    stompClient
+    productService,
+    bagService,
 });
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
       <BrowserRouter>
-      <Context.Provider value={{authService,stompClient}}>
+      <ContextService.Provider value={{authService,productService,bagService}}>
         <App/>
-      </Context.Provider>
+      </ContextService.Provider>
       </BrowserRouter>
   </React.StrictMode>,
 )
