@@ -1,5 +1,5 @@
 import React, { FC, useContext, useState} from 'react';
-import {Context} from "../../../main";
+import {ContextService} from "../../../main";
 import {Link} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 
@@ -21,7 +21,25 @@ const LoginPage: FC=()=>{
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] =useState<string>('');
 
-    const {authService} =useContext(Context);
+    const [showTemporaryBlock, setShowTemporaryBlock] = useState<boolean>(false);
+    const [validDate, setValidDate] = useState<string>('');
+
+    const {authService,bagService} =useContext(ContextService);
+
+
+    const handleLogin =async () => {
+       const responseLogin:string|undefined = await authService.login(username, password);
+       await bagService.getCountProductInBag();
+
+        if (responseLogin!=null||responseLogin!=undefined) {
+            setValidDate(responseLogin);
+
+            setShowTemporaryBlock(true);
+            setTimeout(() => {
+                setShowTemporaryBlock(false);
+            }, 3000);
+        }
+    }
 
     return(
             <div className="limiter">
@@ -67,9 +85,10 @@ const LoginPage: FC=()=>{
 
                                 <div className="container-login100-form-btn">
                                     <button className="login100-form-btn"
-                                            onClick={() => authService.login(username, password)}>
+                                            onClick={() => handleLogin()}>
                                         Войти
                                     </button>
+                                    {showTemporaryBlock && ( <p className="txt2">{validDate}</p>)}
                                 </div>
 
                                 <div className="text-center p-t-12">

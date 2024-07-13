@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import '../../init';
 import '../../fileTemplate/navbar/style.css';
 import '../../fileTemplate/navbar/fonts/icomoon/style.css';
@@ -12,68 +12,58 @@ import '../../fileTemplate/navbar/owl.carousel.min.css';
 import '../../fileTemplate/navbar/owl.theme.default.min.css';
 import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css';
 import {Link} from "react-router-dom";
-import {Message} from "stompjs";
+import {ContextService, State} from "../../main";
 
-import {Socket} from "socket.io-client";
-import CartService from "../../service/card/CartService";
-import webSocketService from "../../service/ws/WebSocketService";
-import WebSocketService from "../../service/ws/WebSocketService";
-import {Context, State} from "../../main";
+export let ContextCountProductInBag:React.Context<CountProductInBag>=createContext<CountProductInBag>();
 
-let socket:Socket|null = null;
+interface CountProductInBag{
+    setCountProductInBag:any
+    countProductInBag:number
+    getCountProductInBag:any
+}
 
 const Navbar = () => {
-    const [countProductInCart, setCountProductInCart] = useState(0);
-    const webSocketService = new WebSocketService();
-    const context:State = useContext(Context);
-    const getShoppingCartCountProduct = (val: Message) => {
-        setCountProductInCart(parseInt(val.body));
-    };
+    const contextService:State= useContext(ContextService);
+    const [countProductInBag, setCountProductInBag] = useState(0);
+
+    const  setF=(p:number)=>{
+       console.log("get value for countProductInBag= "+p);
+       console.log("var countProductInBag= "+ countProductInBag)
+        // getCountProductInBag();
+        setCountProductInBag(p);
+    }
+
+    const countProduct :CountProductInBag={
+        setCountProductInBag:setF,
+        countProductInBag:countProductInBag,
+        getCountProductInBag:getCountProductInBag
+    }
 
 
-    // const sendMessage = ()=>{
-    //     SocketAPI.socket?.emit("/shoppingCartCountProduct/public",getShoppingCartCountProduct);
-    // }
-
-const handler =()=>CartService.sendCountProductCart(context);
-
- // function createConnection(){
- //        socket = io("http://localhost:8080");
- //
- //        socket.on("connect",()=>{
- //            console.log("Connected");
- //        });
- //
- //        socket.on("disconnect",(e)=>{
- //            console.log("Disconnected");
- //        });
- //    }
-
-
-
-    // useConnectedSocket();
-    // sendMessage();
-    CartService.getCountProductInCart(getShoppingCartCountProduct);
+    async function getCountProductInBag() {
+       const response:number = await contextService.bagService.getCountProductInBag();
+       if(response!=null || contextService.authService.isAuth)
+        setCountProductInBag(response);
+       else
+           setCountProductInBag(0);
+    }
 
     useEffect(() => {
-        // CartService.getCountProductInCart(getShoppingCartCountProduct);
-
-
-// createConnection();
-        // socket?.emit("/shoppingCartCountProduct/public",getShoppingCartCountProduct);
-
-      // if(  stompClient?.ws.OPEN  ){
-      //     console.log("ws status= "+ stompClient.ws.OPEN )
-      // stompClient.send('/app/getCountProductInCart',{},localStorage.getItem('accessToken'));
-      //     }
+        ContextCountProductInBag = createContext<CountProductInBag>(countProduct);
+            getCountProductInBag();
+        const countProductInBag =localStorage.getItem("countProductInBag");
+        if(countProductInBag!=null)
+            setCountProductInBag(parseInt(countProductInBag));
+        else
+            setCountProductInBag(0);
+        // contextService.bagService.connect((val:any)=>setCountProductInCart(parseInt(val.body)),accessToken);
 
     }, []);
-
+    
+    console.log("countProductInBag_Navbar= "+countProductInBag);
     return (
+        <ContextCountProductInBag.Provider value={{ countProductInBag, setCountProductInBag,getCountProductInBag}}>
         <div className="site-navbar bg-white py-2">
-            <button onClick={()=>{handler()
-            console.log("kl")
-            }}>hhh</button>
             <div className="search-wrap">
                 <div className="container">
                     <a href="#" className="search-close js-search-close"><span className="icon-close2"></span></a>
@@ -121,19 +111,26 @@ const handler =()=>CartService.sendCountProductCart(context);
                         <a href="#" className="icons-btn d-inline-block"><span className="icon-heart-o"></span></a>
                         <Link to="/cart" className="icons-btn d-inline-block bag">
                             <span className="icon-shopping-bag">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     className="bi bi-bag" viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
-                                </svg>
+                                {/*<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"*/}
+                                {/*     className="bi bi-bag" viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>*/}
+                                {/*</svg>*/}
                             </span>
-                            <span className="number">{countProductInCart}</span>
+                            <span className="number">{countProductInBag}</span>
                         </Link>
-                        <Link to="/login" className="icons-btn d-inline-block">
-                            <span className="icon-person">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                                 className="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                            </svg>
-                            </span>
-                        </Link>
+                                {contextService.authService.isAuth ?
+                                    <Link to="/cabinetUser" className="icons-btn d-inline-block">
+                                    <span className="person-username">{contextService.authService.user.username}</span>
+                                    </Link>:
+                                    <Link to="/login" className="icons-btn d-inline-block">
+                                    <span  className="icon-person"></span>
+                                    </Link>
+                                }
+
+
+                        {/*<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"*/}
+                        {/*     className="bi bi-person" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>*/}
+                        {/*</svg>*/}
+
                         <a href="#" className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
                             className="icon-menu"></span></a>
                     </div>
@@ -152,6 +149,7 @@ const handler =()=>CartService.sendCountProductCart(context);
                     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
                     crossOrigin="anonymous"></script>
         </div>
+        </ContextCountProductInBag.Provider>
     );
 };
 

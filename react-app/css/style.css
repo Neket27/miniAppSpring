@@ -193,3 +193,7 @@ div#ant-section__breadcrumbs:after {
     text-align: center;
     margin: 10px auto 23px;
 }
+
+.person-username{
+    margin-left: 10px;
+}

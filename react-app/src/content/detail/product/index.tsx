@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import '../../../init';
 import {Link, useLocation, useParams} from "react-router-dom";
 import {IDetailProduct} from "../../../model/product/IDetailProduct";
@@ -9,85 +9,47 @@ import Review from "./swithBlocks/review";
 import Detail from "./swithBlocks/detail";
 import {ProductCartResponse} from "../../../model/response/product/ProductCartResponse";
 import {observer} from "mobx-react-lite";
-import {Client, Frame, Message, over} from 'stompjs';
-import SockJS from 'sockjs-client';
+import {Message} from 'stompjs';
 import {CardProductResponse} from "../../../model/response/product/CardProductResponse";
-import ProductService from "../../../service/product/ProductService";
+import {ContextService} from "../../../main";
+import {ContextCountProductInBag} from "../../navbar";
+import {IProductInBag} from "../../../model/bag/IProductInBag";
+import ImageProduct from "./imageProduct";
+import CartProduct from "./cartProduct";
+import CartPreviewProduct from "./cartProduct";
 
 const URL = import.meta.env.VITE_URL;
 
-let stompClient:Client;
-
 const DetailProduct = (props:any) => {
+    const contextService = useContext(ContextService);
+    const contextCountProductInCart = useContext(ContextCountProductInBag);
+    const [accessToken,setAccessToken]= useState(localStorage.getItem("accessToken"));
     const location = useLocation();
     const { typeId } = useParams<{ typeId: string }>();
     const [productDetail, setProductDetail] = useState<IDetailProduct|undefined>(undefined);
-    const [countProductsInCart, setCountProductsInCart] = useState<number>(0);
+    const [countProducts, setCountProducts] = useState<number>(0);
 
     const [showBlockDetail, setShowBlockDetail] = useState<boolean>(true);
     const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
-    const accessToken:string|null =localStorage.getItem('accessToken');
-
-
-    const connect =()=>{
-        let Sock = new SockJS('http://localhost:8080/ws');
-        stompClient = over(Sock);
-        stompClient.connect(
-            {},
-            (frame) => {onConnected();},
-            (error:Frame|string) => {onError(error);}
-        );
-    }
-
-    const onConnected = () => {
-        stompClient.subscribe('/shoppingCart/public', getNumberOfPiecesOfGoods);
-        stompClient.subscribe('/shoppingCartCountProduct/public', getShoppingCartCountProduct);
-        sendNumberOfPiecesOfGoods();
-    }
-
-    const sendNumberOfPiecesOfGoods =()=>{
-        stompClient.send("/app/getNumberOfPiecesOfGoods", {},JSON.stringify({idProduct:productDetail?.id,accessToken:accessToken}));
-    }
-
-    const sendCountProductsInCart =()=>{
-        if(accessToken!=null)
-            stompClient.send("/app/getCountProductInCart", {},accessToken);
-        else
-            onError("Токен в sendCountProductInCart == null");
-    }
+    const [checkAddProduct, setCheckAddProduct] = useState<boolean>(false);
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
-        setCountProductsInCart(parseInt(val.body))
-        sendCountProductsInCart();
-    }
-
-    const getShoppingCartCountProduct =(val:Message)=>{
-      //  console.log("ShoppingCartCountProduct= "+val.body)
-    }
-
-    const onError = (err:Frame|string) => {
-        console.log("err= "+err);
+        console.log("полученно = "+val.body)
+        setCountProducts(parseInt(val.body))
+        contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
     }
 
     const sendValue=(count:number)=>{
-        if (stompClient) {
-            stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
-                idProduct: productDetail?.id,
-                count: count,
-                accessToken: accessToken
-            }))
-
-        }else{
-            console.log("Стом клиент не создан")
-        }
+        contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,count,accessToken);
+        // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
     }
 
     async function getProductDetail(){
         if(typeId!=undefined) {
-            const response = await ProductService.getProductDetail(parseInt(typeId, 10))
+            const response = await contextService.productService.getProductDetail(parseInt(typeId, 10))
             setProductDetail(response);
         }else {
             console.log("ID продукта в getProductDetail == undefined")
@@ -100,56 +62,91 @@ const DetailProduct = (props:any) => {
     }, []);
 
     useEffect(() => {
-        connect();
+            contextService.productService.connect(
+                getNumberOfPiecesOfGoods,
+                accessToken,
+                JSON.stringify({
+                idProduct: productDetail?.id,
+                accessToken: accessToken
+            }));
+            contextService.productService.sendRequestOnGetNumberOfPiecesOfGoods(productDetail?.id,accessToken);
+            // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
+
+    }, [productDetail,location]);
+
+
+    useEffect(() => {
+
+        // Функция очистки, которая будет выполнена при размонтировании компонента
+        return () => {
+            console.log('Компонент размонтирован, выполняется cleanup');
+            if(countProducts>0 && productDetail?.id!=undefined && accessToken!=null){
+            const product:IProductInBag= {
+                idProduct: productDetail.id,
+                count: countProducts,
+                showInCart: true,
+                accessToken:accessToken
+            }
+                contextService.bagService.addProductInCart(product);
+            }
+
+        };
     }, [productDetail]);
 
 
+    useEffect(()=>{
+        if(countProducts>0)
+            setCheckAddProduct(true);
+        console.log("setCheckAddProduct(true);")
+
+        return  sendValue(countProducts);
+    });
+
+
     const handleClickMinus = () => {
-        const count =Math.max(countProductsInCart-1,0);
-        setCountProductsInCart(count);
+        if(checkAddProduct && countProducts==1){
+            let countStr = localStorage.getItem("countProductInBag");
+            console.log("countStr= "+countStr);
+            if (countStr != null) {
+                const count = parseInt(countStr) -1;
+                localStorage.setItem("countProductInBag",String(count));
+                contextCountProductInCart.setCountProductInBag(count);
+            }
+
+                setCheckAddProduct(false);
+        }
+
+        const count =Math.max(countProducts-1,0);
+        setCountProducts(count);
         sendValue(count);
     };
 
     const handleClickPlus = () => {
-        const count =countProductsInCart+1;
-        setCountProductsInCart(count);
+        if(!checkAddProduct && countProducts==0){
+            let countStr = localStorage.getItem("countProductInBag");
+            console.log("countStr= "+countStr)
+            if (countStr != null) {
+                const count = parseInt(countStr) + 1;
+                localStorage.setItem("countProductInBag", String(count));
+                contextCountProductInCart.setCountProductInBag(count);
+            }
+            setCheckAddProduct(true);
+        }
+
+        const count =countProducts+1;
+        setCountProducts(count);
         sendValue(count);
     };
 
-    const imagesMain =(
-        <div className="tab-pane active" id="ant107_shop-preview2">
-            <img src={"data:image/png;base64," +productDetail?.imageDtoList.at(0)?.base64 } alt=""
-                 data-magnify-src={"data:image/png;base64," +productDetail?.imageDtoList.at(0)?.base64}/>
-        </div>
+    const imagesMain =(<ImageProduct base64={productDetail?.imageDtoList.at(0)?.base64}/>);
+
+    const images =productDetail?.imageDtoList.map((image,index) =>
+        <ImageProduct key={index} base64={image.base64}/>
     );
 
-    const images =productDetail?.imageDtoList.map(image =>
-        <li>
-            <a data-toggle="tab" href="#ant107_shop-preview1">
-            <img src={"data:image/png;base64,"+image.base64} alt=""/>
-            </a>
-        </li>
-    );
-
-    const relatedProductListJsx = relatedProducts?.cardsProduct.map(product =>{
-        return <div key={product.id} className="col-xl-3 col-lg-4 col-sm-6">
-            <div className="ant107_shop-shop-box">
-                <div className="ant107_shop-shop-img">
-                    <a href="#!">
-                    <img src={"data:image/png;base64,"+product.imageDtoList.at(0)?.base64} alt=""/>
-                    </a>
-                </div>
-                <div className="ant107_shop-shop-info">
-                    <h5><a href="">{product.name}</a></h5>
-                    <div className="ant107_shop-price-rating">
-                        <span className="ant107_shop-shop-price">{product.cost}</span>
-                        <span className="ant107_shop-shop-rating">{product.rating}</span>
-                        <a href=""><i className="fas fa-shopping-cart"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    } );
+    const relatedProductListJsx = relatedProducts?.cardsProduct.map((product,) =>{
+        return <CartPreviewProduct key={product.id} product={product}/>
+    });
 
 
     const showDetail = () => {
@@ -171,7 +168,9 @@ const DetailProduct = (props:any) => {
                             <div className="ant107_shop-product-preview-wrap">
                                 <div className="tab-content">
                                     <div className="tab-pane" id="ant107_shop-preview1">
-                                        <img src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id} alt=""
+                                        <img
+                                            src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}
+                                            alt=""
                                             data-magnify-src={URL + "/api/v1/home/get-image-with-media-type?id=" + productDetail?.id}/>
                                     </div>
                                     {imagesMain}
@@ -198,28 +197,33 @@ const DetailProduct = (props:any) => {
 
                                 <div className="ant107_shop-product-spinner mt-3">
                                     <div className="ant107_shop-number-input">
-                                        <button className="ant107_shop-minus" onClick={() => {handleClickMinus()}}></button>
-                                        <input min="1" max="50" name="quantity" value={countProductsInCart}
-                                               type="number"/>
-                                        <button className="ant107_shop-plus" onClick={() => {handleClickPlus()}}></button>
+                                        <button className="ant107_shop-minus" onClick={() => {
+                                            handleClickMinus()
+                                        }}></button>
+                                        <input min="1" max="50" name="quantity" value={countProducts}
+                                               type="number"  onChange={()=>{}} />
+                                        <button className="ant107_shop-plus" onClick={() => {
+                                            handleClickPlus()
+                                        }}></button>
                                     </div>
                                     {
-                                        countProductsInCart==0 ?
-                                            <div onClick={()=>{
-                                                if (stompClient) {
-                                                    stompClient.send("/app/sendNumberOfPiecesOfGoods", {}, JSON.stringify({
-                                                        idProduct: productDetail?.id,
-                                                        count: 1,
-                                                        accessToken: accessToken
-                                                    }))
-
-                                                }else{
-                                                    console.log("Стом клиент не создан")
+                                        !checkAddProduct ?
+                                            <div onClick={() => {
+                                                // {contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,1,accessToken);}}
+                                                let countStr = localStorage.getItem("countProductInBag");
+                                                console.log("countStr= "+countStr);
+                                                if (countStr != null) {
+                                                    const count = parseInt(countStr) +1;
+                                                    localStorage.setItem("countProductInBag",String(count));
+                                                    contextCountProductInCart.setCountProductInBag(count);
+                                                    setCountProducts(1);
+                                                    setCheckAddProduct(true);
                                                 }
                                             }
-                                        }
-                                                 className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В корзину</div> :
-
+                                            }
+                                                 className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">В
+                                                корзину
+                                            </div> :
                                             <Link to="/cart">
                                                 <div className="ant107_shop-theme-btn ant107_shop-br-30 ml-3">
                                                     Добавлен в корзину

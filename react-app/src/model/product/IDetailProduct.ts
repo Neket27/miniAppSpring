@@ -1,6 +1,6 @@
 import { ICharacteristic} from "./ICharacteristic";
 import {ICategory} from "./ICategory";
-import {IImageProduct} from "./IImageProduct";
+import {IImage} from "./IImage";
 
 export interface IDetailProduct{
     id:number,
@@ -14,5 +14,5 @@ export interface IDetailProduct{
     stock:number
     characteristicProductDto:ICharacteristic
     detail:string
-    imageDtoList: Array<IImageProduct>
+    imageDtoList: Array<IImage>
 }
