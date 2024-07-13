@@ -2,6 +2,7 @@ package app.miniappspring.utils.jwtToken.mapper;
 
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
+import app.miniappspring.dto.image.UpdateImagerDto;
 import app.miniappspring.entity.Image;
 import org.mapstruct.Mapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ public interface ImageMapper {
 
     Image toImage(MultipartFile multipartFile) throws IOException;
 
+
     default Image toImage(CreateImageDto createImageDto){
         return Image.builder()
                 .name(createImageDto.getName())
@@ -22,6 +24,15 @@ public interface ImageMapper {
                 .bytes(Base64.getDecoder().decode(createImageDto.getBase64()))
                 .build();
     }
+
+    default Image toImage(UpdateImagerDto updateImagerDto){
+        return Image.builder()
+                .name(updateImagerDto.getName())
+                .contentType(updateImagerDto.getContentType())
+                .bytes(Base64.getDecoder().decode(updateImagerDto.getBase64()))
+                .build();
+    }
+
     default ImageDto toImageDto(Image image){
         return ImageDto.builder()
                 .name(image.getName())

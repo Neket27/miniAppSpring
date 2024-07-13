@@ -1,12 +1,13 @@
 package app.miniappspring.service.impl;
 
 import app.miniappspring.arguments.CreateUserArgument;
-import app.miniappspring.dto.Cooke.CreateCookeDto;
+import app.miniappspring.dto.cooke.CreateCookeDto;
 import app.miniappspring.dto.jwtToken.JwtAuthenticationResponse;
 import app.miniappspring.dto.jwtToken.ResetPasswordDto;
 import app.miniappspring.dto.jwtToken.SignUpRequest;
 import app.miniappspring.dto.jwtToken.SigninRequest;
 import app.miniappspring.dto.user.UpdateUserDto;
+import app.miniappspring.dto.user.UserDto;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.service.AuthenticationService;
@@ -40,34 +41,46 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private int cookeTimeLive;
 
     @Override
-    public  JwtAuthenticationResponse signnup(SignUpRequest signUpRequest){
-        CreateUserArgument createUserArgument = userMapper.toCreateUserArgument(signUpRequest);
-        userService.addUser(createUserArgument);
-        return  signin(new SigninRequest(signUpRequest.getUsername(),signUpRequest.getPassword()));
+    public JwtAuthenticationResponse signnup(SignUpRequest signUpRequest) {
+        try {
+            User user = userService.getByUsername(signUpRequest.getUsername());
+            return signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
+        } catch (ErrorException e) {
+            if (e.getMessage().equals("Пользователь с логином " + signUpRequest.getUsername() + " не найден")) {
+                CreateUserArgument createUserArgument = userMapper.toCreateUserArgument(signUpRequest);
+                userService.addUser(createUserArgument);
+                return signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
+            }
+        }
+
+        return null;
     }
 
     @Override
-    public JwtAuthenticationResponse signin(SigninRequest signinRequest){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(),signinRequest.getPassword()));
+    public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
         User user = userService.getByUsername(signinRequest.getUsername());
         return createJwtAuthenticationResponse(user);
     }
 
     @Override
-    public JwtAuthenticationResponse refreshToken(String refreshToken){
+    public JwtAuthenticationResponse refreshToken(String refreshToken, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
+        if (refreshToken == null || refreshToken.isEmpty())
+            return JwtAuthenticationResponse.builder().build();
+
         String username = jwtService.getUserNameFromRefreshToken(refreshToken);
-        User user =userService.getByUsername(username);
-        if(jwtService.isTokenValidRefreshToken(refreshToken,user) && jwtService.getRefreshToken(refreshToken)!=null){
+        User user = userService.getByUsername(username);
+        if (jwtService.isTokenValidRefreshToken(refreshToken, user) && jwtService.getRefreshToken(refreshToken) != null) {
+            createCooke(refreshToken);
+            return createJwtAuthenticationResponse(user);
+        }
 
-        createCooke(refreshToken);
-
-        return createJwtAuthenticationResponse(user);
-    }
-    return null;
+//        else {logout(refreshToken,httpServletRequest,httpServletResponse);    }
+        return null;
     }
 
     @Override
-    public User getAuthenticationInfo(){
+    public User getAuthenticationInfo() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
@@ -79,39 +92,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse resetPassword(ResetPasswordDto resetPasswordDto) {
-        User authenticationUser=getAuthenticationInfo();
-        if(EncoderPassword.equalsPasswords(resetPasswordDto.getPassword(),authenticationUser.getPassword())){
+        User authenticationUser = getAuthenticationInfo();
+        if (EncoderPassword.equalsPasswords(resetPasswordDto.getPassword(), authenticationUser.getPassword())) {
             authenticationUser.setPassword(EncoderPassword.encode(resetPasswordDto.getNewPassword()));
 
-            UpdateUserDto updateUserDto=UpdateUserDto.builder()
+           UpdateUserDto updateUserDto = UpdateUserDto.builder()
                     .username(authenticationUser.getUsername())
                     .password(resetPasswordDto.getNewPassword())
                     .roles(authenticationUser.getRoles())
                     .build();
 
             userService.updateDataUser(updateUserDto);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationUser.getUsername(),resetPasswordDto.getNewPassword()));
-        }else {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationUser.getUsername(), resetPasswordDto.getNewPassword()));
+        } else {
             throw new ErrorException("Отправленный пароль и пароль авторизированного пользователя не совпадают. Изменение пароля не произошло");
         }
         return createJwtAuthenticationResponse(authenticationUser);
     }
 
-    private JwtAuthenticationResponse createJwtAuthenticationResponse(User user){
-        String token =jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(),user);
-        jwtService.saveToken(user,refreshToken);
+    private JwtAuthenticationResponse createJwtAuthenticationResponse(User user) {
+        String token = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        jwtService.saveToken(user, refreshToken);
 
         createCooke(refreshToken);
 
         return JwtAuthenticationResponse.builder()
                 .accessToken(token)
                 .refreshToken(refreshToken)
+                .user(userMapper.toUserDto(user))
                 .build();
     }
 
-    private void createCooke(String refreshToken){
-        CreateCookeDto createCookeDto =CreateCookeDto.builder()
+    private void createCooke(String refreshToken) {
+        CreateCookeDto createCookeDto = CreateCookeDto.builder()
                 .key("refreshToken")
                 .data(refreshToken)
                 .timeLiveCooke(cookeTimeLive)
@@ -120,6 +134,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         cookeService.createCooke(createCookeDto);
     }
-
 
 }

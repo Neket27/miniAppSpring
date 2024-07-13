@@ -1,20 +1,18 @@
 package app.miniappspring.service.impl;
 
-
-import app.miniappspring.action.UnificationDataUser;
 import app.miniappspring.arguments.CreateUserArgument;
-import app.miniappspring.arguments.UpdateUserArgument;
+import app.miniappspring.arguments.UpdateDataUserArgument;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.dto.user.UpdateAvatarUserDto;
+import app.miniappspring.dto.user.UpdateDataUserDto;
 import app.miniappspring.dto.user.UpdateUserDto;
-import app.miniappspring.entity.ImageUser;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
-import app.miniappspring.repository.ImageRepo;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
+import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
 import app.miniappspring.utils.jwtToken.mapper.UserMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +34,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final ImageRepo imageRepo;
-    private final UnificationDataUser unificationDataUser;
     private final UserMapper userMapper;
+    private final ImageMapper imageMapper;
+    private final JWTServiceImpl  jwtService;
 
 
     @Override
@@ -72,41 +70,73 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UpdateUserDto updateDataUser(@NonNull UpdateUserArgument updateUserArgument){
-        UpdateUserDto updateUserDto = userMapper.toUpdateUserDto(updateUserArgument);
-           User user =getByUsername(updateUserDto.getUsername());
-           user.setFirstname(updateUserDto.getFirstname());
-           user.setLastname(updateUserDto.getLastname());
-           user.setUsername(updateUserDto.getUsername());
-           if(!EncoderPassword.equalsPasswords(updateUserDto.getPassword(),user.getPassword()) && updateUserDto.getPassword()!=null)
-           user.setPassword(EncoderPassword.encode(updateUserDto.getPassword()));
-           user.setEmail(updateUserDto.getEmail());
-           if(updateUserDto.getRoles()!=null)
-           user.setRoles(updateUserDto.getRoles());
-           return userMapper.toUpdateUserDto(userRepo.save(user));
+    public UpdateDataUserDto updateDataUser(@NonNull UpdateDataUserArgument updateDataUserArgument){
+
+        UpdateDataUserDto updateDataUserDto = userMapper.toUpdateDataUserDto(updateDataUserArgument);
+        String username = jwtService.getUserNameFromAccessToken(updateDataUserArgument.getAccessToken());
+
+        User user = getByUsername(username);
+        user.setFirstname(updateDataUserDto.getFirstname());
+        user.setLastname(updateDataUserDto.getLastname());
+        user.setEmail(updateDataUserDto.getEmail());
+        if(updateDataUserDto.getAvatar()!=null)
+            user.setAvatar(imageMapper.toImage(updateDataUserDto.getAvatar()));
+
+
+//           if(!EncoderPassword.equalsPasswords(UpdateDataUserDto.getPassword(),user.getPassword()) && UpdateDataUserDto.getPassword()!=null)
+//           user.setPassword(EncoderPassword.encode(UpdateDataUserDto.getPassword()));
+//           if(UpdateDataUserDto.getRoles()!=null)
+//           user.setRoles(UpdateDataUserDto.getRoles());
+           return userMapper.toUpdateDataUserDto(userRepo.save(user));
     }
 
     @Override
     @Transactional
-    public UpdateUserDto updateDataUser(UpdateUserDto updateUserDto){
+    public UpdateDataUserDto updateDataUser(UpdateDataUserDto updateDataUserDto){
+//        User user =getByUsername(UpdateDataUserDto.getUsername());
+//        user.setFirstname(UpdateDataUserDto.getFirstname());
+//        user.setLastname(UpdateDataUserDto.getLastname());
+//        user.setUsername(UpdateDataUserDto.getUsername());
+//        if(!EncoderPassword.equalsPasswords(UpdateDataUserDto.getPassword(),user.getPassword()))
+//            user.setPassword(EncoderPassword.encode(UpdateDataUserDto.getPassword()));
+//        user.setEmail(UpdateDataUserDto.getEmail());
+//            user.setRoles(UpdateDataUserDto.getRoles());
+        User user = User.builder()
+                .firstname(updateDataUserDto.getFirstname())
+                .lastname(updateDataUserDto.getLastname())
+                .email(updateDataUserDto.getEmail())
+                .avatar(imageMapper.toImage(updateDataUserDto.getAvatar()))
+                .build();
+        return userMapper.toUpdateDataUserDto(userRepo.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UpdateDataUserDto updateDataUser(UpdateUserDto updateUserDto) {
         User user =getByUsername(updateUserDto.getUsername());
         user.setFirstname(updateUserDto.getFirstname());
         user.setLastname(updateUserDto.getLastname());
         user.setUsername(updateUserDto.getUsername());
+        user.setEmail(updateUserDto.getEmail());
+        user.setRoles(updateUserDto.getRoles());
+
         if(!EncoderPassword.equalsPasswords(updateUserDto.getPassword(),user.getPassword()))
             user.setPassword(EncoderPassword.encode(updateUserDto.getPassword()));
-        user.setEmail(updateUserDto.getEmail());
-            user.setRoles(updateUserDto.getRoles());
-        return userMapper.toUpdateUserDto(userRepo.save(user));
+
+        userRepo.save(user);
+
+        return userMapper.toUpdateDataUserDto(userRepo.save(user));
     }
 
     @Override
     @Transactional
     public boolean updateUserAvatar(@NonNull UpdateAvatarUserDto updateAvatarUserDto){
         User user =getByUsername(updateAvatarUserDto.getUsername());
-        imageRepo.deleteById(user.getId());
-        ImageUser avatar = unificationDataUser.unificationAvatarWithUser(updateAvatarUserDto.getMultipartFileAvatar(),user);
-        imageRepo.save(avatar);
+//        imageRepo.deleteById(user.getId());
+
+//        user.setAvatar(imageMapper.toImage(u));
+
+//        imageRepo.save(avatar);
         return true;
     }
 

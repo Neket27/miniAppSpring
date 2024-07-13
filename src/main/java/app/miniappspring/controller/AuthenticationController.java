@@ -31,14 +31,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.signin(signinRequest));
     }
 
-//    @GetMapping("/refresh")
-//    public ResponseEntity<JwtAuthenticationResponse>refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
-//        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest.getToken()));
-//    }
-
     @GetMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse> refresh(@CookieValue(value = "refreshToken") String refreshToken) {
-        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
+    public JwtAuthenticationResponse refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException {
+        return authenticationService.refreshToken(refreshToken, httpServletRequest, httpServletResponse);
     }
 
     @PostMapping("/logout")

@@ -15,7 +15,7 @@ public enum Category {
     COMPUTERS("Компьютеры"),
     SPEAKERS("Колонки");
 
-    private String russianValue;
+    private final String russianValue;
 
     Category(String russianValue) {
         this.russianValue = russianValue;

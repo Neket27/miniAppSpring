@@ -10,6 +10,4 @@ public class MiniAppSpringApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MiniAppSpringApplication.class, args);
 	}
-
-
 }

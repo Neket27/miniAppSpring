@@ -11,9 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface AuthenticationService {
     JwtAuthenticationResponse signnup(SignUpRequest signUpRequest);
     JwtAuthenticationResponse signin(SigninRequest signinRequest);
-    JwtAuthenticationResponse refreshToken(String token);
+    JwtAuthenticationResponse refreshToken(String token,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException;
     UserDetails getAuthenticationInfo();
     void logout(String refreshToken, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException;
-
     JwtAuthenticationResponse resetPassword(ResetPasswordDto resetPasswordDto);
 }

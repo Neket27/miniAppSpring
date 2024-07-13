@@ -2,7 +2,6 @@ package app.miniappspring.service.impl;
 
 import app.miniappspring.entity.TokenJWT;
 import app.miniappspring.entity.User;
-import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.TokenRepo;
 import app.miniappspring.service.JWTService;
 import app.miniappspring.service.UserService;
@@ -10,7 +9,9 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,7 +87,8 @@ public class JWTServiceImpl implements JWTService {
     @Override
     @Transactional
     public TokenJWT getRefreshToken(String refreshToken) {
-        return tokenRepo.findByRefreshToken(refreshToken).orElseThrow(()->new ErrorException("RefreshToken не найден в базе данных"));
+        TokenJWT tokenJWT = tokenRepo.findByRefreshToken(refreshToken).orElse(null);//.orElseThrow(() -> new ErrorException("RefreshToken не найден в базе данных"));
+        return tokenJWT;
     }
 
     @Override

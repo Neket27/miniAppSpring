@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cart_product_list")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartProduct {
+public class BagProduct {
     @Id
     private Long idProduct;
     private int count;

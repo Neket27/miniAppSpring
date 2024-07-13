@@ -4,8 +4,8 @@ import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.category.CategoryDto;
-import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.dto.product.category.CategoryProductDto;
+import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.entity.*;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.CategoryRepo;
@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductCardDto getProduct(Long id){
+    public ProductCardDto getProductCard(Long id) {
         Product product=productRepo.findById(id).orElseThrow(()->new ErrorException("В базе данных нет карточки товара с id= "+id));
         return productMapper.toProductCardDto(product);
     }
@@ -150,15 +150,12 @@ public class ProductServiceImpl implements ProductService {
 
             System.out.println("Размер исходного множества: " + productSet.size());
 
-            for (CategoryProduct product : productSet) {
+            for (CategoryProduct product : productSet)
                 System.out.println(product.getCategory().getRussianValue() + ": " + product.getSubcategory());
-            }
 
 
             Set<CategoryProduct>categorySet=new HashSet<>(categoryProductSet);
-
             List<CategoryProductDto> categoryList = categoryMapper.toListCategoryProductDto(categorySet);
-//            categoryList= categoryList.stream().filter(categoryProductDto -> categoryProductDto)
             categoryList.addAll(categoryMapper.toListCategoryProductDto(productList));
             return categoryList;
         }

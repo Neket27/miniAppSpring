@@ -1,16 +1,14 @@
 package app.miniappspring.service;
 
 import app.miniappspring.arguments.CreateUserArgument;
-import app.miniappspring.arguments.UpdateUserArgument;
+import app.miniappspring.arguments.UpdateDataUserArgument;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.dto.user.UpdateAvatarUserDto;
+import app.miniappspring.dto.user.UpdateDataUserDto;
 import app.miniappspring.dto.user.UpdateUserDto;
 import app.miniappspring.entity.User;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,13 +18,12 @@ public interface UserService {
 
     CreateUserDto addUser(CreateUserArgument createUserArgument);
 
-    @Transactional
-    UpdateUserDto updateDataUser(@NonNull UpdateUserArgument updateUserArgument);
+    UpdateDataUserDto updateDataUser(@NonNull UpdateDataUserArgument updateDataUserArgument);
 
-    @Transactional
-    UpdateUserDto updateDataUser(UpdateUserDto updateUserDto);
+    UpdateDataUserDto updateDataUser(UpdateDataUserDto UpdateDataUserDto);
 
-    @Transactional
+    UpdateDataUserDto updateDataUser(UpdateUserDto updateUserDto);
+
     boolean updateUserAvatar(UpdateAvatarUserDto updateAvatarUserDto);
 
     List<User> getListUsers();
@@ -37,10 +34,8 @@ public interface UserService {
 
     boolean remove(String username);
 
-    @Transactional
     boolean isUsernameAlreadyInUse(String username);
 
-    @Transactional
     boolean isEmailAlreadyInUse(String email);
 
 }

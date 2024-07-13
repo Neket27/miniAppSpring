@@ -33,7 +33,10 @@ public class User implements UserDetails {
 //    @ElementCollection(targetClass = Image.class, fetch = FetchType.EAGER)
 //    @CollectionTable(name="user_avatar", joinColumns = @JoinColumn(name = "user_id"))
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY) // при удалении пользователя удалится и фотография (CascadeType.ALL)
-//    private Image avatar;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar")
+    private Image avatar;
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name="user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -42,7 +45,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "user_id", nullable = false)
     @Column(name = "cart_product_list", nullable = false)
-    private List<CartProduct> cartProductList;
+    private List<BagProduct> cartProductList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

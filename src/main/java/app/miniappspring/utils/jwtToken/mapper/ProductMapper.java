@@ -23,7 +23,7 @@ public abstract class ProductMapper {
                 .name(product.getName())
                 .cost(product.getCost())
                 .rating(product.getRating())
-                // .CategoryProductEnumDto(categoryProductEnumMapper.toCategoryDto(product.getCategoryProduct()))
+//                .category(product.getCategoryProduct())
                 .imageDtoList(imageMapper.toImageDtoList(product.getImageList()))
                 .build();
     }

@@ -2,21 +2,15 @@ package app.miniappspring.controller;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.entity.Message;
-import app.miniappspring.entity.User;
-import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.MessageRepo;
 import app.miniappspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,7 +85,7 @@ private final UserService userService;
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, multipartFile.getOriginalFilename());
         fileNames.append(multipartFile.getOriginalFilename());
         Files.write(fileNameAndPath, multipartFile.getBytes());
-        model.put("msg", "Uploaded images: " + fileNames.toString());
+        model.put("msg", "Uploaded images: " + fileNames);
 
         return "photo";
     }

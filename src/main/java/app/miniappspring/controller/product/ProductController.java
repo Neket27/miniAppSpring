@@ -42,7 +42,7 @@ public class ProductController {
     public ImageDto getImage(@RequestParam Long id) {
 //        InputStream in = getClass()
 //                .getResourceAsStream("/image/avatar.png");
-        return productService.getProduct(id).getImageDtoList().get(0);
+        return productService.getProductCard(id).getImageDtoList().get(0);
     }
 
 

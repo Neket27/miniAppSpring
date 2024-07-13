@@ -1,6 +1,6 @@
 package app.miniappspring.service.impl;
 
-import app.miniappspring.dto.Cooke.CreateCookeDto;
+import app.miniappspring.dto.cooke.CreateCookeDto;
 import app.miniappspring.service.CookeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

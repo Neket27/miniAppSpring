@@ -2,6 +2,7 @@ package app.miniappspring.filter.jwt;
 
 import app.miniappspring.service.JWTService;
 import app.miniappspring.service.UserService;
+import io.opentelemetry.api.internal.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 
 @Component
@@ -37,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String username;
 
-        if (StringUtils.isNullOrEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, prefix )||authHeader.equals(prefix+" null")) {
+        //TODO было изменение библиотеки StringUtils.isNullOrEmpty, проверить корректность работы
+        if (StringUtils.isNullOrEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, prefix )||authHeader.equals(prefix+" null")||authHeader.equals(prefix+" undefined")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,6 +48,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         username = jwtService.getUserNameFromAccessToken(jwtToken);
         if ((!StringUtils.isNullOrEmpty(username)) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+
+
 
             if (jwtService.isTokenValidAccessToken(jwtToken, userDetails)) { //посмотреть, возможно бесмысленная проверка
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();

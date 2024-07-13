@@ -1,4 +1,4 @@
-package app.miniappspring.dto.Cooke;
+package app.miniappspring.dto.cooke;
 
 import lombok.*;
 

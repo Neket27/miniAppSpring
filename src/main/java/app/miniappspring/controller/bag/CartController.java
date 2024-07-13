@@ -1,4 +1,4 @@
-package app.miniappspring.controller.cart;
+package app.miniappspring.controller.bag;
 
 import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
@@ -55,7 +55,7 @@ public class CartController {
         return cartService.sendNumberOfPiecesOfGoods(idProduct,count, accessToken);
     }
 
-    @GetMapping("/count")
+    @GetMapping("/getCountProductInBag")
     public int getCountProductInCart(@RequestParam String accessToken){
         return cartService.getCountProductInCart(accessToken);
     }
@@ -71,6 +71,12 @@ public class CartController {
     public int getNumberOfPiecesOfGoods(CountProductDto countProductDto){
         return cartService.getNumberOfPiecesOfGoods(countProductDto);
     }
+
+//    @MessageMapping("/getCountProductInCart")
+//    @SendTo("/shoppingCartCountProduct/public")
+//    public int getCountProductInCart2(@RequestParam String accessToken){
+//        return cartService.getCountProductInCart(accessToken);
+//    }
 
     @MessageMapping("/getCountProductInCart")
     @SendTo("/shoppingCartCountProduct/public")

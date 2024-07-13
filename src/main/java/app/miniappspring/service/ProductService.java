@@ -18,7 +18,7 @@ public interface ProductService {
 
 
     @Transactional
-    ProductCardDto getProduct(Long id);
+    ProductCardDto getProductCard(Long id);
 
     @Transactional
     Product findProduct(Long id);

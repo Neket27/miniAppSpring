@@ -9,13 +9,11 @@ import java.util.Set;
 
 @Data
 @Builder
-public class UpdateUserDto {
+public class UserDto {
+    private Long id;
     private String firstname;
     private String lastname;
-    @NotBlank(message = "username = null")
     private String username;
-    @NotBlank(message = "password user = null")
-    private String password;
     private String email;
     private Set<Role> roles;
 }

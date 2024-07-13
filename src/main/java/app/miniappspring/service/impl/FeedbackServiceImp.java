@@ -9,7 +9,6 @@ import app.miniappspring.service.ProductService;
 import app.miniappspring.utils.jwtToken.mapper.FeedbackMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.List;
