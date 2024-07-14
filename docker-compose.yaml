@@ -22,9 +22,9 @@ services:
       - "8080:8080"
 
 
-#  client:
-#    build:
-#      dockerfile: Dockerfile
-#    container_name: miniAppSpring_client
-#    ports:
-#      - "5173:5173"
+ frontend:
+   build:
+     dockerfile: frontend/Dockerfile
+   container_name: miniAppSpring_client
+   ports:
+     - "5173:5173"
