@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>app</groupId>
-	<artifactId>miniappspring</artifactId>
+	<artifactId>backendApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>miniappspring</name>
-	<description>miniappspring</description>
+	<name>backendMiniApp</name>
+	<description>backend</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -40,14 +40,19 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 	</properties>
 
+<!--	<dependencyManagement>-->
+<!--		<dependencies>-->
+<!--			<dependency>-->
+<!--				<groupId>org.springframework</groupId>-->
+<!--				<artifactId>spring-framework-bom</artifactId>-->
+<!--				<version>5.3.10</version> &lt;!&ndash; Укажите нужную версию &ndash;&gt;-->
+<!--				<type>pom</type>-->
+<!--				<scope>import</scope>-->
+<!--			</dependency>-->
+<!--		</dependencies>-->
+<!--	</dependencyManagement>-->
+
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-framework-bom</artifactId>
-			<version>4.1.3.RELEASE</version>
-			<type>pom</type>
-			<scope>import</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
