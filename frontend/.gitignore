@@ -1,6 +1,6 @@
 HELP.md
 target/
-!backend/.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -14,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-backend/.idea
+../.idea
 *.iws
 *.iml
 *.ipr
@@ -24,20 +24,10 @@ backend/.idea
 /nbbuild/
 /dist/
 /nbdist/
-/.nb-gradle
+/.nb-gradle/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
-
-### React ###
-/static/node_modules
-.gitignore npm-*.log
-*.log
-generated/.
-
-# dependencies
-/src/main/resources/static/node_modules/
-dist
