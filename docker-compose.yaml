@@ -3,28 +3,26 @@ version: '3.8'
 services:
   db:
     image: postgres:16.1-alpine
-    container_name: db_miniapp_name
+    container_name: db_miniapp
     environment:
       POSTGRES_DB: miniapp_db
       POSTGRES_USER: miniapp
       POSTGRES_PASSWORD: miniapp
     ports:
-      - "5432:5432"
-#    links:
-#      - "db:localhost"
+      - "5433:5432"
 
-  app:
+  backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     container_name: miniAppSpring_backend
     ports:
-      - "8080:8080"
+      - "8081:8080"
 
 
- frontend:
-   build:
-     dockerfile: frontend/Dockerfile
-   container_name: miniAppSpring_frontend
-   ports:
-     - "5173:5173"
+  frontend:
+    build:
+      dockerfile: frontend/Dockerfile
+    container_name: miniAppSpring_frontend
+    ports:
+      - "5173:5173"
