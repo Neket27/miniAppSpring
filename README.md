@@ -1,6 +1,6 @@
  
 Запуск проекта
-Для запуска проекта подадобитсся установленный «Docker» и «Docker-compose».
+Для запуска проекта понадобитсся установленный «Docker» и «Docker-compose».
 1) Перейдите в терменале в папку с проектом. В ней содержится файл «docker-compose».
   Пример: cd /home/neket/IdeaProjects/miniAppSpring
 2) Выполните команду в терменале «docker-compose up»
