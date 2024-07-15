@@ -29,6 +29,7 @@ app/miniappspring/repository/ProductRepo.class
 app/miniappspring/controller/bag/CartController.class
 app/miniappspring/exception/ErrorException.class
 app/miniappspring/dto/image/ImageDto.class
+app/miniappspring/MainApp.class
 app/miniappspring/dto/jwtToken/ResetPasswordDto$ResetPasswordDtoBuilder.class
 app/miniappspring/dto/characteristic/CharacteristicProductDto$CharacteristicProductDtoBuilder.class
 app/miniappspring/entity/Image$ImageBuilder.class
@@ -122,7 +123,6 @@ app/miniappspring/repository/BookRepository.class
 app/miniappspring/utils/jwtToken/mapper/CategoryMapper.class
 app/miniappspring/dto/jwtToken/JwtAuthenticationResponse.class
 app/miniappspring/dto/user/UpdateDataUserDto$UpdateDataUserDtoBuilder.class
-app/miniappspring/MiniAppSpringApplication.class
 app/miniappspring/dto/product/category/NumberOfProductsInThisCategory$NumberOfProductsInThisCategoryBuilder.class
 app/miniappspring/dto/product/CreateProductDto.class
 app/miniappspring/controller/PostController.class

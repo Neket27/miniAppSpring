@@ -5,7 +5,7 @@ FROM node:16
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY /react-app/package*.json ./
+COPY frontend/react-app/package*.json ./
 
 # Install app dependencies
 RUN npm install
