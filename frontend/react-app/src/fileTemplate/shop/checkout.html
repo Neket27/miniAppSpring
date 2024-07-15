@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Полноценное оформление магазина - каталог, описание, корзина и оплата</title>
+
+    <!-- ########## ОБЩИЕ СТИЛИ ШАБЛОНА (НЕ ИСПОЛЬЗУЕМ В ОСНОВНОМ ШАБЛОНЕ) ########## -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic&amp;subset=cyrillic">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/all.css?ver=5.0.3' type='text/css'
+        media='all' />
+    <link rel='stylesheet' id='art_net_theme-material-icons-css'
+        href='https://fonts.googleapis.com/icon?family=Material+Icons&#038;ver=5.0.3' type='text/css' media='all' />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- ########## КОНЕЦ ОБЩИХ СТИЛЕЙ ########## -->
+
+    <!-- ########## СТИЛИ МОДУЛЯ (КОПИРУЕМ В ОСНОВНОЙ ШАБЛОН) ########## -->
+    <link rel="stylesheet" href="css/magnify.css">
+    <link rel="stylesheet" href="css/ant107_shop.css">
+    <!-- ########## КОНЕЦ СТИЛЕЙ МОДУЛЯ ########## -->
+
+</head>
+
+<body>
+
+    <!-- ########## ОБЛАСТЬ МОДУЛЯ (КОПИРУЕМ В ОСНОВНОЙ ШАБЛОН) ########## -->
+    <div id="ant107_shop" class="ant107_shop_container">
+        <div class="container">
+            <div class="row">
+
+                <main class="col-xl-7 col-lg-6">
+					<div class="ant107_shop-checkout-form-wrap">
+						<div class="ant107_shop-cart-title">
+							 <h3>Детали оплаты</h3>
+						 </div>
+						 <form id="ant107_shop-checkout-form" class="ant107_shop-checkout-form" action="#" method="POST">
+							 <div class="row clearfix">
+								 <div class="col-md-6">        
+									 <div class="form-group">
+										 <input type="text" class="form-control" placeholder="Имя" required>
+									 </div>
+								 </div>
+								 <div class="col-md-6">        
+									 <div class="form-group">
+										 <input type="text" class="form-control" placeholder="Фамилия" required>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="text" class="form-control"  placeholder="Организация">
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <select class="form-control" name="select1">
+											 <option value="value1">Страна</option>
+											 <option value="value2">Россия</option>
+											 <option value="value3">Германия</option>
+											 <option value="value4">США</option>
+											 <option value="value5">Турция</option>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="text" class="form-control" placeholder="Улица" required>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="text" class="form-control" placeholder="Город" required>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <select class="form-control" name="select2">
+											 <option value="value1">Район</option>
+											 <option value="value2">Центральный</option>
+											 <option value="value3">Восточный</option>
+											 <option value="value4">Западный</option>
+											 <option value="value5">Северный</option>
+										 </select>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="text" class="form-control" placeholder="Почтовый индекс" required>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="text" class="form-control"  placeholder="Номер телефона">
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <input type="email" class="form-control" placeholder="Email" required>
+									 </div>
+								 </div>
+								 <div class="col-md-12">
+									 <div class="form-group">
+										 <textarea class="form-control mb-0" placeholder="Комментарий" rows="8" required></textarea>
+									 </div>
+								 </div>                                                
+							 </div>
+						 </form>
+					 </div>
+				</main>
+				
+				<aside class="col-xl-5 col-lg-6">
+					<div class="ant107_shop-checkout-cart-total clearfix">
+						<div class="ant107_shop-cart-title">
+							 <h3>Итоги покупки</h3>
+						 </div>
+						 
+						 <div class="ant107_shop-total-item-wrap clearfix mb-4">
+							 <div class="ant107_shop-total-item ant107_shop-sub-total">
+								<span class="ant107_shop-title">Подытог</span>
+								<span class="ant107_shop-price">340</span>
+							</div>
+							<div class="ant107_shop-total-item ant107_shop-shipping">
+								<span class="ant107_shop-title">Доставка</span>
+								<span class="ant107_shop-price">100</span>
+							</div>
+							<div class="ant107_shop-total-item ant107_shop-discount">
+								<span class="ant107_shop-title">Скидка</span>
+								<span class="ant107_shop-price">20</span>
+							</div>
+							<div class="ant107_shop-total-item ant107_shop-total">
+								<span class="ant107_shop-title mb-0">Итого</span>
+								<span class="ant107_shop-price mb-0">420</span>
+							</div>
+						 </div>
+						 
+						 <ul id="ant107_shop-accordion" class="mb-4">
+							 <li class="custom-control custom-radio">
+								 <input type="radio" class="custom-control-input" id="ant107_shop-methodone" name="ant107_shop-radioname" checked>
+								 <label class="custom-control-label" for="ant107_shop-methodone" data-toggle="collapse" data-target="#ant107_shop-collapseOne" aria-controls="ant107_shop-collapseOne">Оплата картой</label>
+
+								 <div id="ant107_shop-collapseOne" class="collapse show" data-parent="#ant107_shop-accordion">
+									 <p>Перераспределение бюджета, безусловно, обуславливает институциональный социальный статус.</p>
+								 </div>
+							 </li>
+
+							 <li class="custom-control custom-radio">
+								 <input type="radio" class="custom-control-input" id="ant107_shop-methodtwo" name="ant107_shop-radioname">
+								 <label class="custom-control-label collapsed" for="ant107_shop-methodtwo" data-toggle="collapse" data-target="#ant107_shop-collapseTwo" aria-controls="ant107_shop-collapseTwo">Оплата наличными</label>
+
+								 <div id="ant107_shop-collapseTwo" class="collapse" data-parent="#ant107_shop-accordion">
+									 <p>Перераспределение бюджета, безусловно, обуславливает институциональный социальный статус.</p>
+								 </div>
+							 </li>
+
+							 <li class="custom-control custom-radio">
+								 <input type="radio" class="custom-control-input" id="ant107_shop-methodthree" name="ant107_shop-radioname">
+								 <label class="custom-control-label collapsed" for="ant107_shop-methodthree" data-toggle="collapse" data-target="#ant107_shop-collapsethree" aria-controls="ant107_shop-collapsethree">Банковский перевод</label>
+
+								 <div id="ant107_shop-collapsethree" class="collapse" data-parent="#ant107_shop-accordion">
+									 <p>Перераспределение бюджета, безусловно, обуславливает институциональный социальный статус.</p>
+								 </div>
+
+							 </li>
+						 </ul>
+						 
+						 <div class="ant107_shop-checkout-btn text-center">
+							 <a href="index.html" class="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-br-10 mb-3">Обновить корзину</a>
+							 <button class="ant107_shop-theme-btn ant107_shop-br-10">Подтверждаю</button>
+						 </div>
+					 </div>
+				</aside>
+
+            </div>
+        </div>
+        <!-- Container /- -->
+    </div>
+    <!-- ########## КОНЕЦ ОБЛАСТЬ МОДУЛЯ (КОПИРУЕМ В ОСНОВНОЙ ШАБЛОН) ########## -->
+
+    <!-- ########## ОБЩИЕ СКРИПТЫ ШАБЛОНА (НЕ ИСПОЛЬЗУЕМ В ОСНОВНОМ ШАБЛОНЕ) ########## -->
+    <script type='text/javascript' src='js/jquery.js'></script>
+    <script type='text/javascript' src='js/jquery-migrate.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap.min.js'></script>
+    <!-- ########## КОНЕЦ ОБЩИХ СКРИПТОВ ########## -->
+
+    <!-- ########## СКРИПТЫ МОДУЛЯ (КОПИРУЕМ В ОСНОВНОЙ ШАБЛОН) ########## -->
+    <script src="js/jquery.magnify.js"></script>
+    <script src="js/ant107_shop.js"></script>
+    <!-- ########## КОНЕЦ СКРИПТОВ МОДУЛЯ ########## -->
+
+</body>
+
+</html>
