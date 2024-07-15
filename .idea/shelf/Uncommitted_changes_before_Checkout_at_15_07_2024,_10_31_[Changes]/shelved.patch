@@ -1,0 +1,403 @@
+Index: docker-compose.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>version: '3.8'\n\nservices:\n  db:\n    image: postgres:16.1-alpine\n    container_name: db_miniapp_name\n    environment:\n      POSTGRES_DB: miniapp_db\n      POSTGRES_USER: miniapp\n      POSTGRES_PASSWORD: miniapp\n    ports:\n      - \"5432:5432\"\n#    links:\n#      - \"db:localhost\"\n\n  app:\n    build:\n      context: .\n      dockerfile: backend/Dockerfile\n    container_name: miniAppSpring_backend\n    ports:\n      - \"8080:8080\"\n\n\n frontend:\n   build:\n     dockerfile: frontend/Dockerfile\n   container_name: miniAppSpring_frontend\n   ports:\n     - \"5173:5173\"\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docker-compose.yaml b/docker-compose.yaml
+--- a/docker-compose.yaml	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/docker-compose.yaml	(date 1721028638306)
+@@ -3,28 +3,26 @@
+ services:
+   db:
+     image: postgres:16.1-alpine
+-    container_name: db_miniapp_name
++    container_name: db_miniapp
+     environment:
+       POSTGRES_DB: miniapp_db
+       POSTGRES_USER: miniapp
+       POSTGRES_PASSWORD: miniapp
+     ports:
+-      - "5432:5432"
+-#    links:
+-#      - "db:localhost"
++      - "5433:5432"
+ 
+-  app:
++  backend:
+     build:
+       context: .
+       dockerfile: backend/Dockerfile
+     container_name: miniAppSpring_backend
+     ports:
+-      - "8080:8080"
++      - "8081:8080"
+ 
+ 
+- frontend:
+-   build:
+-     dockerfile: frontend/Dockerfile
+-   container_name: miniAppSpring_frontend
+-   ports:
+-     - "5173:5173"
++  frontend:
++    build:
++      dockerfile: frontend/Dockerfile
++    container_name: miniAppSpring_frontend
++    ports:
++      - "5173:5173"
+Index: backend/Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Используем официальный образ OpenJDK\nFROM 1stblue/openjdk-17\nLABEL authors=\"neket\"\n\n# Добавление JAR-файла в контейнер\nADD target/backendApp-0.0.1-SNAPSHOT.jar /app/backend.jar\n\n# Установка рабочего каталога\nWORKDIR /app\n\n# Определение точки входа\nENTRYPOINT [\"java\", \"-jar\", \"backend.jar\"]\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/Dockerfile b/backend/Dockerfile
+--- a/backend/Dockerfile	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/Dockerfile	(date 1721028638306)
+@@ -3,7 +3,7 @@
+ LABEL authors="neket"
+ 
+ # Добавление JAR-файла в контейнер
+-ADD target/backendApp-0.0.1-SNAPSHOT.jar /app/backend.jar
++ADD backend/target/backendApp-0.0.1-SNAPSHOT.jar /app/backend.jar
+ 
+ # Установка рабочего каталога
+ WORKDIR /app
+Index: frontend/Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Use an official Node.js runtime as a parent image\nFROM node:16\n\n# Set the working directory in the container\nWORKDIR /app\n\n# Copy package.json and package-lock.json to the working directory\nCOPY /react-app/package*.json ./\n\n# Install app dependencies\nRUN npm install\n\n# Copy the rest of your application code to the working directory\nCOPY . .\n\n# Expose a port to communicate with the React app\nEXPOSE 5173\n\n# Start your React app\nCMD [\"npm\", \"run\", \"dev\"]\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/Dockerfile b/frontend/Dockerfile
+--- a/frontend/Dockerfile	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/frontend/Dockerfile	(date 1721028638310)
+@@ -5,7 +5,7 @@
+ WORKDIR /app
+ 
+ # Copy package.json and package-lock.json to the working directory
+-COPY /react-app/package*.json ./
++COPY frontend/react-app/package*.json ./
+ 
+ # Install app dependencies
+ RUN npm install
+Index: backend/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Swagger\n# custom path for swagger-ui path: http://localhost:8080/ui\nspringdoc.swagger-ui.path=/ui\n# custom path for api docs\nspringdoc.api-docs.path=/api-docs\nspringdoc.swagger-ui.operationsSorter=alpha\nspringdoc.swagger-ui.tagsSorter=alpha\n\n# DB\nspring.datasource.url=jdbc:postgresql://localhost:5432/miniapp_db\nspring.datasource.username=miniapp\nspring.datasource.password=miniapp\nspring.datasource.driverClassName=org.postgresql.Driver\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\nspring.jpa.properties.hibernate.hbm2ddl.auto=update\nspring.jpa.generate-ddl=true\n#spring.jpa.properties.hibernate.globally_quoted_identifiers=true\n\n# on csrf token in mustache\nspring.mustache.servlet.expose-request-attributes=true\n\n#Secret keys for token\njwt.secret.access=qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==\njwt.secret.refresh=zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==\njwt.secret.prefix=Bearer\n\n#Cooke\ncooke.time.live.refreshToken=86000\n\n\nspring.main.allow-circular-references=true\n\n\n#limitation for upload file\nspring.servlet.multipart.max-file-size = 50MB\nspring.servlet.multipart.max-request-size = 50MB\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/backend/src/main/resources/application.properties b/backend/src/main/resources/application.properties
+--- a/backend/src/main/resources/application.properties	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/src/main/resources/application.properties	(date 1721028638310)
+@@ -7,7 +7,7 @@
+ springdoc.swagger-ui.tagsSorter=alpha
+ 
+ # DB
+-spring.datasource.url=jdbc:postgresql://localhost:5432/miniapp_db
++spring.datasource.url=jdbc:postgresql://localhost:5433/miniapp_db
+ spring.datasource.username=miniapp
+ spring.datasource.password=miniapp
+ spring.datasource.driverClassName=org.postgresql.Driver
+Index: backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/MiniAppSpringApplication.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/action/UnificationDataUser.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateProductArgument.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateUserArgument.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/UpdateDataUserArgument.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/config/CorsConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/config/NettySocketioConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/config/SecurityConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/config/SocketIOConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/config/WebSocketConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/AdminController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/AuthenticationController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/BookController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/ChatController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/CookeController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/GreetingController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/PostController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/UserController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/bag/CartController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/product/FeedbackController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/product/ProductCategoryController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/product/ProductController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/product/ProductDetailController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/controller/search/searchController.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/cart/CountProductDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/cart/CreateProductCartDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/cart/DtoCountProductInCart.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/cart/ProductCartDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/characteristic/CharacteristicProductDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/cooke/CreateCookeDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/feedback/FeedbackCreateDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/feedback/FeedbackDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/image/CreateImageDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/image/ImageDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/image/UpdateImagerDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/JwtAuthenticationResponse.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/RefreshTokenRequest.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/ResetPasswordDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/SignUpRequest.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/SigninRequest.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/jwtToken/SigninRequestToken.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/CreateProductDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/ProductCardDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/ProductDetailDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/category/CategoryDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/category/CategoryProductDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/product/category/NumberOfProductsInThisCategory.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/user/CreateUserDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/user/UpdateAvatarUserDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/user/UpdateDataUserDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/user/UpdateUserDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/dto/user/UserDto.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/BagProduct.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Book.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Category.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/CategoryProduct.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/CharacteristicProduct.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Feedback.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/FileEntity.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Image.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/ImageUser.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Message.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Product.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/ProductCard.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/Role.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/TokenJWT.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/User.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/chat/Message.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/entity/chat/Status.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/exception/AppError.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/exception/AuthException.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/exception/ErrorException.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/filter/jwt/JwtAuthenticationFilter.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/BookRepository.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/CartRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/CategoryRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/FeedbackRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/ImageProductRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/ImageRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/MessageRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/ProductRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/TokenRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/repository/UserRepo.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/AuthenticationService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/CartService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/CookeService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/FeedbackService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/ImageProductService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/JWTService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/LoadFileService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/ProductService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/UserService.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/AuthenticationServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/CartImp.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/CookeServiceImp.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/FeedbackServiceImp.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/ImageProductServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/JWTServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/LoadFileServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/service/impl/UserServiceImpl.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/swagger/SwaggerConfig.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/EncoderPassword.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CartMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CategoryMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/FeedbackMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ImageMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ProductMapper.java\n/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/UserMapper.java\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst b/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+--- a/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst	(date 1721028638314)
+@@ -1,4 +1,4 @@
+-/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/MiniAppSpringApplication.java
++/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/MainApp.java
+ /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/action/UnificationDataUser.java
+ /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateProductArgument.java
+ /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateUserArgument.java
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.arguments.CreateProductArgument;\nimport app.miniappspring.entity.CharacteristicProduct;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class ProductArgumentMapperImpl implements ProductArgumentMapper {\n\n    @Override\n    public CharacteristicProduct toCharacteristicProduct(CreateProductArgument createProductArgument) {\n        if ( createProductArgument == null ) {\n            return null;\n        }\n\n        CharacteristicProduct.CharacteristicProductBuilder characteristicProduct = CharacteristicProduct.builder();\n\n        characteristicProduct.producerCountry( createProductArgument.getProducerCountry() );\n        characteristicProduct.sellerWarranty( createProductArgument.getSellerWarranty() );\n\n        return characteristicProduct.build();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java	(date 1721028638314)
+@@ -7,7 +7,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/classes/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Swagger\n# custom path for swagger-ui path: http://localhost:8080/ui\nspringdoc.swagger-ui.path=/ui\n# custom path for api docs\nspringdoc.api-docs.path=/api-docs\nspringdoc.swagger-ui.operationsSorter=alpha\nspringdoc.swagger-ui.tagsSorter=alpha\n\n# DB\nspring.datasource.url=jdbc:postgresql://localhost:5432/miniapp_db\nspring.datasource.username=miniapp\nspring.datasource.password=miniapp\nspring.datasource.driverClassName=org.postgresql.Driver\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\nspring.jpa.properties.hibernate.hbm2ddl.auto=update\nspring.jpa.generate-ddl=true\n#spring.jpa.properties.hibernate.globally_quoted_identifiers=true\n\n# on csrf token in mustache\nspring.mustache.servlet.expose-request-attributes=true\n\n#Secret keys for token\njwt.secret.access=qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==\njwt.secret.refresh=zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==\njwt.secret.prefix=Bearer\n\n#Cooke\ncooke.time.live.refreshToken=86000\n\n\nspring.main.allow-circular-references=true\n\n\n#limitation for upload file\nspring.servlet.multipart.max-file-size = 50MB\nspring.servlet.multipart.max-request-size = 50MB\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/backend/target/classes/application.properties b/backend/target/classes/application.properties
+--- a/backend/target/classes/application.properties	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/classes/application.properties	(date 1721028638314)
+@@ -7,7 +7,7 @@
+ springdoc.swagger-ui.tagsSorter=alpha
+ 
+ # DB
+-spring.datasource.url=jdbc:postgresql://localhost:5432/miniapp_db
++spring.datasource.url=jdbc:postgresql://localhost:5433/miniapp_db
+ spring.datasource.username=miniapp
+ spring.datasource.password=miniapp
+ spring.datasource.driverClassName=org.postgresql.Driver
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.dto.characteristic.CharacteristicProductDto;\nimport app.miniappspring.entity.CharacteristicProduct;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class CharacteristicMapperImpl implements CharacteristicMapper {\n\n    @Override\n    public CharacteristicProductDto toCharacteristicProductDto(CharacteristicProduct characteristicProduct) {\n        if ( characteristicProduct == null ) {\n            return null;\n        }\n\n        CharacteristicProductDto.CharacteristicProductDtoBuilder characteristicProductDto = CharacteristicProductDto.builder();\n\n        characteristicProductDto.id( characteristicProduct.getId() );\n        characteristicProductDto.producerCountry( characteristicProduct.getProducerCountry() );\n        characteristicProductDto.sellerWarranty( characteristicProduct.getSellerWarranty() );\n\n        return characteristicProductDto.build();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java	(date 1721028638318)
+@@ -7,7 +7,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.arguments.CreateUserArgument;\nimport app.miniappspring.arguments.UpdateDataUserArgument;\nimport app.miniappspring.dto.image.UpdateImagerDto;\nimport app.miniappspring.dto.jwtToken.SignUpRequest;\nimport app.miniappspring.dto.user.CreateUserDto;\nimport app.miniappspring.dto.user.UpdateDataUserDto;\nimport app.miniappspring.dto.user.UserDto;\nimport app.miniappspring.entity.Image;\nimport app.miniappspring.entity.Role;\nimport app.miniappspring.entity.User;\nimport java.util.LinkedHashSet;\nimport java.util.Set;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class UserMapperImpl implements UserMapper {\n\n    @Override\n    public User toEntity(CreateUserArgument createUserArgument) {\n        if ( createUserArgument == null ) {\n            return null;\n        }\n\n        User.UserBuilder user = User.builder();\n\n        user.firstname( createUserArgument.getFirstname() );\n        user.lastname( createUserArgument.getLastname() );\n        user.username( createUserArgument.getUsername() );\n        user.password( createUserArgument.getPassword() );\n        user.email( createUserArgument.getEmail() );\n        Set<Role> set = createUserArgument.getRoles();\n        if ( set != null ) {\n            user.roles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return user.build();\n    }\n\n    @Override\n    public User toEntity(UpdateDataUserDto updateDataUserDto) {\n        if ( updateDataUserDto == null ) {\n            return null;\n        }\n\n        User.UserBuilder user = User.builder();\n\n        user.firstname( updateDataUserDto.getFirstname() );\n        user.lastname( updateDataUserDto.getLastname() );\n        user.email( updateDataUserDto.getEmail() );\n        user.avatar( updateImagerDtoToImage( updateDataUserDto.getAvatar() ) );\n\n        return user.build();\n    }\n\n    @Override\n    public CreateUserDto toCreateUserDto(CreateUserArgument createUserArgument) {\n        if ( createUserArgument == null ) {\n            return null;\n        }\n\n        CreateUserDto createUserDto = new CreateUserDto();\n\n        createUserDto.setFirstname( createUserArgument.getFirstname() );\n        createUserDto.setLastname( createUserArgument.getLastname() );\n        createUserDto.setUsername( createUserArgument.getUsername() );\n        createUserDto.setPassword( createUserArgument.getPassword() );\n        createUserDto.setEmail( createUserArgument.getEmail() );\n        Set<Role> set = createUserArgument.getRoles();\n        if ( set != null ) {\n            createUserDto.setRoles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return createUserDto;\n    }\n\n    @Override\n    public CreateUserDto toCreateUserDto(User user) {\n        if ( user == null ) {\n            return null;\n        }\n\n        CreateUserDto createUserDto = new CreateUserDto();\n\n        createUserDto.setFirstname( user.getFirstname() );\n        createUserDto.setLastname( user.getLastname() );\n        createUserDto.setUsername( user.getUsername() );\n        createUserDto.setPassword( user.getPassword() );\n        createUserDto.setEmail( user.getEmail() );\n        Set<Role> set = user.getRoles();\n        if ( set != null ) {\n            createUserDto.setRoles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return createUserDto;\n    }\n\n    @Override\n    public UpdateDataUserDto toUpdateDataUserDto(UpdateDataUserArgument updateDataUserArgument) {\n        if ( updateDataUserArgument == null ) {\n            return null;\n        }\n\n        UpdateDataUserDto.UpdateDataUserDtoBuilder updateDataUserDto = UpdateDataUserDto.builder();\n\n        updateDataUserDto.firstname( updateDataUserArgument.getFirstname() );\n        updateDataUserDto.lastname( updateDataUserArgument.getLastname() );\n        updateDataUserDto.email( updateDataUserArgument.getEmail() );\n        updateDataUserDto.avatar( updateDataUserArgument.getAvatar() );\n\n        return updateDataUserDto.build();\n    }\n\n    @Override\n    public UpdateDataUserDto toUpdateDataUserDto(User user) {\n        if ( user == null ) {\n            return null;\n        }\n\n        UpdateDataUserDto.UpdateDataUserDtoBuilder updateDataUserDto = UpdateDataUserDto.builder();\n\n        updateDataUserDto.firstname( user.getFirstname() );\n        updateDataUserDto.lastname( user.getLastname() );\n        updateDataUserDto.email( user.getEmail() );\n        updateDataUserDto.avatar( imageToUpdateImagerDto( user.getAvatar() ) );\n\n        return updateDataUserDto.build();\n    }\n\n    @Override\n    public User toEntity(CreateUserDto createUserDto) {\n        if ( createUserDto == null ) {\n            return null;\n        }\n\n        User.UserBuilder user = User.builder();\n\n        user.firstname( createUserDto.getFirstname() );\n        user.lastname( createUserDto.getLastname() );\n        user.username( createUserDto.getUsername() );\n        user.password( createUserDto.getPassword() );\n        user.email( createUserDto.getEmail() );\n        Set<Role> set = createUserDto.getRoles();\n        if ( set != null ) {\n            user.roles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return user.build();\n    }\n\n    @Override\n    public UserDto toUserDto(User user) {\n        if ( user == null ) {\n            return null;\n        }\n\n        UserDto.UserDtoBuilder userDto = UserDto.builder();\n\n        userDto.id( user.getId() );\n        userDto.firstname( user.getFirstname() );\n        userDto.lastname( user.getLastname() );\n        userDto.username( user.getUsername() );\n        userDto.email( user.getEmail() );\n        Set<Role> set = user.getRoles();\n        if ( set != null ) {\n            userDto.roles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return userDto.build();\n    }\n\n    @Override\n    public CreateUserArgument toCreateUserArgument(SignUpRequest signUpRequest) {\n        if ( signUpRequest == null ) {\n            return null;\n        }\n\n        CreateUserArgument createUserArgument = new CreateUserArgument();\n\n        createUserArgument.setFirstname( signUpRequest.getFirstname() );\n        createUserArgument.setLastname( signUpRequest.getLastname() );\n        createUserArgument.setUsername( signUpRequest.getUsername() );\n        createUserArgument.setPassword( signUpRequest.getPassword() );\n        createUserArgument.setEmail( signUpRequest.getEmail() );\n        Set<Role> set = signUpRequest.getRoles();\n        if ( set != null ) {\n            createUserArgument.setRoles( new LinkedHashSet<Role>( set ) );\n        }\n\n        return createUserArgument;\n    }\n\n    protected Image updateImagerDtoToImage(UpdateImagerDto updateImagerDto) {\n        if ( updateImagerDto == null ) {\n            return null;\n        }\n\n        Image.ImageBuilder image = Image.builder();\n\n        image.name( updateImagerDto.getName() );\n        image.contentType( updateImagerDto.getContentType() );\n\n        return image.build();\n    }\n\n    protected UpdateImagerDto imageToUpdateImagerDto(Image image) {\n        if ( image == null ) {\n            return null;\n        }\n\n        UpdateImagerDto.UpdateImagerDtoBuilder updateImagerDto = UpdateImagerDto.builder();\n\n        updateImagerDto.name( image.getName() );\n        updateImagerDto.contentType( image.getContentType() );\n\n        return updateImagerDto.build();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java	(date 1721028638318)
+@@ -17,7 +17,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.dto.cart.CreateProductCartDto;\nimport app.miniappspring.dto.cart.ProductCartDto;\nimport app.miniappspring.entity.BagProduct;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class CartMapperImpl implements CartMapper {\n\n    @Override\n    public BagProduct toProductCart(CreateProductCartDto createProductCartDto) {\n        if ( createProductCartDto == null ) {\n            return null;\n        }\n\n        BagProduct bagProduct = new BagProduct();\n\n        bagProduct.setIdProduct( createProductCartDto.getIdProduct() );\n        bagProduct.setCount( createProductCartDto.getCount() );\n        bagProduct.setShowInCart( createProductCartDto.isShowInCart() );\n\n        return bagProduct;\n    }\n\n    @Override\n    public ProductCartDto toCarProductDto(BagProduct cartProduct) {\n        if ( cartProduct == null ) {\n            return null;\n        }\n\n        ProductCartDto productCartDto = new ProductCartDto();\n\n        productCartDto.setIdProduct( cartProduct.getIdProduct() );\n        productCartDto.setCount( cartProduct.getCount() );\n        productCartDto.setShowInCart( cartProduct.isShowInCart() );\n\n        return productCartDto;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java	(date 1721028638318)
+@@ -8,7 +8,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.dto.feedback.FeedbackCreateDto;\nimport app.miniappspring.dto.feedback.FeedbackDto;\nimport app.miniappspring.entity.Feedback;\nimport app.miniappspring.entity.Product;\nimport java.util.ArrayList;\nimport java.util.List;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class FeedbackMapperImpl implements FeedbackMapper {\n\n    @Override\n    public Feedback toFeedback(FeedbackCreateDto feedbackCreateDto) {\n        if ( feedbackCreateDto == null ) {\n            return null;\n        }\n\n        Feedback feedback = new Feedback();\n\n        feedback.setNameUser( feedbackCreateDto.getNameUser() );\n        feedback.setEmail( feedbackCreateDto.getEmail() );\n        feedback.setMessage( feedbackCreateDto.getMessage() );\n        feedback.setEvaluation( feedbackCreateDto.getEvaluation() );\n        List<byte[]> list = feedbackCreateDto.getImageList();\n        if ( list != null ) {\n            feedback.setImageList( new ArrayList<byte[]>( list ) );\n        }\n\n        return feedback;\n    }\n\n    @Override\n    public FeedbackDto toFeedbackDto(Feedback feedback) {\n        if ( feedback == null ) {\n            return null;\n        }\n\n        FeedbackDto feedbackDto = new FeedbackDto();\n\n        feedbackDto.setIdProduct( feedbackProductId( feedback ) );\n        feedbackDto.setId( feedback.getId() );\n        feedbackDto.setNameUser( feedback.getNameUser() );\n        feedbackDto.setEmail( feedback.getEmail() );\n        feedbackDto.setMessage( feedback.getMessage() );\n        feedbackDto.setEvaluation( feedback.getEvaluation() );\n        List<byte[]> list = feedback.getImageList();\n        if ( list != null ) {\n            feedbackDto.setImageList( new ArrayList<byte[]>( list ) );\n        }\n\n        return feedbackDto;\n    }\n\n    private Long feedbackProductId(Feedback feedback) {\n        if ( feedback == null ) {\n            return null;\n        }\n        Product product = feedback.getProduct();\n        if ( product == null ) {\n            return null;\n        }\n        Long id = product.getId();\n        if ( id == null ) {\n            return null;\n        }\n        return id;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java	(date 1721028638322)
+@@ -11,7 +11,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.arguments.CreateProductArgument;\nimport app.miniappspring.entity.Product;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class ProductMapperImpl extends ProductMapper {\n\n    @Override\n    public Product toProduct(CreateProductArgument createProductArgument) {\n        if ( createProductArgument == null ) {\n            return null;\n        }\n\n        Product.ProductBuilder product = Product.builder();\n\n        product.name( createProductArgument.getName() );\n        product.cost( createProductArgument.getCost() );\n        product.rating( createProductArgument.getRating() );\n        product.description( createProductArgument.getDescription() );\n        product.brand( createProductArgument.getBrand() );\n        product.article( createProductArgument.getArticle() );\n        product.available( createProductArgument.isAvailable() );\n        product.stock( createProductArgument.getStock() );\n        product.detail( createProductArgument.getDetail() );\n        product.subcategory( createProductArgument.getSubcategory() );\n\n        return product.build();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java	(date 1721028638322)
+@@ -7,7 +7,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.dto.image.CreateImageDto;\nimport app.miniappspring.dto.image.ImageDto;\nimport app.miniappspring.entity.Image;\nimport java.io.IOException;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\nimport org.springframework.web.multipart.MultipartFile;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class ImageMapperImpl implements ImageMapper {\n\n    @Override\n    public Image toImage(MultipartFile multipartFile) throws IOException {\n        if ( multipartFile == null ) {\n            return null;\n        }\n\n        Image.ImageBuilder image = Image.builder();\n\n        image.name( multipartFile.getName() );\n        image.contentType( multipartFile.getContentType() );\n        byte[] bytes = multipartFile.getBytes();\n        if ( bytes != null ) {\n            image.bytes( Arrays.copyOf( bytes, bytes.length ) );\n        }\n\n        return image.build();\n    }\n\n    @Override\n    public List<ImageDto> toImageDtoList(List<Image> images) {\n        if ( images == null ) {\n            return null;\n        }\n\n        List<ImageDto> list = new ArrayList<ImageDto>( images.size() );\n        for ( Image image : images ) {\n            list.add( toImageDto( image ) );\n        }\n\n        return list;\n    }\n\n    @Override\n    public List<Image> toImageList(List<CreateImageDto> createImageDtoList) {\n        if ( createImageDtoList == null ) {\n            return null;\n        }\n\n        List<Image> list = new ArrayList<Image>( createImageDtoList.size() );\n        for ( CreateImageDto createImageDto : createImageDtoList ) {\n            list.add( toImage( createImageDto ) );\n        }\n\n        return list;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java	(date 1721028638326)
+@@ -13,7 +13,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package app.miniappspring.utils.jwtToken.mapper;\n\nimport app.miniappspring.arguments.CreateProductArgument;\nimport app.miniappspring.dto.product.category.CategoryDto;\nimport app.miniappspring.dto.product.category.CategoryProductDto;\nimport app.miniappspring.entity.Category;\nimport app.miniappspring.entity.CategoryProduct;\nimport app.miniappspring.entity.Product;\nimport javax.annotation.processing.Generated;\nimport org.springframework.stereotype.Component;\n\n@Generated(\n    value = \"org.mapstruct.ap.MappingProcessor\",\n    date = \"2024-07-14T16:03:18+0300\",\n    comments = \"version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)\"\n)\n@Component\npublic class CategoryMapperImpl implements CategoryMapper {\n\n    @Override\n    public CategoryProduct toCategoryProduct(CreateProductArgument createProductArgument) {\n        if ( createProductArgument == null ) {\n            return null;\n        }\n\n        CategoryProduct.CategoryProductBuilder categoryProduct = CategoryProduct.builder();\n\n        categoryProduct.stringValueCategory( createProductArgumentCategoryRussianValue( createProductArgument ) );\n        categoryProduct.category( createProductArgument.getCategory() );\n        categoryProduct.subcategory( createProductArgument.getSubcategory() );\n\n        return categoryProduct.build();\n    }\n\n    @Override\n    public CategoryDto toCategoryDto(CategoryProduct categoryProduct) {\n        if ( categoryProduct == null ) {\n            return null;\n        }\n\n        CategoryDto categoryDto = new CategoryDto();\n\n        if ( categoryProduct.getCategory() != null ) {\n            categoryDto.setCategoryProduct( categoryProduct.getCategory().name() );\n        }\n        categoryDto.setSubcategory( categoryProduct.getSubcategory() );\n\n        return categoryDto;\n    }\n\n    @Override\n    public CategoryProductDto toCategoryProductDto(CategoryProduct categoryProduct) {\n        if ( categoryProduct == null ) {\n            return null;\n        }\n\n        CategoryProductDto categoryProductDto = new CategoryProductDto();\n\n        categoryProductDto.setCategory( categoryProduct.getCategory() );\n        categoryProductDto.setSubcategory( categoryProduct.getSubcategory() );\n        categoryProductDto.setStringValueCategory( categoryProduct.getStringValueCategory() );\n\n        return categoryProductDto;\n    }\n\n    @Override\n    public CategoryProductDto toCategoryProduct(Product product) {\n        if ( product == null ) {\n            return null;\n        }\n\n        CategoryProductDto categoryProductDto = new CategoryProductDto();\n\n        categoryProductDto.setIdProduct( product.getId() );\n        categoryProductDto.setNameProduct( product.getName() );\n        categoryProductDto.setCategory( productCategoryProductCategory( product ) );\n        categoryProductDto.setSubcategory( productCategoryProductSubcategory( product ) );\n        categoryProductDto.setStringValueCategory( productCategoryProductStringValueCategory( product ) );\n\n        return categoryProductDto;\n    }\n\n    private String createProductArgumentCategoryRussianValue(CreateProductArgument createProductArgument) {\n        if ( createProductArgument == null ) {\n            return null;\n        }\n        Category category = createProductArgument.getCategory();\n        if ( category == null ) {\n            return null;\n        }\n        String russianValue = category.getRussianValue();\n        if ( russianValue == null ) {\n            return null;\n        }\n        return russianValue;\n    }\n\n    private Category productCategoryProductCategory(Product product) {\n        if ( product == null ) {\n            return null;\n        }\n        CategoryProduct categoryProduct = product.getCategoryProduct();\n        if ( categoryProduct == null ) {\n            return null;\n        }\n        Category category = categoryProduct.getCategory();\n        if ( category == null ) {\n            return null;\n        }\n        return category;\n    }\n\n    private String productCategoryProductSubcategory(Product product) {\n        if ( product == null ) {\n            return null;\n        }\n        CategoryProduct categoryProduct = product.getCategoryProduct();\n        if ( categoryProduct == null ) {\n            return null;\n        }\n        String subcategory = categoryProduct.getSubcategory();\n        if ( subcategory == null ) {\n            return null;\n        }\n        return subcategory;\n    }\n\n    private String productCategoryProductStringValueCategory(Product product) {\n        if ( product == null ) {\n            return null;\n        }\n        CategoryProduct categoryProduct = product.getCategoryProduct();\n        if ( categoryProduct == null ) {\n            return null;\n        }\n        String stringValueCategory = categoryProduct.getStringValueCategory();\n        if ( stringValueCategory == null ) {\n            return null;\n        }\n        return stringValueCategory;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java
+--- a/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java	(date 1721028638326)
+@@ -11,7 +11,7 @@
+ 
+ @Generated(
+     value = "org.mapstruct.ap.MappingProcessor",
+-    date = "2024-07-14T16:03:18+0300",
++    date = "2024-07-15T01:30:14+0300",
+     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
+ )
+ @Component
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1721028638330)
++++ b/.idea/misc.xml	(date 1721028638330)
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++        <option value="$PROJECT_DIR$/backend/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>app/miniappspring/entity/Image.class\napp/miniappspring/arguments/UpdateDataUserArgument$UpdateDataUserArgumentBuilder.class\napp/miniappspring/service/AuthenticationService.class\napp/miniappspring/controller/CookeController.class\napp/miniappspring/repository/CategoryRepo.class\napp/miniappspring/controller/ChatController.class\napp/miniappspring/entity/TokenJWT$TokenJWTBuilder.class\napp/miniappspring/service/CookeService.class\napp/miniappspring/controller/search/searchController.class\napp/miniappspring/repository/TokenRepo.class\napp/miniappspring/repository/ImageProductRepo.class\napp/miniappspring/entity/Product.class\napp/miniappspring/dto/user/UpdateUserDto$UpdateUserDtoBuilder.class\napp/miniappspring/dto/feedback/FeedbackCreateDto.class\napp/miniappspring/controller/product/ProductCategoryController.class\napp/miniappspring/entity/Feedback.class\napp/miniappspring/service/UserService.class\napp/miniappspring/dto/user/CreateUserDto.class\napp/miniappspring/controller/AdminController.class\napp/miniappspring/dto/jwtToken/SigninRequest.class\napp/miniappspring/entity/CategoryProduct$CategoryProductBuilder.class\napp/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.class\napp/miniappspring/service/impl/UserServiceImpl$UserServiceImplBuilder.class\napp/miniappspring/utils/jwtToken/EncoderPassword.class\napp/miniappspring/service/CartService.class\napp/miniappspring/repository/CartRepo.class\napp/miniappspring/dto/image/CreateImageDto$CreateImageDtoBuilder.class\napp/miniappspring/repository/ProductRepo.class\napp/miniappspring/controller/bag/CartController.class\napp/miniappspring/exception/ErrorException.class\napp/miniappspring/dto/image/ImageDto.class\napp/miniappspring/dto/jwtToken/ResetPasswordDto$ResetPasswordDtoBuilder.class\napp/miniappspring/dto/characteristic/CharacteristicProductDto$CharacteristicProductDtoBuilder.class\napp/miniappspring/entity/Image$ImageBuilder.class\napp/miniappspring/repository/UserRepo.class\napp/miniappspring/dto/product/category/CategoryDto.class\napp/miniappspring/dto/product/category/NumberOfProductsInThisCategory.class\napp/miniappspring/dto/product/category/CategoryProductDto.class\napp/miniappspring/entity/Book.class\napp/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.class\napp/miniappspring/dto/cooke/CreateCookeDto$CreateCookeDtoBuilder.class\napp/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.class\napp/miniappspring/utils/jwtToken/mapper/UserMapper.class\napp/miniappspring/dto/jwtToken/ResetPasswordDto.class\napp/miniappspring/dto/product/ProductDetailDto$ProductDetailDtoBuilder.class\napp/miniappspring/dto/user/UserDto$UserDtoBuilder.class\napp/miniappspring/dto/user/UpdateAvatarUserDto.class\napp/miniappspring/controller/UserController.class\napp/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.class\napp/miniappspring/dto/cart/DtoCountProductInCart.class\napp/miniappspring/dto/user/UpdateUserDto.class\napp/miniappspring/arguments/CreateProductArgument.class\napp/miniappspring/entity/User$UserBuilder.class\napp/miniappspring/service/JWTService.class\napp/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.class\napp/miniappspring/service/impl/ProductServiceImpl.class\napp/miniappspring/entity/Category.class\napp/miniappspring/entity/Message.class\napp/miniappspring/controller/GreetingController.class\napp/miniappspring/dto/feedback/FeedbackDto.class\napp/miniappspring/controller/AuthenticationController.class\napp/miniappspring/exception/AuthException.class\napp/miniappspring/dto/cart/CreateProductCartDto.class\napp/miniappspring/exception/AppError.class\napp/miniappspring/dto/product/ProductCardDto$ProductCardDtoBuilder.class\napp/miniappspring/utils/jwtToken/mapper/FeedbackMapper.class\napp/miniappspring/service/impl/UserServiceImpl.class\napp/miniappspring/dto/jwtToken/SigninRequestToken.class\napp/miniappspring/dto/image/ImageDto$ImageDtoBuilder.class\napp/miniappspring/service/impl/UserServiceImpl$1.class\napp/miniappspring/entity/chat/Message.class\napp/miniappspring/entity/chat/Status.class\napp/miniappspring/repository/FeedbackRepo.class\napp/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.class\napp/miniappspring/entity/BagProduct.class\napp/miniappspring/utils/jwtToken/mapper/CartMapper.class\napp/miniappspring/service/ImageProductService.class\napp/miniappspring/utils/jwtToken/mapper/ProductMapper.class\napp/miniappspring/service/ProductService.class\napp/miniappspring/service/FeedbackService.class\napp/miniappspring/dto/image/UpdateImagerDto$UpdateImagerDtoBuilder.class\napp/miniappspring/dto/product/ProductCardDto.class\napp/miniappspring/entity/Role.class\napp/miniappspring/dto/cart/CountProductDto.class\napp/miniappspring/controller/BookController.class\napp/miniappspring/arguments/CreateProductArgument$CreateProductArgumentBuilder.class\napp/miniappspring/entity/Product$ProductBuilder.class\napp/miniappspring/entity/User.class\napp/miniappspring/dto/characteristic/CharacteristicProductDto.class\napp/miniappspring/dto/cooke/CreateCookeDto.class\napp/miniappspring/dto/cart/ProductCartDto.class\napp/miniappspring/arguments/UpdateDataUserArgument.class\napp/miniappspring/filter/jwt/JwtAuthenticationFilter.class\napp/miniappspring/utils/jwtToken/mapper/ImageMapper.class\napp/miniappspring/dto/jwtToken/JwtAuthenticationResponse$JwtAuthenticationResponseBuilder.class\napp/miniappspring/controller/product/ProductDetailController.class\napp/miniappspring/entity/CharacteristicProduct$CharacteristicProductBuilder.class\napp/miniappspring/entity/TokenJWT.class\napp/miniappspring/swagger/SwaggerConfig.class\napp/miniappspring/dto/jwtToken/RefreshTokenRequest.class\napp/miniappspring/utils/jwtToken/mapper/CartMapperImpl.class\napp/miniappspring/dto/product/ProductDetailDto.class\napp/miniappspring/service/impl/JWTServiceImpl.class\napp/miniappspring/config/WebSocketConfig.class\napp/miniappspring/controller/product/FeedbackController.class\napp/miniappspring/utils/jwtToken/mapper/ProductArgumentMapper.class\napp/miniappspring/service/impl/FeedbackServiceImp.class\napp/miniappspring/controller/product/ProductController.class\napp/miniappspring/config/SecurityConfig.class\napp/miniappspring/entity/Message$MessageBuilder.class\napp/miniappspring/entity/CategoryProduct.class\napp/miniappspring/dto/image/UpdateImagerDto.class\napp/miniappspring/dto/user/UpdateDataUserDto.class\napp/miniappspring/entity/CharacteristicProduct.class\napp/miniappspring/dto/image/CreateImageDto.class\napp/miniappspring/service/impl/CartImp.class\napp/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.class\napp/miniappspring/repository/MessageRepo.class\napp/miniappspring/service/impl/ImageProductServiceImpl.class\napp/miniappspring/service/impl/CookeServiceImp.class\napp/miniappspring/repository/BookRepository.class\napp/miniappspring/utils/jwtToken/mapper/CategoryMapper.class\napp/miniappspring/dto/jwtToken/JwtAuthenticationResponse.class\napp/miniappspring/dto/user/UpdateDataUserDto$UpdateDataUserDtoBuilder.class\napp/miniappspring/MiniAppSpringApplication.class\napp/miniappspring/dto/product/category/NumberOfProductsInThisCategory$NumberOfProductsInThisCategoryBuilder.class\napp/miniappspring/dto/product/CreateProductDto.class\napp/miniappspring/controller/PostController.class\napp/miniappspring/utils/jwtToken/mapper/UserMapperImpl.class\napp/miniappspring/dto/jwtToken/SignUpRequest.class\napp/miniappspring/dto/user/UserDto.class\napp/miniappspring/service/impl/AuthenticationServiceImpl.class\napp/miniappspring/arguments/CreateUserArgument.class\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst b/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+--- a/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst	(revision 94ae61c1acef88119c0fc15fc208ae573a69102b)
++++ b/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst	(date 1721028638326)
+@@ -29,6 +29,7 @@
+ app/miniappspring/controller/bag/CartController.class
+ app/miniappspring/exception/ErrorException.class
+ app/miniappspring/dto/image/ImageDto.class
++app/miniappspring/MainApp.class
+ app/miniappspring/dto/jwtToken/ResetPasswordDto$ResetPasswordDtoBuilder.class
+ app/miniappspring/dto/characteristic/CharacteristicProductDto$CharacteristicProductDtoBuilder.class
+ app/miniappspring/entity/Image$ImageBuilder.class
+@@ -122,7 +123,6 @@
+ app/miniappspring/utils/jwtToken/mapper/CategoryMapper.class
+ app/miniappspring/dto/jwtToken/JwtAuthenticationResponse.class
+ app/miniappspring/dto/user/UpdateDataUserDto$UpdateDataUserDtoBuilder.class
+-app/miniappspring/MiniAppSpringApplication.class
+ app/miniappspring/dto/product/category/NumberOfProductsInThisCategory$NumberOfProductsInThisCategoryBuilder.class
+ app/miniappspring/dto/product/CreateProductDto.class
+ app/miniappspring/controller/PostController.class
+Index: backend/src/main/java/app/miniappspring/MainApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/app/miniappspring/MainApp.java b/backend/src/main/java/app/miniappspring/MainApp.java
+new file mode 100644
+--- /dev/null	(date 1721028638334)
++++ b/backend/src/main/java/app/miniappspring/MainApp.java	(date 1721028638334)
+@@ -0,0 +1,12 @@
++package app.miniappspring;
++
++import org.springframework.boot.SpringApplication;
++import org.springframework.boot.autoconfigure.SpringBootApplication;
++
++@SpringBootApplication
++public class MainApp {
++
++    public static void main(String[] args) {
++        SpringApplication.run(MainApp.class, args);
++    }
++}
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1721028638330)
++++ b/.idea/compiler.xml	(date 1721028638330)
+@@ -0,0 +1,24 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Annotation profile for backendMiniApp" enabled="true">
++        <sourceOutputDir name="target/generated-sources/annotations" />
++        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
++        <outputRelativeToContentRoot value="true" />
++        <processorPath useClasspath="false">
++          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
++          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
++          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
++          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok-mapstruct-binding/0.2.0/lombok-mapstruct-binding-0.2.0.jar" />
++        </processorPath>
++        <module name="backendApp" />
++      </profile>
++    </annotationProcessing>
++  </component>
++  <component name="JavacSettings">
++    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
++      <module name="backendApp" options="-parameters" />
++    </option>
++  </component>
++</project>
+\ No newline at end of file
