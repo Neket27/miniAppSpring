@@ -13,16 +13,16 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./
       dockerfile: backend/Dockerfile
     container_name: miniAppSpring_backend
     ports:
       - "8081:8080"
 
-
   frontend:
     build:
+      context: ./
       dockerfile: frontend/Dockerfile
     container_name: miniAppSpring_frontend
     ports:
-      - "5173:5173"
+      - "5174:5173"
