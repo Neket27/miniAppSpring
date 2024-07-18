@@ -5,12 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a80ccc2-53c3-4d15-aa3f-58777645f7b8" name="Changes" comment="change file">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/MainApp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/MainApp.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/signUpRequest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/signinRequest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/tokenAuthenticatedUser.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.attach_pid1406381" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.attach_pid60814" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/dataSources/aacfb7fb-ffcb-4eb8-90e4-5ca2b925c87b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/dataSources/aacfb7fb-ffcb-4eb8-90e4-5ca2b925c87b.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar.original" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/MiniAppSpringApplication.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java" afterDir="false" />
@@ -20,14 +28,8 @@
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/signUpRequest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/signinRequest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/tokenAuthenticatedUser.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +47,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="development" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -65,9 +67,13 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Docker.backend/Dockerfile.executor": "Run",
+    "Docker.docker-compose.yaml.backend: Compose Deployment.executor": "Run",
     "Docker.docker-compose.yaml.db: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yaml.frontend: Compose Deployment.executor": "Run",
     "Maven.backendApp [clean].executor": "Run",
     "Maven.backendApp [compile].executor": "Run",
+    "Maven.backendApp [package].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -88,23 +94,24 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Spring Boot.MainApp (1)">
-    <configuration name="MainApp (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="backendApp" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="app.miniappspring.MainApp" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="app.miniappspring.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunManager" selected="Spring Boot.MainApp">
+    <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MainApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="backendApp" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="MainApp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="app.miniappspring.MainApp" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -117,9 +124,34 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="backend/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="backend/Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yaml.backend: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
       <deployment type="docker-compose.yml">
         <settings>
+          <option name="services">
+            <list>
+              <option value="backend" />
+            </list>
+          </option>
           <option name="sourceFilePath" value="docker-compose.yaml" />
         </settings>
       </deployment>
@@ -138,13 +170,26 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="docker-compose.yaml.frontend: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="frontend" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.MainApp (1)" />
+        <item itemvalue="Docker.docker-compose.yaml.frontend: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.backend: Compose Deployment" />
+        <item itemvalue="Docker.backend/Dockerfile" />
         <item itemvalue="Docker.docker-compose.yaml.db: Compose Deployment" />
-        <item itemvalue="Spring Boot.MainApp" />
         <item itemvalue="Docker.Dockerfile: Compose Deployment" />
-        <item itemvalue="Docker.docker-compose.yaml: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -165,6 +210,12 @@
       <option name="presentableId" value="Default" />
       <updated>1720990237248</updated>
       <workItem from="1720990238280" duration="327000" />
+      <workItem from="1721032177529" duration="238000" />
+      <workItem from="1721032959442" duration="60000" />
+      <workItem from="1721033078669" duration="10191000" />
+      <workItem from="1721234282820" duration="38000" />
+      <workItem from="1721312057855" duration="810000" />
+      <workItem from="1721336638687" duration="527000" />
     </task>
     <task id="LOCAL-00001" summary="remove folder backend">
       <option name="closed" value="true" />
@@ -185,7 +236,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="development" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
