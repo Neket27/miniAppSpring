@@ -7,7 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0a81e031-2e2a-4537-ac87-56ef97a4a22d" name="Changes" comment="splitting the frontend and backend into folders" />
+    <list default="true" id="0a81e031-2e2a-4537-ac87-56ef97a4a22d" name="Changes" comment="splitting the frontend and backend into folders">
+      <change afterPath="$PROJECT_DIR$/../frontend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,63 +53,63 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Docker.../docker-compose.yaml: Compose Deployment.executor": "Run",
-    "Docker.Dockerfile: Compose Deployment.executor": "Run",
-    "Docker.backend/Dockerfile.executor": "Run",
-    "Docker.docker-compose.yaml.app: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.db: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.db_miniApp_postgres: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml: Compose Deployment.executor": "Run",
-    "Docker.miniappspring/Dockerfile: Compose Deployment.executor": "Run",
-    "Docker.resources/Dockerfile.executor": "Run",
-    "Docker.resources/docker-compose.yaml.db_provider: Compose Deployment.executor": "Run",
-    "Docker.resources/docker-compose.yaml: Compose Deployment.executor": "Run",
-    "Maven.app.miniappspring [clean].executor": "Run",
-    "Maven.app.miniappspring [compile].executor": "Run",
-    "Maven.app.miniappspring [package].executor": "Run",
-    "Maven.backend [clean].executor": "Run",
-    "Maven.backend [compile].executor": "Run",
-    "Maven.backend [package].executor": "Run",
-    "Maven.backendApp [clean].executor": "Run",
-    "Maven.backendApp [package].executor": "Run",
-    "Maven.miniAppSpring [clean].executor": "Run",
-    "Maven.miniAppSpring [compile].executor": "Run",
-    "Maven.miniAppSpring [package].executor": "Run",
-    "Maven.miniappspring [clean].executor": "Run",
-    "Maven.miniappspring [compile].executor": "Run",
-    "Maven.miniappspring [package].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.MiniAppSpringApplication.executor": "Run",
-    "TestNG.GameGosha.checkSignIn.executor": "Run",
-    "TestNG.GameGosha.click.executor": "Run",
-    "TestNG.GameGosha.executor": "Run",
-    "TestNG.MainClassTest.testBlockAuth.executor": "Run",
-    "TestNG.MainClassTest.testPageLogin.executor": "Run",
-    "TestNG.MainClassTest.testPageRegistration.executor": "Run",
-    "TestNG.PageLogin.checkSignIn.executor": "Run",
-    "TestNG.PageLogin.chekRegistration.executor": "Run",
-    "TestNG.PageLogin.executor": "Run",
-    "git-widget-placeholder": "development",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/neket/IdeaProjects/miniAppSpring/backend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "ts.external.directory.path": "/home/neket/programs/idea-IU-241.15989.150/idea-IU-241.15989.150/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Docker.../docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.Dockerfile: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.backend/Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.app: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.db: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.db_miniApp_postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.miniappspring/Dockerfile: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.resources/Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.resources/docker-compose.yaml.db_provider: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.resources/docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.app.miniappspring [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.app.miniappspring [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.app.miniappspring [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backend [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backendApp [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.backendApp [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniAppSpring [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniAppSpring [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniAppSpring [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniappspring [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniappspring [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.miniappspring [package].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.MiniAppSpringApplication.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.GameGosha.checkSignIn.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.GameGosha.click.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.GameGosha.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.MainClassTest.testBlockAuth.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.MainClassTest.testPageLogin.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.MainClassTest.testPageRegistration.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.PageLogin.checkSignIn.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.PageLogin.chekRegistration.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.PageLogin.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/neket/IdeaProjects/miniAppSpring/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/neket/programs/idea-IU-241.15989.150/idea-IU-241.15989.150/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -244,6 +247,7 @@
       <workItem from="1720958058448" duration="625000" />
       <workItem from="1720958687290" duration="1215000" />
       <workItem from="1720961626332" duration="3143000" />
+      <workItem from="1721033044561" duration="23000" />
     </task>
     <task id="LOCAL-00001" summary="I did it badly, I will roll back">
       <option name="closed" value="true" />

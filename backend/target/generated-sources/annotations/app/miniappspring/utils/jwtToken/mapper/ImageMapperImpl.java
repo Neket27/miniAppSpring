@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-15T01:30:14+0300",
+    date = "2024-07-18T13:45:47+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
