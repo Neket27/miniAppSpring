@@ -1,4 +1,4 @@
-/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/MainApp.java
+/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/MainApp.java
 /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/action/UnificationDataUser.java
 /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateProductArgument.java
 /home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring/arguments/CreateUserArgument.java
