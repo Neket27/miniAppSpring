@@ -4,16 +4,12 @@ import app.miniappspring.entity.TokenJWT;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.TokenRepo;
 import app.miniappspring.service.JWTService;
-import app.miniappspring.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,29 +22,17 @@ import java.util.function.Function;
 
 @Service
 @Slf4j
-@Setter
-@Getter
 public class JWTServiceImpl implements JWTService {
 
     private  TokenRepo tokenRepo;
-    private  UserService userService;
-
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
-    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+
+    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret, TokenRepo tokenRepo) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+        this.tokenRepo = tokenRepo;
 
-    }
-
-    @Autowired
-    public void setTokenRepo(TokenRepo tokenRepo){
-        this.tokenRepo=tokenRepo;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService){
-        this.userService=userService;
     }
 
     @Override

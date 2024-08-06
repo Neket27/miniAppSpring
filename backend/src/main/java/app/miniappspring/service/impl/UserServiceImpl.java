@@ -14,12 +14,16 @@ import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
 import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
 import app.miniappspring.utils.jwtToken.mapper.UserMapper;
-import lombok.*;
+import app.miniappspring.utils.user.UnificationUserUtils;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -28,8 +32,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Setter
-@Getter
 @Builder
 public class UserServiceImpl implements UserService {
 
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ImageMapper imageMapper;
     private final JWTServiceImpl  jwtService;
+    private final UnificationUserUtils unificationUserUtils;
 
 
     @Override
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public CreateUserDto addUser(@NonNull CreateUserArgument createUserArgument) {
         if( isUsernameAlreadyInUse(createUserArgument.getUsername()))
             throw new ErrorException("Пользователь с логином "+createUserArgument.getUsername()+" уже существует");
@@ -69,19 +72,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public UpdateDataUserDto updateDataUser(@NonNull UpdateDataUserArgument updateDataUserArgument){
 
         UpdateDataUserDto updateDataUserDto = userMapper.toUpdateDataUserDto(updateDataUserArgument);
         String username = jwtService.getUserNameFromAccessToken(updateDataUserArgument.getAccessToken());
-
         User user = getByUsername(username);
-        user.setFirstname(updateDataUserDto.getFirstname());
-        user.setLastname(updateDataUserDto.getLastname());
-        user.setEmail(updateDataUserDto.getEmail());
+        user = unificationUserUtils.updateUserData(user,updateDataUserDto);
         if(updateDataUserDto.getAvatar()!=null)
             user.setAvatar(imageMapper.toImage(updateDataUserDto.getAvatar()));
-
 
 //           if(!EncoderPassword.equalsPasswords(UpdateDataUserDto.getPassword(),user.getPassword()) && UpdateDataUserDto.getPassword()!=null)
 //           user.setPassword(EncoderPassword.encode(UpdateDataUserDto.getPassword()));
@@ -90,34 +89,13 @@ public class UserServiceImpl implements UserService {
            return userMapper.toUpdateDataUserDto(userRepo.save(user));
     }
 
-    @Override
-    @Transactional
-    public UpdateDataUserDto updateDataUser(UpdateDataUserDto updateDataUserDto){
-//        User user =getByUsername(UpdateDataUserDto.getUsername());
-//        user.setFirstname(UpdateDataUserDto.getFirstname());
-//        user.setLastname(UpdateDataUserDto.getLastname());
-//        user.setUsername(UpdateDataUserDto.getUsername());
-//        if(!EncoderPassword.equalsPasswords(UpdateDataUserDto.getPassword(),user.getPassword()))
-//            user.setPassword(EncoderPassword.encode(UpdateDataUserDto.getPassword()));
-//        user.setEmail(UpdateDataUserDto.getEmail());
-//            user.setRoles(UpdateDataUserDto.getRoles());
-        User user = User.builder()
-                .firstname(updateDataUserDto.getFirstname())
-                .lastname(updateDataUserDto.getLastname())
-                .email(updateDataUserDto.getEmail())
-                .avatar(imageMapper.toImage(updateDataUserDto.getAvatar()))
-                .build();
-        return userMapper.toUpdateDataUserDto(userRepo.save(user));
-    }
 
     @Override
     @Transactional
     public UpdateDataUserDto updateDataUser(UpdateUserDto updateUserDto) {
         User user =getByUsername(updateUserDto.getUsername());
-        user.setFirstname(updateUserDto.getFirstname());
-        user.setLastname(updateUserDto.getLastname());
+        user = unificationUserUtils.updateUserData(user,updateUserDto);
         user.setUsername(updateUserDto.getUsername());
-        user.setEmail(updateUserDto.getEmail());
         user.setRoles(updateUserDto.getRoles());
 
         if(!EncoderPassword.equalsPasswords(updateUserDto.getPassword(),user.getPassword()))
@@ -132,31 +110,26 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean updateUserAvatar(@NonNull UpdateAvatarUserDto updateAvatarUserDto){
         User user =getByUsername(updateAvatarUserDto.getUsername());
-//        imageRepo.deleteById(user.getId());
-
-//        user.setAvatar(imageMapper.toImage(u));
-
-//        imageRepo.save(avatar);
         return true;
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> getListUsers() {
-        Iterable<User> users = userRepo.findAll();
+        List<User> users = userRepo.findAll();
         users.forEach(user -> user.setPassword(EncoderPassword.encode(user.getPassword())));
-        return (List<User>) users;
+        return users;
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public User getById(@NonNull Long id) {
         return userRepo.findById(id).orElseThrow(()->new ErrorException("Пользователь с id= "+id+" не найден"));
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public User getByUsername(@NonNull String username){
         return userRepo.findByUsername(username).orElseThrow(()->new ErrorException("Пользователь с логином "+username+" не найден"));
     }
@@ -175,15 +148,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean isUsernameAlreadyInUse(@NonNull String username) {
         return userRepo.existsUserByUsername(username);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean isEmailAlreadyInUse(@NonNull String email) {
         return userRepo.existsUserByEmail(email);
     }
+
 
 }

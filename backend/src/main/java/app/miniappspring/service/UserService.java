@@ -20,7 +20,6 @@ public interface UserService {
 
     UpdateDataUserDto updateDataUser(@NonNull UpdateDataUserArgument updateDataUserArgument);
 
-    UpdateDataUserDto updateDataUser(UpdateDataUserDto UpdateDataUserDto);
 
     UpdateDataUserDto updateDataUser(UpdateUserDto updateUserDto);
 
