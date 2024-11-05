@@ -2,6 +2,7 @@ package app.miniappspring.dto.product;
 
 import app.miniappspring.dto.characteristic.CharacteristicProductDto;
 import app.miniappspring.dto.image.ImageDto;
+import app.miniappspring.dto.product.category.CategoryProductDto;
 import app.miniappspring.entity.CategoryProduct;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Feedback;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 public class ProductDetailDto {
    private final Long id;
-   private CategoryProduct categoryProduct;
+   private String category;
    private String subcategory;
    private String name;
    private Float cost;

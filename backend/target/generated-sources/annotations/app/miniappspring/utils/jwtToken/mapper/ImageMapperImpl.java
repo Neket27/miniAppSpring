@@ -2,6 +2,7 @@ package app.miniappspring.utils.jwtToken.mapper;
 
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-18T13:45:47+0300",
+    date = "2024-11-06T00:17:19+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
@@ -52,6 +53,20 @@ public class ImageMapperImpl implements ImageMapper {
     }
 
     @Override
+    public List<UpdateImageDto> toUpdateImageDtoList(List<UpdateImageDto> updateImageDtoList) {
+        if ( updateImageDtoList == null ) {
+            return null;
+        }
+
+        List<UpdateImageDto> list = new ArrayList<UpdateImageDto>( updateImageDtoList.size() );
+        for ( UpdateImageDto updateImageDto : updateImageDtoList ) {
+            list.add( updateImageDto );
+        }
+
+        return list;
+    }
+
+    @Override
     public List<Image> toImageList(List<CreateImageDto> createImageDtoList) {
         if ( createImageDtoList == null ) {
             return null;
@@ -60,6 +75,34 @@ public class ImageMapperImpl implements ImageMapper {
         List<Image> list = new ArrayList<Image>( createImageDtoList.size() );
         for ( CreateImageDto createImageDto : createImageDtoList ) {
             list.add( toImage( createImageDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Image> toImageList2(List<UpdateImageDto> updateImageDtoList) {
+        if ( updateImageDtoList == null ) {
+            return null;
+        }
+
+        List<Image> list = new ArrayList<Image>( updateImageDtoList.size() );
+        for ( UpdateImageDto updateImageDto : updateImageDtoList ) {
+            list.add( toImage( updateImageDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Image> toImageListUpdate(List<UpdateImageDto> updateImagerDtoList) {
+        if ( updateImagerDtoList == null ) {
+            return null;
+        }
+
+        List<Image> list = new ArrayList<Image>( updateImagerDtoList.size() );
+        for ( UpdateImageDto updateImageDto : updateImagerDtoList ) {
+            list.add( toImage( updateImageDto ) );
         }
 
         return list;

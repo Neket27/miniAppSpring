@@ -1,8 +1,10 @@
 package app.miniappspring.service;
 
 import app.miniappspring.arguments.CreateProductArgument;
+import app.miniappspring.arguments.UpdateProductArgument;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.dto.product.category.CategoryProductDto;
@@ -16,33 +18,30 @@ import java.util.List;
 
 public interface ProductService {
 
-
-    @Transactional
     ProductCardDto getProductCard(Long id);
 
-    @Transactional
     Product findProduct(Long id);
 
-    @Transactional
     List<ProductCardDto> getListCardProduct();
 
-    @Transactional
     ProductDetailDto getProductDetailDto(Long id);
 
-
-    @Transactional
     List<ProductCardDto> addProduct(CreateProductArgument createProductArgument);
 
-    @Transactional
     void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException;
 
-    @Transactional
     NumberOfProductsInThisCategory getCategories();
 
-    @Transactional
     List<ProductCardDto> getProductsByCategory(CategoryDto category);
 
-    @Transactional
     List<CategoryProductDto>searchProductByCategory(String category);
 
+    UpdateProductDto updateProduct(UpdateProductArgument updateProductArgument);
+
+    void deleteProduct(long productId);
+    Product saveProduct(Product product);
+
+    void changeRating(float evaluation,Long productId,int countFeedBack);
+
+    List<ProductCardDto> getProductsWithStock(String city);
 }

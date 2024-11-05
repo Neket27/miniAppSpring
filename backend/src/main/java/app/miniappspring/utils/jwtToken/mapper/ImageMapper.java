@@ -2,7 +2,7 @@ package app.miniappspring.utils.jwtToken.mapper;
 
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
-import app.miniappspring.dto.image.UpdateImagerDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
 import org.mapstruct.Mapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +25,8 @@ public interface ImageMapper {
                 .build();
     }
 
-    default Image toImage(UpdateImagerDto updateImagerDto){
+
+    default Image toImage(UpdateImageDto updateImagerDto){
         return Image.builder()
                 .name(updateImagerDto.getName())
                 .contentType(updateImagerDto.getContentType())
@@ -42,7 +43,10 @@ public interface ImageMapper {
     }
 
     List<ImageDto> toImageDtoList(List<Image> images);
+    List<UpdateImageDto> toUpdateImageDtoList(List<UpdateImageDto> updateImageDtoList);
     List<Image> toImageList(List<CreateImageDto> createImageDtoList);
+    List<Image> toImageList2(List<UpdateImageDto> updateImageDtoList);
+    List<Image> toImageListUpdate(List<UpdateImageDto> updateImagerDtoList);
 
     default byte[] toBytes(String string) {
         return string != null ? string.getBytes() : null;

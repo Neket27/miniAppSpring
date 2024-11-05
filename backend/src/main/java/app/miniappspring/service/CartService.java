@@ -4,6 +4,7 @@ import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
 import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
+import app.miniappspring.dto.coupon.CouponDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public interface CartService {
     int getNumberOfPiecesOfGoods(CountProductDto countProductDto);
 
     int getCountProductInCart(String accessToken);
+
 }
 
 
