@@ -5,21 +5,135 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a80ccc2-53c3-4d15-aa3f-58777645f7b8" name="Changes" comment="change file">
-      <change afterPath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/MainApp.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/signUpRequest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/signinRequest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/target/test-classes/tokenAuthenticatedUser.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/arguments/UpdateProductArgument.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/config/UserServiceConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/CouponController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/DiscountController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/SupportController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/coupon/CouponDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/coupon/CreateCouponDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/delivey/UpdateDeliveryDataUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/discount/DiscountCreateDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/discount/DiscountDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/product/UpdateProductDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/support/CreateSupportMessageDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/support/SupportMessageDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Coupon.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/DeliveryDataUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Discount.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Support.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/CouponRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/DeliveryDataUserRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/DiscountRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/SupportRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/CouponService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/DiscountService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/SupportService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/CouponServiceImp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/DiscountServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/SupportServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CouponMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/DeliveryMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/DiscountMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/SupportMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.attach_pid1406381" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.attach_pid60814" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.idea/dataSources/aacfb7fb-ffcb-4eb8-90e4-5ca2b925c87b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/dataSources/aacfb7fb-ffcb-4eb8-90e4-5ca2b925c87b.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/arguments/CreateProductArgument.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/arguments/CreateProductArgument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/arguments/UpdateDataUserArgument.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/arguments/UpdateDataUserArgument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/AuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/AuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/BookController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/bag/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/bag/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/FeedbackController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/FeedbackController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/ProductCategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/ProductCategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/feedback/FeedbackDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/feedback/FeedbackDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/image/UpdateImagerDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/image/UpdateImageDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/product/ProductDetailDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/product/ProductDetailDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/user/UpdateDataUserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/dto/user/UpdateDataUserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Book.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Feedback.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Feedback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Image.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Image.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/entity/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/filter/jwt/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/filter/jwt/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/BookRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/FeedbackRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/FeedbackRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/ImageProductRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/ImageProductRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/ProductRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/repository/ProductRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/ImageProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/ImageProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/AuthenticationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/AuthenticationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/CartImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/CartImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/FeedbackServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/FeedbackServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ImageProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ImageProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/FeedbackMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/FeedbackMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ImageMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ImageMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/app/miniappspring/utils/jwtToken/mapper/ProductMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/backendApp-0.0.1-SNAPSHOT.jar.original" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/CreateProductArgument$CreateProductArgumentBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/CreateProductArgument$CreateProductArgumentBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/CreateProductArgument.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/CreateProductArgument.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/UpdateDataUserArgument$UpdateDataUserArgumentBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/UpdateDataUserArgument$UpdateDataUserArgumentBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/UpdateDataUserArgument.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/arguments/UpdateDataUserArgument.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/AuthenticationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/AuthenticationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/BookController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/bag/CartController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/bag/CartController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/FeedbackController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/FeedbackController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/ProductCategoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/ProductCategoryController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/ProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/controller/product/ProductController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/feedback/FeedbackDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/feedback/FeedbackDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/image/UpdateImagerDto$UpdateImagerDtoBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/image/UpdateImagerDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/product/ProductDetailDto$ProductDetailDtoBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/product/ProductDetailDto$ProductDetailDtoBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/product/ProductDetailDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/product/ProductDetailDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/user/UpdateDataUserDto$UpdateDataUserDtoBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/user/UpdateDataUserDto$UpdateDataUserDtoBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/user/UpdateDataUserDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/dto/user/UpdateDataUserDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Book.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Feedback.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Feedback.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Image.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Image.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Product$ProductBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Product$ProductBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Product.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/entity/Product.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/filter/jwt/JwtAuthenticationFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/filter/jwt/JwtAuthenticationFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/BookRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/FeedbackRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/FeedbackRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/ImageProductRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/ImageProductRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/ProductRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/repository/ProductRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/ImageProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/ImageProductService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/ProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/ProductService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/AuthenticationServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/AuthenticationServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/CartImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/CartImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/FeedbackServiceImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/FeedbackServiceImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/ImageProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/ImageProductServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/ProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/ProductServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl$UserServiceImplBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl$UserServiceImplBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/service/impl/UserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/FeedbackMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/FeedbackMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ImageMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ImageMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ProductMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/FeedbackMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/ImageMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/generated/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CartMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CategoryMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/CharacteristicMapperImpl.java" afterDir="false" />
@@ -28,9 +142,14 @@
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductArgumentMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/ProductMapperImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/generated-sources/annotations/app/miniappspring/utils/jwtToken/mapper/UserMapperImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-archiver/pom.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/signUpRequest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/signinRequest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/test-classes/tokenAuthenticatedUser.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +159,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -47,7 +168,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="development" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -71,6 +192,7 @@
     "Docker.docker-compose.yaml.backend: Compose Deployment.executor": "Run",
     "Docker.docker-compose.yaml.db: Compose Deployment.executor": "Run",
     "Docker.docker-compose.yaml.frontend: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yaml: Compose Deployment.executor": "Run",
     "Maven.backendApp [clean].executor": "Run",
     "Maven.backendApp [compile].executor": "Run",
     "Maven.backendApp [package].executor": "Run",
@@ -80,7 +202,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.MainApp (1).executor": "Run",
-    "Spring Boot.MainApp.executor": "Run",
+    "Spring Boot.MainApp.executor": "Debug",
     "git-widget-placeholder": "development",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/home/neket/IdeaProjects/miniAppSpring/backend/src/main/java/app/miniappspring",
@@ -91,7 +213,13 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "reference.settings.project.maven.importing",
+    "ts.external.directory.path": "/home/neket/programs/idea-IU-241.15989.150/idea-IU-241.15989.150/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="ReactorSettings">
@@ -136,10 +264,10 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="backend/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
-      <deployment type="dockerfile">
+    <configuration name="docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
         <settings>
-          <option name="sourceFilePath" value="backend/Dockerfile" />
+          <option name="sourceFilePath" value="docker-compose.yaml" />
         </settings>
       </deployment>
       <method v="2" />
@@ -185,11 +313,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yaml.frontend: Compose Deployment" />
-        <item itemvalue="Docker.docker-compose.yaml.backend: Compose Deployment" />
-        <item itemvalue="Docker.backend/Dockerfile" />
         <item itemvalue="Docker.docker-compose.yaml.db: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.frontend: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml: Compose Deployment" />
         <item itemvalue="Docker.Dockerfile: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.backend: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -216,6 +344,18 @@
       <workItem from="1721234282820" duration="38000" />
       <workItem from="1721312057855" duration="810000" />
       <workItem from="1721336638687" duration="527000" />
+      <workItem from="1725863213159" duration="4986000" />
+      <workItem from="1725909747445" duration="70000" />
+      <workItem from="1726087764833" duration="11398000" />
+      <workItem from="1726215802831" duration="59000" />
+      <workItem from="1726224537875" duration="27763000" />
+      <workItem from="1726498797727" duration="37000" />
+      <workItem from="1728038095731" duration="12919000" />
+      <workItem from="1729542163625" duration="7655000" />
+      <workItem from="1729785323040" duration="33380000" />
+      <workItem from="1730186681029" duration="37393000" />
+      <workItem from="1730556762195" duration="3669000" />
+      <workItem from="1730707455262" duration="17937000" />
     </task>
     <task id="LOCAL-00001" summary="remove folder backend">
       <option name="closed" value="true" />
@@ -277,6 +417,62 @@
           <url>file://$PROJECT_DIR$/src/main/java/app/miniappspring/utils/jwtToken/mapper/ImageMapper.java</url>
           <line>29</line>
           <option name="timeStamp" value="64" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/AuthenticationServiceImpl.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java</url>
+          <line>118</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java</url>
+          <line>172</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/CouponServiceImp.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java</url>
+          <line>204</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="99" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/SupportServiceImpl.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="102" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/DiscountServiceImpl.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/UserServiceImpl.java</url>
+          <line>210</line>
+          <option name="timeStamp" value="108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/service/impl/ProductServiceImpl.java</url>
+          <line>75</line>
+          <option name="timeStamp" value="109" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/app/miniappspring/controller/product/ProductController.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="110" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

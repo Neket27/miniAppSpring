@@ -4,6 +4,7 @@ import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
 import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
+import app.miniappspring.dto.coupon.CouponDto;
 import app.miniappspring.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -72,11 +73,6 @@ public class CartController {
         return cartService.getNumberOfPiecesOfGoods(countProductDto);
     }
 
-//    @MessageMapping("/getCountProductInCart")
-//    @SendTo("/shoppingCartCountProduct/public")
-//    public int getCountProductInCart2(@RequestParam String accessToken){
-//        return cartService.getCountProductInCart(accessToken);
-//    }
 
     @MessageMapping("/getCountProductInCart")
     @SendTo("/shoppingCartCountProduct/public")

@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -29,8 +31,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    private final UserService userService;
     @Value("${jwt.secret.prefix}") String prefix;
+    private String username;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull(message = "Параметр ответа http фильтра авторизации = null") HttpServletResponse response, @NotNull(message = "Фильтр http авторизации = null ") FilterChain filterChain) throws ServletException, IOException {
@@ -46,12 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwtToken = authHeader.substring(7);
         username = jwtService.getUserNameFromAccessToken(jwtToken);
+        this.username=username;
+        RequestContextHolder.currentRequestAttributes().setAttribute("username", username, RequestAttributes.SCOPE_REQUEST);
         if ((!StringUtils.isNullOrEmpty(username)) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
 
-
-
-            if (jwtService.isTokenValidAccessToken(jwtToken, userDetails)) { //посмотреть, возможно бесмысленная проверка
+            if (userDetails!=null && jwtService.isTokenValidAccessToken(jwtToken, userDetails)) { //посмотреть, возможно бесмысленная проверка
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

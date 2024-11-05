@@ -2,6 +2,7 @@ package app.miniappspring.service.impl;
 
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Product;
 import app.miniappspring.repository.ImageProductRepo;
@@ -34,6 +35,18 @@ public class ImageProductServiceImpl implements ImageProductService {
         }).toList();
         return imageProductRepo.saveAll(imageList);
 //       return imageMapper.toImageList(createImageDtoList).stream().map(imageProductRepo::save).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<Image> saveAllAndGetListImage2(List<UpdateImageDto> updateImageDtoList, Product product) {
+//        imageProductRepo.deleteAllByProduct_Id(product.getId());
+        product.getImageList().clear();
+        List<Image> imageList= imageMapper.toImageList2(updateImageDtoList).stream().map(e->{
+            e.setProduct(product);
+            return e;
+        }).toList();
+        return imageProductRepo.saveAll(imageList);
     }
 }
 

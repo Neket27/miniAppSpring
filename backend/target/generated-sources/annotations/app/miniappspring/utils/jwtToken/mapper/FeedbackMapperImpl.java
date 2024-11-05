@@ -3,7 +3,6 @@ package app.miniappspring.utils.jwtToken.mapper;
 import app.miniappspring.dto.feedback.FeedbackCreateDto;
 import app.miniappspring.dto.feedback.FeedbackDto;
 import app.miniappspring.entity.Feedback;
-import app.miniappspring.entity.Product;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-18T13:45:47+0300",
+    date = "2024-11-06T00:17:19+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
-public class FeedbackMapperImpl implements FeedbackMapper {
+public class FeedbackMapperImpl extends FeedbackMapper {
 
     @Override
     public Feedback toFeedback(FeedbackCreateDto feedbackCreateDto) {
@@ -45,7 +44,6 @@ public class FeedbackMapperImpl implements FeedbackMapper {
 
         FeedbackDto feedbackDto = new FeedbackDto();
 
-        feedbackDto.setIdProduct( feedbackProductId( feedback ) );
         feedbackDto.setId( feedback.getId() );
         feedbackDto.setNameUser( feedback.getNameUser() );
         feedbackDto.setEmail( feedback.getEmail() );
@@ -55,22 +53,8 @@ public class FeedbackMapperImpl implements FeedbackMapper {
         if ( list != null ) {
             feedbackDto.setImageList( new ArrayList<byte[]>( list ) );
         }
+        feedbackDto.setDate( feedback.getDate() );
 
         return feedbackDto;
-    }
-
-    private Long feedbackProductId(Feedback feedback) {
-        if ( feedback == null ) {
-            return null;
-        }
-        Product product = feedback.getProduct();
-        if ( product == null ) {
-            return null;
-        }
-        Long id = product.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
     }
 }

@@ -1,8 +1,11 @@
 package app.miniappspring.service.impl;
 
 import app.miniappspring.arguments.CreateProductArgument;
+import app.miniappspring.arguments.UpdateProductArgument;
+import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
+import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.CategoryProductDto;
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
@@ -12,10 +15,7 @@ import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.repository.ProductRepo;
 import app.miniappspring.service.ImageProductService;
 import app.miniappspring.service.ProductService;
-import app.miniappspring.utils.jwtToken.mapper.CategoryMapper;
-import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
-import app.miniappspring.utils.jwtToken.mapper.ProductArgumentMapper;
-import app.miniappspring.utils.jwtToken.mapper.ProductMapper;
+import app.miniappspring.utils.jwtToken.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +32,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
     private final ProductMapper productMapper;
+    private final CharacteristicMapper characteristicMapper;
     private final CategoryMapper categoryMapper;
     private final ProductArgumentMapper productArgumentMapper;
-    private final ImageMapper imageMapper;
     private final ImageProductService imageProductService;
 
     @Override
@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDetailDto getProductDetailDto(Long id){
         Product product =findProduct(id);
        ProductDetailDto productDetailDto = productMapper.toProductDetailDto(product);
-
+       productDetailDto.setCategory(product.getCategoryProduct().getCategory().getRussianValue());
         return  productDetailDto;
     }
 
@@ -116,7 +116,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public List<ProductCardDto> getProductsByCategory(CategoryDto category){
-        List<Product>products= productRepo.findByCategoryProduct_StringValueCategoryContainingIgnoreCase(category.getCategoryProduct()).orElse(Collections.emptyList());
+        List<Product>products;
+        if(category.getCategoryProduct().equals("Все категории"))
+            products = productRepo.findAll();
+        else
+            products= productRepo.findByCategoryProduct_StringValueCategoryContainingIgnoreCase(category.getCategoryProduct()).orElse(Collections.emptyList());
+
         return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }
 
@@ -160,6 +165,55 @@ public class ProductServiceImpl implements ProductService {
             return categoryList;
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    @Transactional
+    public UpdateProductDto updateProduct(UpdateProductArgument updateProductArgument) {
+        Product product = productRepo.findById(updateProductArgument.getId()).orElseThrow(()->new ErrorException("Продукт с id= "+updateProductArgument.getId()+" не найден"));
+
+        UpdateProductDto updateProductDto = productMapper.toUpdateProductDto(updateProductArgument,product.getCharacteristicProduct());
+
+        product = productMapper.updateProduct(product,updateProductDto);
+
+        CharacteristicProduct characteristicProduct =characteristicMapper.toCharacteristicProduct(updateProductDto.getCharacteristic());
+        product.getCharacteristicProduct().setProducerCountry(characteristicProduct.getProducerCountry());
+        product.getCharacteristicProduct().setSellerWarranty(characteristicProduct.getSellerWarranty());
+        categoryRepo.save(product.getCategoryProduct());
+
+        List<Image> imageList= imageProductService.saveAllAndGetListImage2(updateProductDto.getUpdateImageDtoList(), product);
+        product.setImageList(imageList);
+        productRepo.save(product);
+        return updateProductDto;
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(long productId) {
+        productRepo.deleteById(productId);
+    }
+
+    @Override
+    @Transactional
+    public Product saveProduct(Product product) {
+        return productRepo.save(product);
+    }
+
+    @Override
+    @Transactional
+    public void changeRating(float evaluation, Long idProduct, int countFeedback) {
+        Product product = productRepo.findById(idProduct).orElseThrow(()->new RuntimeException("Продукт не найтен"));
+        product.setRating((product.getRating()+evaluation)/countFeedback);
+    }
+
+    @Override
+    @Transactional
+    public List<ProductCardDto> getProductsWithStock(String city) {
+        List<Product> products = productRepo.findByDiscountList_City(city).orElse(Collections.emptyList());
+        if(products.isEmpty())
+            return new ArrayList<>();
+
+        return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }
 
 

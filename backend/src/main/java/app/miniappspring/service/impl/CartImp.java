@@ -4,15 +4,13 @@ import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
 import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
+import app.miniappspring.dto.coupon.CouponDto;
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.entity.BagProduct;
 import app.miniappspring.entity.Product;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.repository.CartRepo;
-import app.miniappspring.service.CartService;
-import app.miniappspring.service.JWTService;
-import app.miniappspring.service.ProductService;
-import app.miniappspring.service.UserService;
+import app.miniappspring.service.*;
 import app.miniappspring.utils.jwtToken.mapper.CartMapper;
 import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,7 @@ public class CartImp implements CartService {
     private final JWTService jwtService;
     private final ProductService productService;
     private final ImageMapper imageMapper;
+    private final CouponService couponService;
 
 
     @Transactional

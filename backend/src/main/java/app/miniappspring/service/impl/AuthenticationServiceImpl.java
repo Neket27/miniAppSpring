@@ -7,7 +7,6 @@ import app.miniappspring.dto.jwtToken.ResetPasswordDto;
 import app.miniappspring.dto.jwtToken.SignUpRequest;
 import app.miniappspring.dto.jwtToken.SigninRequest;
 import app.miniappspring.dto.user.UpdateUserDto;
-import app.miniappspring.dto.user.UserDto;
 import app.miniappspring.entity.User;
 import app.miniappspring.exception.ErrorException;
 import app.miniappspring.service.AuthenticationService;
@@ -42,24 +41,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse signnup(SignUpRequest signUpRequest) {
-        try {
-            User user = userService.getByUsername(signUpRequest.getUsername());
-            return signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
-        } catch (ErrorException e) {
-            if (e.getMessage().equals("Пользователь с логином " + signUpRequest.getUsername() + " не найден")) {
-                CreateUserArgument createUserArgument = userMapper.toCreateUserArgument(signUpRequest);
-                userService.addUser(createUserArgument);
-                return signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
-            }
-        }
 
-        return null;
+        User user = userService.getByUsername(signUpRequest.getUsername());//проверим что пользователь существует, можно проверить через user == null
+        if (user != null)
+            signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
+
+        CreateUserArgument createUserArgument = userMapper.toCreateUserArgument(signUpRequest);
+        userService.addUser(createUserArgument);
+        return signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
+
     }
 
     @Override
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
         User user = userService.getByUsername(signinRequest.getUsername());
+        if (user == null)
+            return null;
+
         return createJwtAuthenticationResponse(user);
     }
 
@@ -96,7 +95,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (EncoderPassword.equalsPasswords(resetPasswordDto.getPassword(), authenticationUser.getPassword())) {
             authenticationUser.setPassword(EncoderPassword.encode(resetPasswordDto.getNewPassword()));
 
-           UpdateUserDto updateUserDto = UpdateUserDto.builder()
+            UpdateUserDto updateUserDto = UpdateUserDto.builder()
                     .username(authenticationUser.getUsername())
                     .password(resetPasswordDto.getNewPassword())
                     .roles(authenticationUser.getRoles())

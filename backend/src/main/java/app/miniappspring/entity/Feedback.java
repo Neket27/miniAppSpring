@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Table(name = "feedback")
@@ -18,6 +19,7 @@ public class Feedback {
     private String email;
     private String message;
     private float evaluation;
+    private Date date;
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "feedback_image", nullable = false)
     private List<byte[]> imageList;
@@ -25,6 +27,9 @@ public class Feedback {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 }

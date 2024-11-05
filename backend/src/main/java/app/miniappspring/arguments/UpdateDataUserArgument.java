@@ -1,6 +1,6 @@
 package app.miniappspring.arguments;
 
-import app.miniappspring.dto.image.UpdateImagerDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,5 @@ public class UpdateDataUserArgument {
     private String firstname;
     private String lastname;
     private String email;
-    private UpdateImagerDto avatar;
+    private UpdateImageDto avatar;
 }

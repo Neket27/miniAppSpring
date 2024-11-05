@@ -2,7 +2,7 @@ package app.miniappspring.utils.jwtToken.mapper;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
-import app.miniappspring.dto.image.UpdateImagerDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.dto.jwtToken.SignUpRequest;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.dto.user.UpdateDataUserDto;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-18T13:45:47+0300",
+    date = "2024-11-06T00:17:19+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
@@ -55,7 +55,7 @@ public class UserMapperImpl implements UserMapper {
         user.firstname( updateDataUserDto.getFirstname() );
         user.lastname( updateDataUserDto.getLastname() );
         user.email( updateDataUserDto.getEmail() );
-        user.avatar( updateImagerDtoToImage( updateDataUserDto.getAvatar() ) );
+        user.avatar( updateImageDtoToImage( updateDataUserDto.getAvatar() ) );
 
         return user.build();
     }
@@ -129,7 +129,7 @@ public class UserMapperImpl implements UserMapper {
         updateDataUserDto.firstname( user.getFirstname() );
         updateDataUserDto.lastname( user.getLastname() );
         updateDataUserDto.email( user.getEmail() );
-        updateDataUserDto.avatar( imageToUpdateImagerDto( user.getAvatar() ) );
+        updateDataUserDto.avatar( imageToUpdateImageDto( user.getAvatar() ) );
 
         return updateDataUserDto.build();
     }
@@ -197,29 +197,29 @@ public class UserMapperImpl implements UserMapper {
         return createUserArgument;
     }
 
-    protected Image updateImagerDtoToImage(UpdateImagerDto updateImagerDto) {
-        if ( updateImagerDto == null ) {
+    protected Image updateImageDtoToImage(UpdateImageDto updateImageDto) {
+        if ( updateImageDto == null ) {
             return null;
         }
 
         Image.ImageBuilder image = Image.builder();
 
-        image.name( updateImagerDto.getName() );
-        image.contentType( updateImagerDto.getContentType() );
+        image.name( updateImageDto.getName() );
+        image.contentType( updateImageDto.getContentType() );
 
         return image.build();
     }
 
-    protected UpdateImagerDto imageToUpdateImagerDto(Image image) {
+    protected UpdateImageDto imageToUpdateImageDto(Image image) {
         if ( image == null ) {
             return null;
         }
 
-        UpdateImagerDto.UpdateImagerDtoBuilder updateImagerDto = UpdateImagerDto.builder();
+        UpdateImageDto.UpdateImageDtoBuilder updateImageDto = UpdateImageDto.builder();
 
-        updateImagerDto.name( image.getName() );
-        updateImagerDto.contentType( image.getContentType() );
+        updateImageDto.name( image.getName() );
+        updateImageDto.contentType( image.getContentType() );
 
-        return updateImagerDto.build();
+        return updateImageDto.build();
     }
 }

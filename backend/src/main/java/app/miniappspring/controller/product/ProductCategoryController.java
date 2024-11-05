@@ -20,8 +20,8 @@ private final ProductService productService;
       return productService.getCategories();
     }
 
-    @PostMapping("/product/{categoryProduct}")
-    public List<ProductCardDto> getProductsByCategory(@PathVariable("categoryProduct") String categoryProduct, @RequestBody CategoryDto category){
+    @PostMapping("/product")
+    public List<ProductCardDto> getProductsByCategory(@RequestBody CategoryDto category){
        return productService.getProductsByCategory(category);
     }
 }

@@ -20,7 +20,7 @@ public class FeedbackController {
        return feedbackService.addFeedback(feedbackCreateDto);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public List<FeedbackDto> getFeedbackList(@RequestParam Long idProduct){
         return feedbackService.getFeedbackList(idProduct);
     }
