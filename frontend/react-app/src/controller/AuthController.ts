@@ -1,5 +1,6 @@
 import api from "../http";
 import {AuthResponse} from "../model/response/auth/AuthResponse";
+import {Roles} from "../model/role/Roles";
 
 export default class AuthController {
 
@@ -65,5 +66,10 @@ export default class AuthController {
                 return authResponse;
             });
 
+    }
+
+    static async getUserRole(username:string):Promise<Roles> {
+        return api.get<Roles>('/api/v1/user/getUserRoles?username='+username)
+        .then(response => {return response.data;})
     }
 }

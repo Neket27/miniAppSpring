@@ -7,6 +7,8 @@ import {FeedbackResponse} from "../model/response/rating/FeedbackResponse";
 import {IFeedback} from "../model/rating/IFeedback";
 import {IDetailProduct} from "../model/product/IDetailProduct";
 import {ICardProduct} from "../model/product/ICardProduct";
+import {IProductBag} from "../model/product/IProductBag";
+import {IAddProduct} from "../model/product/IAddProduct";
 
 export default class ProductController {
 
@@ -26,7 +28,7 @@ export default class ProductController {
     }
 
     static async getProductsByCategory(category:ICategory):Promise<CardProductResponse>{
-        return api.post<CardProductResponse>('/api/v1/category/product/'+category.categoryProduct,category)
+        return api.post<CardProductResponse>('/api/v1/category/product',category)
             .then(response=>response.data);
     }
 
@@ -35,15 +37,18 @@ export default class ProductController {
             .then(response=>response.data);
     }
 
-    static async getProductRatings(idProduct:number){
-        return api.get<Array<FeedbackResponse>>('/api/v1/feedback')
-            .then(response=>response.data);
+    static async addProduct(product:IAddProduct){
+        return api.post<IProductBag>('/api/v1/home/product/add',product);
     }
 
-    static async addRating(feedback:IFeedback){
-        return api.post<IFeedback>('/api/v1/feedback/add',feedback)
-            .then(response=>response.data);
+    static async updateProduct(product:IAddProduct){
+        return api.post<IDetailProduct>('/api/v1/home/product/update',product);
     }
 
+    static async deleteProduct(productId: number) {
+        await api.delete(`/api/v1/home/product/delete`, {
+            params: { productId } // передаем productId как query-параметр
+        });
+    }
 
 }

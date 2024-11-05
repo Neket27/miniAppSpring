@@ -16,7 +16,7 @@ import {ContextService, State} from "../../main";
 
 export let ContextCountProductInBag:React.Context<CountProductInBag>=createContext<CountProductInBag>();
 
-interface CountProductInBag{
+export interface CountProductInBag{
     setCountProductInBag:any
     countProductInBag:number
     getCountProductInBag:any
@@ -27,8 +27,8 @@ const Navbar = () => {
     const [countProductInBag, setCountProductInBag] = useState(0);
 
     const  setF=(p:number)=>{
-       console.log("get value for countProductInBag= "+p);
-       console.log("var countProductInBag= "+ countProductInBag)
+       // console.log("get value for countProductInBag= "+p);
+       // console.log("var countProductInBag= "+ countProductInBag)
         // getCountProductInBag();
         setCountProductInBag(p);
     }
@@ -59,8 +59,7 @@ const Navbar = () => {
         // contextService.bagService.connect((val:any)=>setCountProductInCart(parseInt(val.body)),accessToken);
 
     }, []);
-    
-    console.log("countProductInBag_Navbar= "+countProductInBag);
+
     return (
         <ContextCountProductInBag.Provider value={{ countProductInBag, setCountProductInBag,getCountProductInBag}}>
         <div className="site-navbar bg-white py-2">
@@ -77,31 +76,31 @@ const Navbar = () => {
                 <div className="d-flex align-items-center justify-content-between">
                     <div className="logo">
                         <div className="site-logo">
-                            <Link to="/" className="js-logo-clone">ShopMax</Link>
+                            <Link to="/" className="js-logo-clone">White Dream</Link>
                         </div>
                     </div>
                     <div className="main-nav d-none d-lg-block">
                         <nav className="site-navigation text-right text-md-center" role="navigation">
                             <ul className="site-menu js-clone-nav d-none d-lg-block">
                                 <li className="has-children ">
-                                    <Link to="/">Home</Link>
+                                    <Link to="/">Главная</Link>
                                     <ul className="dropdown">
-                                        <li><a href="#">Menu One</a></li>
-                                        <li><a href="#">Menu Two</a></li>
-                                        <li><a href="#">Menu Three</a></li>
-                                        <li className="has-children">
-                                            <a href="#">Sub Menu</a>
-                                            <ul className="dropdown">
-                                                <li><a href="#">Menu One</a></li>
-                                                <li><a href="#">Menu Two</a></li>
-                                                <li><a href="#">Menu Three</a></li>
-                                            </ul>
-                                        </li>
+                                        <li><a href="#">Доставка</a></li>
+                                        <li><a href="#">Обмен, возврат, гарантия</a></li>
+                                        <li><Link to="/help">Поддержка</Link></li>
+                                        {/*<li className="has-children">*/}
+                                        {/*    <a href="#">Sub Menu</a>*/}
+                                        {/*    <ul className="dropdown">*/}
+                                        {/*        <li><a href="#">Menu One</a></li>*/}
+                                        {/*        <li><a href="#">Menu Two</a></li>*/}
+                                        {/*        <li><a href="#">Menu Three</a></li>*/}
+                                        {/*    </ul>*/}
+                                        {/*</li>*/}
                                     </ul>
                                 </li>
 
-                                <li className="active"><a href="shop.html">Shop</a></li>
-                                <li><Link to="/dashboard">Catalogue</Link></li>
+                                <li className="active"><a href="shop.html">Акции</a></li>
+                                <li><Link to="/aboutUs">Кто мы</Link></li>
                             </ul>
                         </nav>
                     </div>

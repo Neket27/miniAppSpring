@@ -25,13 +25,23 @@ const ChooseCategory=()=> {
 
     useEffect(()=> {
         if (typeId != undefined) {
-            let categoryOnRussian: string = translit().reverse(typeId);
-            let category: ICategory = {
-                categoryProduct: categoryOnRussian,
-                subcategory: 'unsupported',
-                stringValueCategory: 'mmm'
-            }
-        getProductByCategory(category);
+            let category: ICategory;
+                if(typeId=="allCategories"){
+                    category= {
+                        categoryProduct: "Все категории",
+                        subcategory: 'unsupported',
+                        stringValueCategory: 'mmm'
+                    }
+                }else {
+                    let categoryOnRussian: string = translit().reverse(typeId);
+                    category = {
+                        categoryProduct: categoryOnRussian,
+                        subcategory: 'unsupported',
+                        stringValueCategory: 'mmm'
+                    }
+                }
+                    getProductByCategory(category);
+
     }
 },[])
 
@@ -64,7 +74,6 @@ const ChooseCategory=()=> {
                 </div>
 
             </div>
-            {/*<button onClick={()=> getProductByCategory(ct)}></button>*/}
         </div>
     );
 }

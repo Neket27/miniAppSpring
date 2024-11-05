@@ -1,24 +1,26 @@
-import React, { useContext, useState } from 'react';
-import { ContextService } from "../../../main";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import {ContextService, State} from "../../../main";
+import {Link, useNavigate} from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 const RegisterPage = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordRepeat, setPasswordRepeat] = useState<string>('');
     const [showTemporaryBlock, setShowTemporaryBlock] = useState<boolean>(false);
-    const { authService } = useContext(ContextService);
+    const contextService:State = useContext(ContextService);
 
-    const handleLoginClick = () => {
+    const handleRegistrationClick = () => {
         if (passwordRepeat === password)
-            authService.registration(username, password);
+            contextService.authService.registration(username, password);
         else {
             setShowTemporaryBlock(true);
             setTimeout(() => {
                 setShowTemporaryBlock(false);
             }, 3000);
         }
+        navigate('/');
     };
 
     return (
@@ -82,7 +84,7 @@ const RegisterPage = () => {
                         )}
 
                         <div className="container-login100-form-btn">
-                            <button className="login100-form-btn" onClick={handleLoginClick}>
+                            <button className="login100-form-btn" onClick={handleRegistrationClick}>
                                 Зарегистрироваться
                             </button>
                         </div>

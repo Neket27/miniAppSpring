@@ -1,6 +1,6 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import '../../../init';
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {IDetailProduct} from "../../../model/product/IDetailProduct";
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
@@ -15,12 +15,12 @@ import {ContextService} from "../../../main";
 import {ContextCountProductInBag} from "../../navbar";
 import {IProductInBag} from "../../../model/bag/IProductInBag";
 import ImageProduct from "./imageProduct";
-import CartProduct from "./cartProduct";
 import CartPreviewProduct from "./cartProduct";
 
 const URL = import.meta.env.VITE_URL;
 
-const DetailProduct = (props:any) => {
+const DetailProduct = () => {
+    const navigate = useNavigate();
     const contextService = useContext(ContextService);
     const contextCountProductInCart = useContext(ContextCountProductInBag);
     const [accessToken,setAccessToken]= useState(localStorage.getItem("accessToken"));
@@ -35,6 +35,8 @@ const DetailProduct = (props:any) => {
     const [titleCart, setTitleCart] = useState<string>('');
     const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
     const [checkAddProduct, setCheckAddProduct] = useState<boolean>(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
         console.log("полученно = "+val.body)
@@ -49,7 +51,8 @@ const DetailProduct = (props:any) => {
 
     async function getProductDetail(){
         if(typeId!=undefined) {
-            const response = await contextService.productService.getProductDetail(parseInt(typeId, 10))
+            const response = await contextService.productService.getProductDetail(parseInt(typeId, 10));
+            console.log(response);
             setProductDetail(response);
         }else {
             console.log("ID продукта в getProductDetail == undefined")
@@ -161,6 +164,30 @@ const DetailProduct = (props:any) => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
+            {productDetail?
+                <div>
+                    <button
+                        onClick={() => {
+                            navigate('/product/update', {state: {product: productDetail}});
+                        }}>
+                        Изменить данные
+                    </button>
+
+                    <button
+                        onClick={()=>{
+                            navigate('/product/delete', {state: {productId: productDetail.id}});
+                        }}>
+                        Удалить продукт
+                    </button>
+                </div>
+                : ''
+            }
+
+            {/*<button*/}
+            {/*    className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10 ml-3"*/}
+            {/*    type="submit">*/}
+            {/*    <Link to="/product/update" className="ant107_shop-theme-btn ant107_shop-br-10"> Изменить данные</Link>*/}
+            {/*</button>*/}
             <div className="container">
                 <main>
                     <div className="row">
@@ -201,7 +228,8 @@ const DetailProduct = (props:any) => {
                                             handleClickMinus()
                                         }}></button>
                                         <input min="1" max="50" name="quantity" value={countProducts}
-                                               type="number"  onChange={()=>{}} />
+                                               type="number" onChange={() => {
+                                        }}/>
                                         <button className="ant107_shop-plus" onClick={() => {
                                             handleClickPlus()
                                         }}></button>
@@ -211,10 +239,10 @@ const DetailProduct = (props:any) => {
                                             <div onClick={() => {
                                                 // {contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,1,accessToken);}}
                                                 let countStr = localStorage.getItem("countProductInBag");
-                                                console.log("countStr= "+countStr);
+                                                console.log("countStr= " + countStr);
                                                 if (countStr != null) {
-                                                    const count = parseInt(countStr) +1;
-                                                    localStorage.setItem("countProductInBag",String(count));
+                                                    const count = parseInt(countStr) + 1;
+                                                    localStorage.setItem("countProductInBag", String(count));
                                                     contextCountProductInCart.setCountProductInBag(count);
                                                     setCountProducts(1);
                                                     setCheckAddProduct(true);

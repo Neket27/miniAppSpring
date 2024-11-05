@@ -95,7 +95,16 @@ useEffect(()=>{
                         <h3>Категории</h3>
                     </div>
                 <ul>
+                    <li key={"allCategories"} onClick={() => {
+                        operation("Все категории");
+                    }}>
+                        <Link to={"/category/product/" + "allCategories"}>
+                            <i className="fas fa-chevron-right mr-2"></i> Все категории <span></span>
+                        </Link>
+                    </li>
+
                     {categoryJsx}
+
                 </ul>
             </div>
                 <div className="ant107_shop-shop-widget">

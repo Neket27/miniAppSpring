@@ -16,7 +16,7 @@ const Product=(props: { products: Array<ICardProduct> }) => {
                         <h5><a href="shop-detail.html"></a>{card.name}</h5>
                         <div className="ant107_shop-price-rating">
                             <span className="ant107_shop-shop-price">{card.cost}</span>
-                            <span className="ant107_shop-shop-rating">{card.rating}</span>
+                            <span className="ant107_shop-shop-rating">{(card.rating*10)/10}</span>
                             <a href="cart.html"><i className="fas fa-shopping-cart"></i></a>
                         </div>
                     </div>

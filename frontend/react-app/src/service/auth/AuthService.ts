@@ -2,6 +2,8 @@ import {IUser} from "../../model/user/IUser";
 import {makeAutoObservable} from "mobx";
 import AuthController from "../../controller/AuthController";
 import {AuthResponse} from "../../model/response/auth/AuthResponse";
+import {Roles} from "../../model/role/Roles";
+import {useEffect} from "react";
 
 export default class AuthService{
     user:IUser={} as IUser;
@@ -35,7 +37,7 @@ export default class AuthService{
             }
         } catch (e:any) {
             if (e.response.status == 403) {
-                return "Логин или Пароль не верный"
+                return 403;
 
             }
             console.log(e.response.status);
@@ -89,6 +91,14 @@ export default class AuthService{
         }
     }
 
+    // Функция для получения куки по имени
+    private  getCookie(name: string) {
+        const matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    };
+
+
     //если пользователь авторизован, то у него будет сохранен refresh токен в cooke
     //пока срок годности refresh токена не истек, можно запросить новую пару токенов у сервера
     //иначе: localStorage.setItem('token',response.data.accessToken); установится в null
@@ -96,14 +106,7 @@ export default class AuthService{
     async checkAuth(){
         try {
             this.setLoading(true);
-            // conhttp://localhost:5173/loginst response = await axios.post<AuthResponse>(`${API_URL}/api/v1/auth/refresh`,{withCredentials:true});
             const response:AuthResponse|null = await AuthController.refresh();
-
-            // console.log("accessToken= "+response.accessToken)
-            // console.log("refreshToken= "+response.refreshToken)
-            // console.log("user= "+response.user)
-            // console.log("status= "+response.status)
-            console.log("thisResponse = "+response?.accessToken);
 
             if(response !=null && response.refreshToken!=null){
                 localStorage.setItem('accessToken', response.accessToken);
@@ -112,9 +115,12 @@ export default class AuthService{
                 return true;
             }
 
-            if (response ==null) {
+            const refreshToken = this.getCookie('refreshToken');
+
+            if (response ==null || !refreshToken) {
                 this.clearForNotAuth();
                 return false;
+
             }
 
         }catch (e){
@@ -123,6 +129,11 @@ export default class AuthService{
             this.setLoading(false);
         }
     };
+
+
+   async getUserRoles(username:string):Promise<Roles> {
+       return await AuthController.getUserRole(username);
+   }
 
     private clearForNotAuth(){
             localStorage.removeItem('accessToken');

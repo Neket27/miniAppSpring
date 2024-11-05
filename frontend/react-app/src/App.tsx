@@ -9,26 +9,28 @@ import Navbar, {ContextCountProductInBag} from "./content/navbar";
 import AuthRootComponent from "./content/auth";
 import CabinetUser from "./content/cabinetUser";
 import ChangeDataUser from "./content/cabinetUser/changeDataUser";
+import {ProductAdd} from "./content/detail/product/addProduct";
+import {UpdateProduct} from "./content/detail/product/updateProduct";
+import {DeleteProduct} from "./content/detail/product/deleteProduct";
+import {AddCoupon} from "./content/coupon/coupunAdd";
+import {DiscountAdd} from "./content/discount/discountAdd";
+import AboutUs from "./content/aboutUs";
+import SupportPage from "./content/supportPage";
+import DeliveryUserData from "./content/cabinetUser/delivery";
 
 const App:FC=()=> {
     const context:State= useContext(ContextService);
     const contextCountProductInBag =useContext(ContextCountProductInBag);
-    const [orders, setOrders] = useState<Array<any>>([]);
-
-    // function addToOrder(item:any){
-    //     // setState({orders:[...this.context.orders,item]})
-    //     setOrders([orders,item])
-    //     console.log(orders);
-    // }
 
     useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
        if(localStorage.getItem('accessToken')) { //если пользователь авторизован, то у него есть токен
            context.authService.checkAuth();
+
        }
 
     }, []);
 
-    if(context.authService.isLoading) {
+        if(context.authService.isLoading) {
         return <div>Загрузка...</div>
     }
 
@@ -40,29 +42,25 @@ const App:FC=()=> {
     return (
         <div className="App">
             <Navbar />
-            {/*<h1 className="auth">{context.authService.isAuth?`Пользователь авторизован ${context.authService.user.email}`:'АВТОРИЗУЙТЕСЬ'}</h1>*/}
-            {/*<div>{context.authService.isAuth?*/}
-            {/*    <button onClick={async () => {*/}
-            {/*        const logout = await context.authService.logout();*/}
-            {/*        console.log("logout= "+logout)*/}
-            {/*        if(logout == true)*/}
-            {/*            contextCountProductInBag.setCountProductInBag(0);*/}
-            {/*        window.location.reload();*/}
-            {/*    }}>Выйти</button>:null*/}
-            {/*     }*/}
-
-            {/*</div>*/}
             <Routes>
                 <Route path="/" element={<AuthRootComponent/>}></Route>
                 <Route path="/login" element={<AuthRootComponent/>}></Route>
                 <Route path="/register" element={<AuthRootComponent/>}></Route>
                 <Route path="/cabinetUser" element={<CabinetUser/>}></Route>
-                <Route path="/cabinetUser/chageData" element={<ChangeDataUser/>}></Route>
-                <Route path="/reset" element={<AuthRootComponent/>}></Route>
+                <Route path="/cabinetUser/changeData" element={<ChangeDataUser/>}></Route>
+                <Route path="/resetPassword" element={<AuthRootComponent/>}></Route>
                 <Route path="/dashboard" element={<AuthRootComponent/>}></Route>
                 <Route path='/detailProduct/:typeId' element={<DetailProduct />} />
                 <Route path='/category/product/:typeId' element={<ChooseCategory/>} />
                 <Route path='/cart' element={<Bag/>}/>
+                <Route path='/product/add' element={<ProductAdd/>}/>
+                <Route path='/product/update' element={<UpdateProduct/>}/>
+                <Route path='/product/delete' element={<DeleteProduct/>}/>
+                <Route path='/coupon/add' element={<AddCoupon/>}/>
+                <Route path='/discount/create' element={<DiscountAdd/>}/>
+                <Route path='/aboutUs' element={<AboutUs/>}/>
+                <Route path='/help' element={<SupportPage/>}/>
+                <Route path= '/cabinetUser/delivery' element={<DeliveryUserData/>}/>
             </Routes>
         </div>
     );

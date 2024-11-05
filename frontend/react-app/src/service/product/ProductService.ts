@@ -7,6 +7,7 @@ import {ProductCartResponse} from "../../model/response/product/ProductCartRespo
 import {IFeedback} from "../../model/rating/IFeedback";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import {IAddProduct} from "../../model/product/IAddProduct";
 
 class ProductService {
     private _stompClient: Client = new Client();
@@ -67,9 +68,6 @@ class ProductService {
         } else {
             console.error("Ошибка: Невалидное значение countProductsInBag");
         }
-    };
-     async addRating(feedback:IFeedback):Promise<void>{
-        await ProductController.addRating(feedback);
     };
 
    public connect(callback:any,bodyTopic_1:string|null,bodyTopic_2:string) {
@@ -137,6 +135,18 @@ class ProductService {
                 console.log("Id продукта в sendRequestOnGetNumberOfPiecesOfGoods = "+idProduct);
         else
             console.log("Access token в sendRequestOnGetNumberOfPiecesOfGoods = "+accessToken);
+    }
+
+    public async addProduct(product:IAddProduct){
+       await ProductController.addProduct(product);
+    }
+
+    public async updateProduct(product:IAddProduct){
+        await ProductController.updateProduct(product);
+    }
+
+    public async deleteProduct(productId:number){
+        await ProductController.deleteProduct(productId);
     }
 }
 

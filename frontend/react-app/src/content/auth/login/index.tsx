@@ -1,6 +1,6 @@
-import React, { FC, useContext, useState} from 'react';
+import { FC, useContext, useState,useEffect} from 'react';
 import {ContextService} from "../../../main";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 
 import '../../../login/vendor/bootstrap/css/bootstrap.min.css'
@@ -18,6 +18,7 @@ import AuthService from "../../../service/auth/AuthService";
 // import './../../login/js/main.js'
 
 const LoginPage: FC=()=>{
+    const navigate = useNavigate();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] =useState<string>('');
 
@@ -39,6 +40,8 @@ const LoginPage: FC=()=>{
                 setShowTemporaryBlock(false);
             }, 3000);
         }
+        if(responseLogin!=String(403))
+            navigate("/");
     }
 
     return(

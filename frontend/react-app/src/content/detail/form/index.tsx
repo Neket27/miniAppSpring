@@ -1,7 +1,6 @@
 import {SetStateAction, useContext, useState} from "react";
 import {Rating} from "../../rating/Rating";
 import {IFeedback} from "../../../model/rating/IFeedback";
-import ProductService from "../../../service/product/ProductService";
 import {ContextService} from "../../../main";
 
 const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
@@ -11,6 +10,7 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
     const [message, setMessage] = useState<string>('');
     const [images, setImages] = useState<Array<string>>([]);
     const [evaluation, setEvaluation] = useState<number>(0);
+
     async function addFeedback(idProduct:number){
         const feedback:IFeedback ={
             idProduct:idProduct,
@@ -20,7 +20,7 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
             evaluation:evaluation,
             imageList:images
         }
-        const response = await context.productService.addRating(feedback);
+        const response = await context.ratingService.addFeedback(feedback);
     //     console.log("Ответ")
     //     console.log(response)
     }
@@ -56,8 +56,7 @@ const FormForDetailProduct = (props: { idProduct: number|undefined; }) => {
     }
 
                 return(
-        <form id="ant107_shop-contact-form" className="ant107_shop-contact-form"
-                     action="#" method="POST">
+        <form id="ant107_shop-contact-form" className="ant107_shop-contact-form">
             <div className="row clearfix">
                 <div className="col-md-6">
                     <div className="form-group">

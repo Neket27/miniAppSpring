@@ -1,0 +1,42 @@
+/* Основной контейнер страницы "О нас" */
+.about-container {
+    position: relative; /* Для позиционирования псевдоэлемента */
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    background: #f5faff; /* Светлый цвет для основного контейнера */
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Псевдоэлемент для границы с градиентом */
+.about-container::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* Увеличиваем отступ от верхней границы */
+    left: -10px; /* Увеличиваем отступ от левой границы */
+    right: -10px; /* Увеличиваем отступ от правой границы */
+    bottom: -10px; /* Увеличиваем отступ от нижней границы */
+    background: linear-gradient(to bottom, #cce7ff, #f5f5f5); /* Градиент от светло-голубого к светло-серому */
+    border-radius: 25px; /* Скругляем углы для псевдоэлемента */
+    z-index: -1; /* Помещаем за основной контейнер */
+}
+
+/* Заголовок */
+.about-title {
+    font-family: "Poppins-Bold";
+    font-size: 28px; /* Увеличен размер шрифта для заголовка */
+    color: #2a2a2a; /* Темно-серый цвет текста */
+    margin-bottom: 20px; /* Отступ снизу */
+    text-align: center;
+}
+
+/* Текст */
+.about-text {
+    font-family: "Poppins-Regular";
+    font-size: 16px; /* Размер шрифта для текста */
+    color: #4a4a4a; /* Темно-серый цвет текста */
+    margin-bottom: 15px; /* Отступ снизу для параграфов */
+    line-height: 1.6; /* Увеличенный интервал между строками для лучшей читабельности */
+}
