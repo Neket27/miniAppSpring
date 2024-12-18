@@ -1,3 +1,0 @@
-jwt:
-  secret: 444
-  lifetime: 30m
