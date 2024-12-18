@@ -1,25 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import ProductController from "../../controller/ProductController";
 import {CategoryResponse} from "../../model/response/product/CategoryResponse";
 import {transliterate} from "transliteration";
 import {Link} from "react-router-dom";
-import {ICategory} from "../../model/product/ICategory";
-import {CategorySearchResponse} from "../../model/response/product/CategorySearchResponse";
+import {SearchResponse} from "../../model/response/product/SearchResponse";
+import {ContextService} from "../../main";
 
-const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>{
+const Category = (props: { OnClickGetListProduct(category:string): void; })=>{
+    const contextService = useContext(ContextService)
     const [categoryMap,setCategoryMap]=useState<Map<string,number>>(new Map());
     const [searchString, setSearchString] = useState('');
-    const [searchedProducts, setSearchedProducts] = useState<CategorySearchResponse[]>([]);
+    const [searchedProducts, setSearchedProducts] = useState<SearchResponse[]>([]);
 
     async function getMapCategory(){
-        const response = ProductController.getMapCategory();
+        const response = contextService.categoryService.getMapCategory();
         const jsonCategoryResponse=await response.then(r => r);
         setCategoryMap(jsonToMap(jsonCategoryResponse));
     }
 
     async function search(searchValue:string){
         const response = await ProductController.search(searchValue);
-        // console.log(response)
         setSearchedProducts([]);
         setSearchedProducts(response);
     }
@@ -33,41 +33,36 @@ const Category = (props: { OnClickGetListProduct(category:ICategory): void; })=>
         return map;
     }
 
-function operation(category:string):void{
-    let ct:ICategory = {
-        categoryProduct: category,
-        subcategory: "not_supported",
-        stringValueCategory: " stringValueCategory"
+    async function  operation(searchText:string){
+        setSearchedProducts([]);
+        setSearchString('');
+        categoryJsx=[];
+        props.OnClickGetListProduct(searchText)
     }
-    setSearchedProducts([]);
-    setSearchString('');
-    categoryJsx=[];
-    props.OnClickGetListProduct(ct)
-}
 
-useEffect(()=>{
-    getMapCategory();
-    // props.OnClickGetListProduct(ct);
-},[]);
+    useEffect(()=>{
+        getMapCategory();
+        // props.OnClickGetListProduct(ct);
+    },[]);
 
 
     let categoryJsx:any[]=[];
-    const searchCategoryJsx = searchedProducts.map((category,index)=> {
-        const categoryOnEnglish: string = transliterate(category.stringValueCategory);
-        if (category.idProduct ==null) {
+    const searchCategoryJsx = searchedProducts.map((searchedResponse,index)=> {
+        const categoryOnEnglish: string = transliterate(searchedResponse.category);
+        if (searchedResponse.idProduct ==null) {
             return <li key={index}>
-                <Link to={"/category/product/" + categoryOnEnglish} onClick={() => {
-                    operation(category.stringValueCategory);
+                <Link to={"/detailProduct/" + searchedResponse.idProduct} onClick={() => {
+                    operation(searchedResponse.nameProduct);
                 }}>
-                    <i className="fas fa-chevron-right mr-2"></i> {category.stringValueCategory} <span></span>
+                    <i className="fas fa-chevron-right mr-2"></i> {searchedResponse.nameProduct} <span></span>
                 </Link>
             </li>
         }
         return <li key={index}>
-            <Link to={"/category/product/" + categoryOnEnglish} onClick={() => {
-               operation(category.stringValueCategory);
+            <Link to={"/detailProduct/" + searchedResponse.idProduct} onClick={() => {
+               operation(searchedResponse.nameProduct);
             }}>
-                <i className="fas fa-chevron-right mr-2"></i> {category.nameProduct} <span></span>
+                <i className="fas fa-chevron-right mr-2"></i> {searchedResponse.nameProduct} <span></span>
             </Link>
               </li>
     });

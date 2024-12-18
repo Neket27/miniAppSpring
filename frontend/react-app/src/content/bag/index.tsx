@@ -2,10 +2,11 @@ import { useContext, useEffect, useState, useCallback } from "react";
 import { ProductCartResponse } from "../../model/response/product/ProductCartResponse";
 import { Link } from "react-router-dom";
 import { IProductBag } from "../../model/product/IProductBag";
-import { ContextService } from "../../main";
+import {ContextService, locationDetector} from "../../main";
 import CartProductInBag from "./CartProductInBag";
 import { ICoupon } from "../../model/coupon/ICoupon";
 import { ContextCountProductInBag } from "../navbar";
+import OpenAI from "openai";
 
 const Bag = () => {
     const contextService = useContext(ContextService);
@@ -14,25 +15,44 @@ const Bag = () => {
 
     const [products, setProducts] = useState<IProductBag[]>([]);
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
+    const [subtotal, setSubtotal] = useState(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [amountDelivery, setAmountDelivery] = useState(0);
+    const [amountDiscount, setAmountDiscount] = useState(0);
+    const [amountCoupon, setAmountCoupon] = useState(0);
     const [couponTitle, setCouponTitle] = useState<string>('');
     const [responseCheckCoupon, setResponseCheckCoupon] = useState<ICoupon | null>(null);
     const [textForInvalidCoupon, setTextForInvalidCoupon] = useState<string>('');
+
+
+    const getDataPay = async() => {
+        const payData = await contextService.payService.getDataPay(localStorage.getItem("city"));
+        setSubtotal(payData.amountPay);
+        setAmountDelivery(payData.amountDeliver);
+        setAmountDiscount(payData.amountDiscount);
+        console.log(payData.amountDiscount);
+        setAmountCoupon(payData.amountCoupon);
+        setTotalPrice(payData.finalAmount);
+    }
+
 
     const getProductsFromCart = useCallback(async () => {
         if (accessToken) {
             try {
                 const result: ProductCartResponse = await contextService.bagService.getProductsFromCart(accessToken);
                 setProducts(result.productsInCard);
-                contextService.bagService.sendRequestOnGetCountProductInBag(accessToken);
+                //contextService.bagService.sendRequestOnGetCountProductInBag(accessToken); закоментил
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         }
     }, [accessToken, contextService.bagService]);
 
+
+
     useEffect(() => {
         getProductsFromCart();
+            getDataPay()
     }, [getProductsFromCart]);
 
     const updateTotalPrice = useCallback(() => {
@@ -74,6 +94,7 @@ const Bag = () => {
         if (response) {
             if (!responseCheckCoupon || response.amount > responseCheckCoupon.amount) {
                 setResponseCheckCoupon(response);
+                setAmountCoupon(response.amount);
             }
             setTextForInvalidCoupon('Купон применён');
         } else {
@@ -160,26 +181,36 @@ const Bag = () => {
                                     <div className="ant107_shop-total-item-wrap">
                                         <div className="ant107_shop-total-item ant107_shop-sub-total">
                                             <span className="ant107_shop-title">Подытог</span>
-                                            <span className="ant107_shop-price">{totalPrice}</span>
+                                            <span className="ant107_shop-price">{subtotal}</span>
                                         </div>
                                         <div className="ant107_shop-total-item ant107_shop-shipping">
                                             <span className="ant107_shop-title">Доставка</span>
-                                            <span className="ant107_shop-price">100</span>
+                                            <span className="ant107_shop-price">{amountDelivery==0?'Бесплатно':amountDelivery}</span>
                                         </div>
-                                        <div className="ant107_shop-total-item ant107_shop-discount">
-                                            <span className="ant107_shop-title">Скидка</span>
-                                            <span className="ant107_shop-price">{responseCheckCoupon?.amount || 0}</span>
-                                        </div>
+                                            {amountDiscount != 0 ?
+                                                <div className="ant107_shop-total-item ant107_shop-discount">
+                                                    <span className="ant107_shop-title">Скидка</span>
+                                                    <span className="ant107_shop-price">{amountDiscount}</span>
+                                                </div>:''
+                                            }
+
+                                        {responseCheckCoupon != null || amountCoupon>0 ?
+                                            <div className="ant107_shop-total-item ant107_shop-discount">
+                                                <span className="ant107_shop-title">Купон</span>
+                                                <span
+                                                    className="ant107_shop-price">{amountCoupon}</span>
+                                            </div>:''
+                                        }
                                         <div className="ant107_shop-total-item ant107_shop-total">
                                             <span className="ant107_shop-title">Итого</span>
-                                            <span className="ant107_shop-price">{totalPrice}</span>
+                                            <span className="ant107_shop-price">{totalPrice-amountDiscount+amountDelivery-amountCoupon}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-xl-7 col-lg-6 text-right">
                                     <div className="ant107_shop-proceed-btn mt-4">
-                                        <Link to="/checkout" className="ant107_shop-theme-btn ant107_shop-br-10">
-                                            К оплате
+                                        <Link to="/pay" className="ant107_shop-theme-btn ant107_shop-br-10">
+                                        К оплате
                                         </Link>
                                     </div>
                                 </div>

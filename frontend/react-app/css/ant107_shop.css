@@ -575,7 +575,7 @@ a.ant107_shop-theme-btn:hover {
 .ant107_shop-product-price:before,
 .ant107_shop-product-total-price:before,
 .ant107_shop-total-item .ant107_shop-price:before {
-    content: '$ ';
+    content: ' ';
 }
 
 .ant107_shop-product-price {
@@ -637,7 +637,7 @@ a.ant107_shop-theme-btn:hover {
 }
 
 .ant107_shop-discount .ant107_shop-price:before {
-    content: '- $ ';
+    content: '';
 }
 
 .ant107_shop-total .ant107_shop-title,

@@ -226,7 +226,7 @@ iframe {
 /*------------------------------------------------------------------
 [  ]*/
 .login100-form {
-  width: 290px;
+  width: 350px;
 }
 
 .login100-form-title {
@@ -241,6 +241,16 @@ iframe {
   padding-bottom: 54px;
 }
 
+.login100-form-text-center {
+  font-family: Poppins-Bold;
+  font-size: 24px;
+  color: #333333;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  display: block;
+  padding-bottom: 0px;
+}
 
 /*---------------------------------------------*/
 .wrap-input100 {
@@ -251,17 +261,30 @@ iframe {
 }
 
 .input100 {
-  font-family: Poppins-Medium;
-  font-size: 15px;
-  line-height: 1.5;
-  color: #666666;
-
-  display: block;
-  width: 100%;
+   color: #666666;
+  /*display: block;*/
+  /*width: 100%;*/
   background: #e6e6e6;
   height: 50px;
   border-radius: 25px;
-  padding: 0 30px 0 68px;
+  /*padding: 0 30px 0 68px;*/
+
+  width: 100%; /* Занимает всю ширину контейнера */
+  padding-left: 40px; /* Отступ для текста, чтобы не наезжало на иконку */
+  box-sizing: border-box; /* Padding не влияет на общий размер */
+}
+
+.input_auth{
+  font-family: Poppins-Medium;
+  font-size: 15px;
+  line-height: 1.5;
+
+  display: block;
+  width: 100%;
+  /*background: #e6e6e6;*/
+  height: 50px;
+  border-radius: 25px;
+  padding: 0 0px 0 68px;
 }
 
 .temporary-block{
@@ -328,7 +351,7 @@ iframe {
   left: 0;
   width: 100%;
   height: 100%;
-  padding-left: 35px;
+  padding-left: 15px;
   pointer-events: none;
   color: #666666;
 
@@ -338,7 +361,7 @@ iframe {
   transition: all 0.4s;
 }
 
-.input100:focus + .focus-input100 + .symbol-input100 {
+.input100:focus + .focus-input100 + .symbol-input100+ .input_auth:focus {
   color: #1089ff;
   padding-left: 28px;
 }

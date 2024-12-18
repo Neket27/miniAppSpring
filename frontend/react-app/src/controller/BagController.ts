@@ -1,9 +1,7 @@
-import ProductController from "./ProductController";
 import {IProductBag} from "../model/product/IProductBag";
 import {ProductCartResponse} from "../model/response/product/ProductCartResponse";
 import api from "../http";
 import {IProductInBag} from "../model/bag/IProductInBag";
-import {ICoupon} from "../model/coupon/ICoupon";
 
 export default class BagController {
 
@@ -13,12 +11,12 @@ export default class BagController {
     }
 
     static async getProductFromCart(idProduct:number, accessToken:string){
-        return api.get<ProductCartResponse>(`/api/v1/cart/getProduct?idProduct=${idProduct}&accessToken=${accessToken}`)
+        return api.get<ProductCartResponse>(`/api/v1/cart/product?idProduct=${idProduct}&accessToken=${accessToken}`)
             .then(response=>response.data);
     }
 
     static async getProductsFromCart(accessToken:string):Promise<Array<IProductBag>>{
-        return api.get<Array<IProductBag>>('/api/v1/cart?accessToken=' + accessToken)
+        return api.get<Array<IProductBag>>('/api/v1/cart/products?accessToken=' + accessToken)
             .then(response => response.data);
     }
 
@@ -38,7 +36,7 @@ export default class BagController {
     }
 
     static async getCountProductInBag(accessToken:string):Promise<number>{
-        return api.get<number>(`/api/v1/cart/getCountProductInBag?accessToken=${accessToken}`)
+        return api.get<number>(`/api/v1/cart//products/count?accessToken=${accessToken}`)
             .then(response=>response.data);
     }
 

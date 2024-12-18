@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import {ContextService} from "../../../main";
-import {IImage} from "../../../model/product/IImage";
 import UserService from "../../../service/user/UserService";
 import {IUserDelivery} from "../../../model/user/IUserDelivery";
 
@@ -50,10 +49,10 @@ const DeliveryUserData=() => {
                     {/*</div>*/}
 
                     <div className="login100-form validate-form">
+                        <h5 className="text-center text-secondary mb-3">
+                            Ваши данные о доставки
+                        </h5>
                         <form>
-                            <span className="login100-form-title">
-                                Ваши данные о доставки
-                            </span>
 
                             <div className="wrap-input100 validate-input"
                                  data-validate="Valid email is required: ex@abc.xyz">
@@ -61,7 +60,7 @@ const DeliveryUserData=() => {
                                        type="text" placeholder="Город" required={true}/>
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-envelope" aria-hidden="true"></i>
+                                    <i className="fa fa-map-marker" aria-hidden="true"></i>
                                 </span>
                             </div>
 
@@ -70,7 +69,7 @@ const DeliveryUserData=() => {
                                        type="text" placeholder="Улица" required={true}/>
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
+                                    <i className="fa fa-road" aria-hidden="true"></i>
                                 </span>
                             </div>
 
@@ -79,7 +78,7 @@ const DeliveryUserData=() => {
                                        value={buildingOfHouse} type="text" placeholder="Корпус" required={true}/>
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
+                                    <i className="fa fa-building" aria-hidden="true"></i>
                                 </span>
                             </div>
 
@@ -88,7 +87,7 @@ const DeliveryUserData=() => {
                                        value={flat} type="text" placeholder="Квартира" required={true}/>
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
+                                    <i className="fa fa-home" aria-hidden="true"></i>
                                 </span>
                             </div>
 

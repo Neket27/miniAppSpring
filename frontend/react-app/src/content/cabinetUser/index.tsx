@@ -12,7 +12,8 @@ const CabinetUser = () => {
 
     const getUserRoles = async () => {
         const response: Array<string> = await contextService.authService.getUserRoles(contextService.authService.user.username);
-        if (response.includes("ROLE_ADMIN")) setFlagContentAdmin(true);
+        if (response.includes("ROLE_ADMIN")||response.includes("ROLE_EMPLOYEE"))
+            setFlagContentAdmin(true);
     };
 
     useEffect(() => {
@@ -47,6 +48,9 @@ const CabinetUser = () => {
                         </Link>
                         {flagContentAdmin && (
                             <>
+                                <Link to="/category/update" className="cabinet-link">
+                                    Изменить категории
+                                </Link>
                                 <Link to="/product/add" className="cabinet-link">
                                     Добавить продукт
                                 </Link>

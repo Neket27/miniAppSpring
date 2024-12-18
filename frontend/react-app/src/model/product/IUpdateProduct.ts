@@ -3,13 +3,13 @@ import {IImage} from "./IImage";
 export interface IUpdateProduct {
     id:number,
     category: string;
-    subcategory: string;
+    // subcategory: string;
     name: string;
     cost: number;
     rating: number;
     description: string;
     brand: string;
-    article: string;
+    note: string;
     available: boolean;
     stock: number;
     detail: string;

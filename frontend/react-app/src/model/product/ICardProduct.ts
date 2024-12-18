@@ -1,4 +1,3 @@
-import {ICharacteristic} from "./ICharacteristic";
 import {ICategory} from "./ICategory";
 import {IImage} from "./IImage";
 
@@ -8,5 +7,6 @@ export interface ICardProduct{
     name:string,
     cost:number,
     rating:number,
+    discount:number,
     imageDtoList:Array<IImage>
 }

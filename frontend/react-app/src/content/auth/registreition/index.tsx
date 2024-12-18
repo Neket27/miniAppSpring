@@ -30,51 +30,57 @@ const RegisterPage = () => {
                     <div className="login100-pic js-tilt" data-tilt>
                         <img src="/src/login/images/img-01.png" alt="IMG" />
                     </div>
-
                     <div className="login100-form validate-form">
+                        <h5 className="text-center text-secondary mb-3">
+                            Регистрация
+                        </h5>
                         <form>
-                            <span className="login100-form-title">
-                                Регистрация
-                            </span>
 
                             <div className="wrap-input100 validate-input"
                                  data-validate="Valid email is required: ex@abc.xyz">
-                                <input className="input100"
-                                       onChange={e => setUsername(e.target.value)}
-                                       value={username}
-                                       type="text"
-                                       placeholder="Username"
-                                       required={true} />
-                                <span className="focus-input100"></span>
-                                <span className="symbol-input100">
-                                    <i className="fa fa-envelope" aria-hidden="true"></i>
+                                {/*<div className="input_auth">*/}
+                                    <input className="input100"
+                                           onChange={e => setUsername(e.target.value)}
+                                           value={username}
+                                           type="text"
+                                           placeholder="Имя пользователя"
+                                           required={true}/>
+                                    <span className="focus-input100"></span>
+                                    <span className="symbol-input100">
+                                    <i className="fa fa-user" aria-hidden="true"></i>
                                 </span>
+                                {/*</div>*/}
                             </div>
 
                             <div className="wrap-input100 validate-input" data-validate="Password is required">
+                                {/*<div className="input_auth">*/}
                                 <input className="input100"
-                                       onChange={e => setPassword(e.target.value)}
-                                       value={password}
-                                       type="password"
-                                       placeholder="Password"
-                                       required={true} />
-                                <span className="focus-input100"></span>
-                                <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
-                                </span>
+                                           onChange={e => setPassword(e.target.value)}
+                                           value={password}
+                                           type="password"
+                                           placeholder="Пароль"
+                                           required={true}/>
+                                    <span className="focus-input100"></span>
+                                    <span className="symbol-input100">
+                                        <i className="fa fa-lock" aria-hidden="true"></i>
+                                    </span>
+                                {/*</div>*/}
                             </div>
 
                             <div className="wrap-input100 validate-input" data-validate="Password is required">
-                                <input className="input100"
-                                       onChange={e => setPasswordRepeat(e.target.value)}
-                                       value={passwordRepeat}
-                                       type="password"
-                                       placeholder="Repeat password"
-                                       required={true} />
-                                <span className="focus-input100"></span>
-                                <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
-                                </span>
+                                {/*<div className="input_auth">*/}
+                                    <input className="input100"
+                                           onChange={e => setPasswordRepeat(e.target.value)}
+                                           value={passwordRepeat}
+                                           type="password"
+                                           placeholder="Повторите пароль"
+                                           required={true}/>
+                                    <span className="focus-input100"></span>
+                                    <span className="symbol-input100">
+                                        <i className="fa fa-lock" aria-hidden="true"></i>
+                                    </span>
+                                {/*</div>*/}
+
                             </div>
                         </form>
                         {showTemporaryBlock && (
@@ -84,17 +90,19 @@ const RegisterPage = () => {
                         )}
 
                         <div className="container-login100-form-btn">
+                            <div className="input_auth">
                             <button className="login100-form-btn" onClick={handleRegistrationClick}>
                                 Зарегистрироваться
                             </button>
                         </div>
+                        </div>
 
                         <div className="text-center p-t-12">
                             <span className="txt1">
-                                Forgot
+                                Забыли &nbsp;
                             </span>
                             <a className="txt2" href="#">
-                                Username / Password?
+                                Имя пользователя / Пароль?
                             </a>
                         </div>
 

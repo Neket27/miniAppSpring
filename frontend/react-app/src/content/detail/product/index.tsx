@@ -16,6 +16,9 @@ import {ContextCountProductInBag} from "../../navbar";
 import {IProductInBag} from "../../../model/bag/IProductInBag";
 import ImageProduct from "./imageProduct";
 import CartPreviewProduct from "./cartProduct";
+import "../../../../css/Detail.css"
+import {ICardProduct} from "../../../model/product/ICardProduct";
+import product from "../../home/product";
 
 const URL = import.meta.env.VITE_URL;
 
@@ -33,36 +36,42 @@ const DetailProduct = () => {
     const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
-    const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
+    const [relatedProducts, setRelatedProducts] = useState<Array<ICardProduct>>();
     const [checkAddProduct, setCheckAddProduct] = useState<boolean>(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+    const [note,setNote] = useState<string>('');
+    const [currentImageBase64, setCurrentImageBase64] = useState<string | null>(null);
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
-        console.log("полученно = "+val.body)
         setCountProducts(parseInt(val.body))
         contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
     }
 
     const sendValue=(count:number)=>{
         contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,count,accessToken);
-        // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
+    }
+
+    const getProductsByCategory= async (category:string) => {
+       if(category && category!="") {
+           const products: ICardProduct[] = await contextService.productService.getProductsByCategory(category);
+           setRelatedProducts(products);
+       }
     }
 
     async function getProductDetail(){
         if(typeId!=undefined) {
             const response = await contextService.productService.getProductDetail(parseInt(typeId, 10));
-            console.log(response);
+            console.log("Продукт= "+response.brand);
             setProductDetail(response);
         }else {
             console.log("ID продукта в getProductDetail == undefined")
         }
     }
 
-    useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
+    useEffect(() => {
         getProductDetail();
 
-    }, []);
+    }, [location]);
 
     useEffect(() => {
             contextService.productService.connect(
@@ -73,8 +82,8 @@ const DetailProduct = () => {
                 accessToken: accessToken
             }));
             contextService.productService.sendRequestOnGetNumberOfPiecesOfGoods(productDetail?.id,accessToken);
-            // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
 
+            getProductsByCategory(productDetail?.category);
     }, [productDetail,location]);
 
 
@@ -94,6 +103,7 @@ const DetailProduct = () => {
             }
 
         };
+
     }, [productDetail]);
 
 
@@ -127,7 +137,6 @@ const DetailProduct = () => {
     const handleClickPlus = () => {
         if(!checkAddProduct && countProducts==0){
             let countStr = localStorage.getItem("countProductInBag");
-            console.log("countStr= "+countStr)
             if (countStr != null) {
                 const count = parseInt(countStr) + 1;
                 localStorage.setItem("countProductInBag", String(count));
@@ -141,13 +150,27 @@ const DetailProduct = () => {
         sendValue(count);
     };
 
-    const imagesMain =(<ImageProduct base64={productDetail?.imageDtoList.at(0)?.base64}/>);
+    // const imagesMain =(<ImageProduct base64={productDetail?.imageDtoList.at(0)?.base64}/>);
 
-    const images =productDetail?.imageDtoList.map((image,index) =>
-        <ImageProduct key={index} base64={image.base64}/>
+    const imagesMain = (
+        <ImageProduct base64={currentImageBase64 || productDetail?.imageDtoList.at(0)?.base64} />
     );
 
-    const relatedProductListJsx = relatedProducts?.cardsProduct.map((product,) =>{
+    // const images =productDetail?.imageDtoList.map((image,index) =>
+    //     <ImageProduct key={index} base64={image.base64}/>
+    // );
+
+    const images = productDetail?.imageDtoList.map((image, index) => (
+        <div
+            key={index}
+            onClick={() => setCurrentImageBase64(image.base64)}
+            style={{ cursor: 'pointer' }}
+        >
+            <ImageProduct base64={image.base64} />
+        </div>
+    ));
+
+    const relatedProductListJsx = relatedProducts?.filter(product=>product.id!=productDetail.id).map((product,) =>{
         return <CartPreviewProduct key={product.id} product={product}/>
     });
 
@@ -164,8 +187,8 @@ const DetailProduct = () => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
-            {productDetail?
-                <div>
+            {productDetail ?
+                <div className="button-container">
                     <button
                         onClick={() => {
                             navigate('/product/update', {state: {product: productDetail}});
@@ -174,7 +197,7 @@ const DetailProduct = () => {
                     </button>
 
                     <button
-                        onClick={()=>{
+                        onClick={() => {
                             navigate('/product/delete', {state: {productId: productDetail.id}});
                         }}>
                         Удалить продукт
@@ -183,11 +206,6 @@ const DetailProduct = () => {
                 : ''
             }
 
-            {/*<button*/}
-            {/*    className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10 ml-3"*/}
-            {/*    type="submit">*/}
-            {/*    <Link to="/product/update" className="ant107_shop-theme-btn ant107_shop-br-10"> Изменить данные</Link>*/}
-            {/*</button>*/}
             <div className="container">
                 <main>
                     <div className="row">
@@ -209,7 +227,7 @@ const DetailProduct = () => {
                                     </div>
 
                                 </div>
-                                <ul className="nav nav-tabs d-flex align-content-between">{images}</ul>
+                                <ul className="nav nav-tabs1 d-flex1 align-content-between">{images}</ul>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -218,7 +236,7 @@ const DetailProduct = () => {
                                 <h6>Цена: <span>{productDetail?.cost}</span></h6>
                                 <p>{productDetail?.detail}</p>
                                 <h6>Бренд: <span>{productDetail?.brand}</span></h6>
-                                <h6>Артикул: <span>{productDetail?.article}</span></h6>
+                                {/*<h6>Артикул: <span>{productDetail?.article}</span></h6>*/}
                                 <h6>Наличие: <span>{productDetail?.stock}</span></h6>
                                 <h6>Участвует в акции: <span>{productDetail?.available ? "Да" : "Нет"}</span></h6>
 

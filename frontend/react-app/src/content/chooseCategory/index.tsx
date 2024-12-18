@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import './../../../css/style.css'
 import './../../../css/bootstrap.min.css'
@@ -6,18 +6,20 @@ import './../../../css/magnify.css'
 import './../../../css/ant107_shop.css'
 import Category from "../category";
 import Product from "../home/product";
-import {ICategory} from "../../model/product/ICategory";
-import ProductController from "../../controller/ProductController";
 import {ICardProduct} from "../../model/product/ICardProduct";
 import {useParams} from "react-router-dom";
 import translit from 'cyrillic-to-translit-js';
-import {CardProductResponse} from "../../model/response/product/CardProductResponse";
+import {ContextService} from "../../main";
 
 
 const ChooseCategory=()=> {
-    const [products,setProducts]=useState<ICardProduct[]>([]);
-    async function getProductByCategory(category:ICategory){
-        const response:CardProductResponse = await ProductController.getProductsByCategory(category);
+    const context = useContext(ContextService);
+    const [products,setProducts]=useState<Array<ICardProduct>>();
+
+    async function getProductsByCategory(category:string){
+        const response:Array<ICardProduct> = await context.productService.getProductsByCategory(category);
+        console.log("response= "+response[0].name);
+
         setProducts(response);
     }
 
@@ -25,22 +27,14 @@ const ChooseCategory=()=> {
 
     useEffect(()=> {
         if (typeId != undefined) {
-            let category: ICategory;
+            let category:string;
                 if(typeId=="allCategories"){
-                    category= {
-                        categoryProduct: "Все категории",
-                        subcategory: 'unsupported',
-                        stringValueCategory: 'mmm'
-                    }
+                    category= 'Все категории';
                 }else {
                     let categoryOnRussian: string = translit().reverse(typeId);
-                    category = {
-                        categoryProduct: categoryOnRussian,
-                        subcategory: 'unsupported',
-                        stringValueCategory: 'mmm'
-                    }
+                    category = categoryOnRussian;
                 }
-                    getProductByCategory(category);
+                    getProductsByCategory(category);
 
     }
 },[])
@@ -68,7 +62,7 @@ const ChooseCategory=()=> {
                             </div>
                         </main>
 
-                        <Category OnClickGetListProduct={getProductByCategory}  />
+                        <Category OnClickGetListProduct={getProductsByCategory}  />
 
                     </div>
                 </div>

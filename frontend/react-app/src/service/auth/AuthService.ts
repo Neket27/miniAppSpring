@@ -3,7 +3,6 @@ import {makeAutoObservable} from "mobx";
 import AuthController from "../../controller/AuthController";
 import {AuthResponse} from "../../model/response/auth/AuthResponse";
 import {Roles} from "../../model/role/Roles";
-import {useEffect} from "react";
 
 export default class AuthService{
     user:IUser={} as IUser;

@@ -1,14 +1,14 @@
 import {IImage} from "./IImage";
 
 export interface IAddProduct {
-    category: string; // e.g., "CLOTHES"
-    subcategory: string;
+    category: string;
+    // subcategory: string;
     name: string;
     cost: number;
     rating: number;
     description: string;
     brand: string;
-    article: string;
+    note: string;
     available: boolean;
     stock: number;
     detail: string;

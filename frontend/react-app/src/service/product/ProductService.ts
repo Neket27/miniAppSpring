@@ -8,6 +8,9 @@ import {IFeedback} from "../../model/rating/IFeedback";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {IAddProduct} from "../../model/product/IAddProduct";
+import {ICategory} from "../../model/product/ICategory";
+import api from "../../http";
+import category from "../../content/category";
 
 class ProductService {
     private _stompClient: Client = new Client();
@@ -28,12 +31,15 @@ class ProductService {
         }
     }
 
+    async getDiscountedProducts(){
+        return await ProductController.getDiscountedProducts();
+    }
+
 
     // @ts-ignore
-     async getProductByCategory(category: string):Promise<CardProductResponse> {
+     async getProductsByCategory(category: string):Promise<ICardProduct[]> {
         try {
-            const response:CardProductResponse = await ProductController.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
-            return response
+            return await ProductController.getProductsByCategory({categoryProduct:category});
         } catch (error) {
             console.error("Error fetching related products:", error);
         }
@@ -140,6 +146,7 @@ class ProductService {
     public async addProduct(product:IAddProduct){
        await ProductController.addProduct(product);
     }
+
 
     public async updateProduct(product:IAddProduct){
         await ProductController.updateProduct(product);

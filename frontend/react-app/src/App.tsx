@@ -17,6 +17,10 @@ import {DiscountAdd} from "./content/discount/discountAdd";
 import AboutUs from "./content/aboutUs";
 import SupportPage from "./content/supportPage";
 import DeliveryUserData from "./content/cabinetUser/delivery";
+import {AddAndUpdateCategory} from "./content/category/addAndUpdateCategory";
+import {PagePay} from "./content/pay";
+import OpenAI from "openai";
+import NeuralNetworkDialog from "./content/chatWithNeiro/NeuralNetworkDialog";
 
 const App:FC=()=> {
     const context:State= useContext(ContextService);
@@ -25,9 +29,7 @@ const App:FC=()=> {
     useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
        if(localStorage.getItem('accessToken')) { //если пользователь авторизован, то у него есть токен
            context.authService.checkAuth();
-
        }
-
     }, []);
 
         if(context.authService.isLoading) {
@@ -41,7 +43,8 @@ const App:FC=()=> {
 
     return (
         <div className="App">
-            <Navbar />
+            <Navbar/>
+            <NeuralNetworkDialog show={true} handleClose={false}/>
             <Routes>
                 <Route path="/" element={<AuthRootComponent/>}></Route>
                 <Route path="/login" element={<AuthRootComponent/>}></Route>
@@ -50,8 +53,8 @@ const App:FC=()=> {
                 <Route path="/cabinetUser/changeData" element={<ChangeDataUser/>}></Route>
                 <Route path="/resetPassword" element={<AuthRootComponent/>}></Route>
                 <Route path="/dashboard" element={<AuthRootComponent/>}></Route>
-                <Route path='/detailProduct/:typeId' element={<DetailProduct />} />
-                <Route path='/category/product/:typeId' element={<ChooseCategory/>} />
+                <Route path='/detailProduct/:typeId' element={<DetailProduct/>}/>
+                <Route path='/category/product/:typeId' element={<ChooseCategory/>}/>
                 <Route path='/cart' element={<Bag/>}/>
                 <Route path='/product/add' element={<ProductAdd/>}/>
                 <Route path='/product/update' element={<UpdateProduct/>}/>
@@ -60,7 +63,9 @@ const App:FC=()=> {
                 <Route path='/discount/create' element={<DiscountAdd/>}/>
                 <Route path='/aboutUs' element={<AboutUs/>}/>
                 <Route path='/help' element={<SupportPage/>}/>
-                <Route path= '/cabinetUser/delivery' element={<DeliveryUserData/>}/>
+                <Route path='/cabinetUser/delivery' element={<DeliveryUserData/>}/>
+                <Route path='/category/update' element={<AddAndUpdateCategory/>}/>
+                <Route path='/pay' element={<PagePay/>}/>
             </Routes>
         </div>
     );

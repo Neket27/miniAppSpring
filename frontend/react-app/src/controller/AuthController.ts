@@ -55,7 +55,7 @@ export default class AuthController {
     }
 
     static async resetPassword(password:string,newPassword:string):Promise<AuthResponse>{
-        return api.post<AuthResponse>('/api/v1/auth/resetPassword',{password,newPassword})
+        return api.post<AuthResponse>('/api/v1/auth/password/reset',{password,newPassword})
             .then(response => {
                 const authResponse: AuthResponse = {
                     accessToken: response.data.accessToken,
@@ -69,7 +69,7 @@ export default class AuthController {
     }
 
     static async getUserRole(username:string):Promise<Roles> {
-        return api.get<Roles>('/api/v1/user/getUserRoles?username='+username)
+        return api.get<Roles>('/api/v1/user/roles?username='+username)
         .then(response => {return response.data;})
     }
 }

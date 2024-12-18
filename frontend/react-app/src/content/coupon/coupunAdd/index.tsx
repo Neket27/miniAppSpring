@@ -27,16 +27,18 @@ export const AddCoupon = () => {
     }
 
     return (<div className="limiter">
+
+
         <div className="container-login100">
             <div className="wrap-login100">
                 <div className="login100-form validate-form">
-                    <form  onSubmit={e => {
+                    <h5 className="text-center mb-3">
+                        Создание купона
+                    </h5>
+                    <form onSubmit={e => {
                         e.preventDefault();
                         createCoupon();
                     }}>
-					<span className="login100-form-title">
-						Создание купона
-					</span>
                         <div className="wrap-input100 validate-input" data-validate="Password is required">
                             <input className="input100"
                                    onChange={e => setTitle(e.target.value)}
@@ -46,7 +48,7 @@ export const AddCoupon = () => {
                                    required={true}/>
                             <span className="focus-input100"></span>
                             <span className="symbol-input100">
-							<i className="fa fa-lock" aria-hidden="true"></i>
+							<i className="fa fa-ticket" aria-hidden="true"></i>
 						</span>
                         </div>
 
@@ -54,13 +56,13 @@ export const AddCoupon = () => {
                              data-validate="Valid email is required: ex@abc.xyz">
                             <input className="input100"
                                    onChange={e => setAmount(parseInt(e.target.value))}
-                                   value={amount||''}
+                                   value={amount || ''}
                                    type="number"
                                    placeholder="Сумма купона"
                                    required={true}/>
                             <span className="focus-input100"></span>
                             <span className="symbol-input100">
-							<i className="fa fa-envelope" aria-hidden="true"></i>
+							<i className="fa fa-money" aria-hidden="true"></i>
 						</span>
                         </div>
 
@@ -68,13 +70,13 @@ export const AddCoupon = () => {
                              data-validate="Valid email is required: ex@abc.xyz">
                             <input className="input100"
                                    onChange={e => setTimeLive(parseInt(e.target.value))}
-                                   value={timeLive||''}
+                                   value={timeLive || ''}
                                    type="number"
                                    placeholder="Срок действия купона в часах"
                                    required={true}/>
                             <span className="focus-input100"></span>
                             <span className="symbol-input100">
-							<i className="fa fa-envelope" aria-hidden="true"></i>
+							<i className="fa fa-clock-o" aria-hidden="true"></i>
 						</span>
                         </div>
                         <div className="container-login100-form-btn">

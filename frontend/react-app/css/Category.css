@@ -1,0 +1,32 @@
+.category-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.category-list li {
+    padding: 10px 15px;
+    font-size: 1.1rem; /* Увеличенный размер текста */
+    border-bottom: 1px solid #ddd; /* Граница между категориями */
+}
+
+.category-list li:last-child {
+    border-bottom: none; /* Убираем нижнюю границу для последнего элемента */
+}
+
+.login100-form-title {
+    font-size: 1.5rem; /* Увеличенный размер заголовка */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.input100 {
+    font-size: 1rem;
+    /*padding: 10px; в других местах ломает*/
+}
+
+.login100-form-btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin-top: 10px;
+}
