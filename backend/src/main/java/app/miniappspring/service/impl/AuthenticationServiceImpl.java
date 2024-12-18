@@ -14,7 +14,7 @@ import app.miniappspring.service.CookeService;
 import app.miniappspring.service.JWTService;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
-import app.miniappspring.utils.jwtToken.mapper.UserMapper;
+import app.miniappspring.utils.mapper.UserMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

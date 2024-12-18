@@ -1,7 +1,7 @@
 package app.miniappspring.controller;
 
-import app.miniappspring.chat.GigaChatService;
 import app.miniappspring.dto.chat.RequestOnAnswerGigaChatDto;
+import app.miniappspring.service.GigaChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +15,7 @@ public class GigaChatController {
     private final GigaChatService gigaChatService;
 
     @PostMapping("/models/GigaChat/messages")
-    public RequestOnAnswerGigaChatDto getResponse(@RequestBody RequestOnAnswerGigaChatDto requestOnAnswerDto){
+    public RequestOnAnswerGigaChatDto getResponse(@RequestBody RequestOnAnswerGigaChatDto requestOnAnswerDto) {
         return gigaChatService.getResponseFromGigaChat(requestOnAnswerDto);
     }
 }

@@ -8,10 +8,10 @@ import io.swagger.v3.oas.models.info.Info;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI usersMicroserviceOpenAPI() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().title("Your API Title")
-                        .description("Your API Description")
+                .info(new Info().title("Shop")
+                        .description("API Shop")
                         .version("1.0"));
     }
 }

@@ -5,9 +5,9 @@ import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Product;
-import app.miniappspring.repository.ImageProductRepo;
+import app.miniappspring.repository.ImageRepo;
 import app.miniappspring.service.ImageProductService;
-import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
+import app.miniappspring.utils.mapper.ImageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ImageProductServiceImpl implements ImageProductService {
-    private final ImageProductRepo imageProductRepo;
+    private final ImageRepo imageProductRepo;
     private final ImageMapper imageMapper;
 
     @Override

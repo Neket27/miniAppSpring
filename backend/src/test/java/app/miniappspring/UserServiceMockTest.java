@@ -6,7 +6,7 @@
 //import app.miniappspring.repository.UserRepo;
 //import app.miniappspring.service.UserService;
 //import app.miniappspring.service.impl.UserServiceImpl;
-//import app.miniappspring.utils.jwtToken.mapper.UserMapper;
+//import app.miniappspring.utils.mapper.mapper.UserMapper;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

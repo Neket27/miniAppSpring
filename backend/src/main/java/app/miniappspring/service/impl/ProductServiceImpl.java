@@ -7,7 +7,6 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.SearchProductDto;
-import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
 import app.miniappspring.entity.CategoryItem;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Image;
@@ -17,10 +16,10 @@ import app.miniappspring.repository.CategoryItemRepo;
 import app.miniappspring.repository.ProductRepo;
 import app.miniappspring.service.ImageProductService;
 import app.miniappspring.service.ProductService;
-import app.miniappspring.utils.jwtToken.mapper.CharacteristicMapper;
-import app.miniappspring.utils.jwtToken.mapper.ProductArgumentMapper;
-import app.miniappspring.utils.jwtToken.mapper.ProductMapper;
-import app.miniappspring.utils.jwtToken.mapper.SearchMapper;
+import app.miniappspring.utils.mapper.CharacteristicMapper;
+import app.miniappspring.utils.mapper.ProductArgumentMapper;
+import app.miniappspring.utils.mapper.ProductMapper;
+import app.miniappspring.utils.mapper.SearchMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
