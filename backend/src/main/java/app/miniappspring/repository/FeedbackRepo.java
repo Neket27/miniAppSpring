@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface FeedbackRepo extends JpaRepository<Feedback,Long> {
     Optional<List<Feedback>> getAllByProductId(Long idProduct);
+    int countFeedbackByProduct_Id(Long idProduct);
 }

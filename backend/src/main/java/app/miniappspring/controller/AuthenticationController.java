@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +29,11 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest signinRequest) {
-        return ResponseEntity.ok(authenticationService.signin(signinRequest));
+        JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.signin(signinRequest);
+        if (jwtAuthenticationResponse == null)
+            return ResponseEntity.status(403).build();
+
+        return ResponseEntity.ok(jwtAuthenticationResponse);
     }
 
     @GetMapping("/refresh")
@@ -42,7 +47,7 @@ public class AuthenticationController {
         return ResponseEntity.ok("Вы вышли из системы");
     }
 
-    @PostMapping("resetPassword")
+    @PostMapping("/password/reset")
     public ResponseEntity<JwtAuthenticationResponse> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto){
         return ResponseEntity.ok(authenticationService.resetPassword(resetPasswordDto));
     }

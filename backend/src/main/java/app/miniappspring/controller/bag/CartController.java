@@ -17,70 +17,64 @@ import java.util.List;
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
 public class CartController {
-
     private final CartService cartService;
 
-    @GetMapping("/getProduct")
-    public ProductCartDto getProductFromCart(@RequestParam Long idProduct, @RequestParam String accessToken){
-        return cartService.getProductFromCart(idProduct,accessToken);
-    }
-
-    @PostMapping("/add")
-    public void addProductInCart(@RequestBody CreateProductCartDto createProductCartDto){
-        cartService.addProductInCart(createProductCartDto);
-    }
-
-    @GetMapping
-    public List<ProductCartDto> getListProductInCart(@RequestParam String accessToken){
+    @GetMapping("/products")
+    public List<ProductCartDto> getListProductInCart(@RequestParam String accessToken) {
         return cartService.getListProductInCart(accessToken);
     }
 
+    @GetMapping("/product")
+    public ProductCartDto getProductFromCart(@RequestParam Long idProduct, @RequestParam String accessToken) {
+        return cartService.getProductFromCart(idProduct, accessToken);
+    }
+
+    @PostMapping("/add")
+    public void addProductInCart(@RequestBody CreateProductCartDto createProductCartDto) {
+        cartService.addProductInCart(createProductCartDto);
+    }
+
     @GetMapping("/remove")
-    public List<ProductCartDto> removeProductFromCart(@RequestParam Long idProduct, @RequestParam String accessToken){
+    public List<ProductCartDto> removeProductFromCart(@RequestParam Long idProduct, @RequestParam String accessToken) {
         return cartService.removeProductFromCart(idProduct, accessToken);
     }
 
     @GetMapping("/increase")
-    public boolean increaseProductInCart(@RequestParam Long idProduct, @RequestParam String accessToken){
+    public boolean increaseProductInCart(@RequestParam Long idProduct, @RequestParam String accessToken) {
         return cartService.increaseProductInCart(idProduct, accessToken);
     }
 
     @GetMapping("/decrease")
-    public boolean  decreaseProductInCartProductInCart(@RequestParam Long idProduct, @RequestParam String accessToken){
+    public boolean decreaseProductInCartProductInCart(@RequestParam Long idProduct, @RequestParam String accessToken) {
         return cartService.decreaseProductInCart(idProduct, accessToken);
     }
 
     @GetMapping("/sendCountProductInCart")
-    public boolean  sendCountProductInCart(@RequestParam Long idProduct,@RequestParam int count ,@RequestParam String accessToken){
-        return cartService.sendNumberOfPiecesOfGoods(idProduct,count, accessToken);
+    public boolean sendCountProductInCart(@RequestParam Long idProduct, @RequestParam int count, @RequestParam String accessToken) {
+        return cartService.sendNumberOfPiecesOfGoods(idProduct, count, accessToken);
     }
 
-    @GetMapping("/getCountProductInBag")
-    public int getCountProductInCart(@RequestParam String accessToken){
+    @GetMapping("/products/count")
+    public int getCountProductInCart(@RequestParam String accessToken) {
         return cartService.getCountProductInCart(accessToken);
     }
 
     @MessageMapping("/sendNumberOfPiecesOfGoods")
     @SendTo("/shoppingCart/public")
-    public int sendCountProductInCart(@Payload DtoCountProductInCart dtoCountProductInCart){
-       return cartService.sendNumberOfPiecesOfGoods(dtoCountProductInCart);
+    public int sendCountProductInCart(@Payload DtoCountProductInCart dtoCountProductInCart) {
+        return cartService.sendNumberOfPiecesOfGoods(dtoCountProductInCart);
     }
 
     @MessageMapping("/getNumberOfPiecesOfGoods")
     @SendTo("/shoppingCart/public")
-    public int getNumberOfPiecesOfGoods(CountProductDto countProductDto){
+    public int getNumberOfPiecesOfGoods(CountProductDto countProductDto) {
         return cartService.getNumberOfPiecesOfGoods(countProductDto);
     }
 
-//    @MessageMapping("/getCountProductInCart")
-//    @SendTo("/shoppingCartCountProduct/public")
-//    public int getCountProductInCart2(@RequestParam String accessToken){
-//        return cartService.getCountProductInCart(accessToken);
-//    }
 
     @MessageMapping("/getCountProductInCart")
     @SendTo("/shoppingCartCountProduct/public")
-    public int getCountProductInCart2(@RequestParam String accessToken){
+    public int getCountProductInCart2(@RequestParam String accessToken) {
         return cartService.getCountProductInCart(accessToken);
     }
 

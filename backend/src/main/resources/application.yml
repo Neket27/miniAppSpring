@@ -1,11 +1,13 @@
 #Swagger
 # custom path for swagger-ui path: http://localhost:8080/ui
 springdoc:
-  swagger-ui.path: /ui
+  swagger-ui:
+    path: /ui
+    operationsSorter: alpha
+    tagsSorter: alpha
 # custom path for api docs
-  api-docs.path: /api-docs
-  swagger-ui.operationsSorter: alpha
-  swagger-ui.tagsSorter: alpha
+  api-docs:
+    path: /api-docs
 
 # DB
 spring:
@@ -14,23 +16,13 @@ spring:
     username: miniapp
     password: miniapp
     driverClassName: org.postgresql.Driver
-
-  #limitation for upload file
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
-
-#  main:
-#    allow-circular-references: true
-
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        hbm2ddl:
-          auto: update
-    generate-ddl: true
+        hbm2ddl.auto: update
+        globally_quoted_identifiers: true #????????????? ????????????????? ???? ? ?? ???? ?? ??????????? ????????????????? ????? ???? ?????? (????????, user, order, group), ??? ??????? ??? ????? ??????? ??????
+    igenerate-ddl: true
 
 #Secret keys for token
 jwt:
@@ -38,12 +30,22 @@ jwt:
     access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
     refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
     prefix: Bearer
-
 #Cooke
 cooke:
   time:
     live:
       refreshToken: 86000
 
+gigachat:
+  authorization:
+    key: NTc0OWQyMjAtYTQ4Zi00MWYxLTg0NTctZjkyYjJmYzQwMmMwOmFhMWIwY2E1LTM1OWUtNGU2ZS1hN2QwLWEzZThkYWRiZDIxZA==
+  scope: GIGACHAT_API_PERS
 
+#Log
+logging:
+  level:
+    root: DEBUG
 
+server:
+  address: 0.0.0.0
+  port: 8080

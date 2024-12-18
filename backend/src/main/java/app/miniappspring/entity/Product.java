@@ -22,27 +22,36 @@ public class Product {
     private float rating;
     private String description;
     private String brand;
-    private String article;
+    private String note;
     private boolean available;
     private int stock;
     private String detail;
-//    @Column(name = "image")
-//    private byte[] image;
-//    @Enumerated(EnumType.STRING)
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_product_id")
-    private CategoryProduct categoryProduct;
-    private String subcategory;
 
-    @OneToMany(fetch = FetchType.LAZY)
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "category_product_id")
+//    private CategoryProduct categoryProduct;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CategoryItem categoryItem;
+//    private String subcategory;
+
+//    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Image> imageList;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "characteristic_id")
     private CharacteristicProduct characteristicProduct;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "feedback_list", nullable = false)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Column(name = "feedback_list", nullable = true)
     private List<Feedback> feedbackList;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_discount", // Имя промежуточной таблицы
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "discount_id")
+    )
+    private List<Discount> discountList;
 
 }

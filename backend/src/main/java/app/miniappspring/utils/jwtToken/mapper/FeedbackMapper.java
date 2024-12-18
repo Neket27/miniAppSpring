@@ -3,19 +3,29 @@ package app.miniappspring.utils.jwtToken.mapper;
 import app.miniappspring.dto.feedback.FeedbackCreateDto;
 import app.miniappspring.dto.feedback.FeedbackDto;
 import app.miniappspring.entity.Feedback;
+import app.miniappspring.entity.Image;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface FeedbackMapper {
+@Mapper(componentModel = "spring", uses = {ImageMapper.class})
+public abstract class FeedbackMapper {
+    @Autowired
+    ImageMapper imageMapper;
 
-    Feedback toFeedback(FeedbackCreateDto feedbackCreateDto);
-    @Mapping(source = "product.id",target = "idProduct")
-    FeedbackDto toFeedbackDto(Feedback feedback);
 
-    default List<FeedbackDto> toFeedbackList(List<Feedback> feedbackList){
-        return feedbackList.stream().map(this::toFeedbackDto).toList();
+   public abstract Feedback toFeedback(FeedbackCreateDto feedbackCreateDto);
+   public abstract FeedbackDto toFeedbackDto(Feedback feedback);
+
+   public List<FeedbackDto> toFeedbackList(List<Feedback> feedbackList, Image photoUser){
+
+        return feedbackList.stream().map(feedback ->{
+                    FeedbackDto feedbackDto = this.toFeedbackDto(feedback);
+                    if(photoUser != null)
+                        feedbackDto.setPhotoUser(imageMapper.toImageDto(photoUser));
+                    return feedbackDto;
+                }).toList();
     }
+
 }

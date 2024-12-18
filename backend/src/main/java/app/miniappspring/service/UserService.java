@@ -2,15 +2,18 @@ package app.miniappspring.service;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
+import app.miniappspring.dto.delivey.UpdateDeliveryDataUser;
 import app.miniappspring.dto.user.CreateUserDto;
 import app.miniappspring.dto.user.UpdateAvatarUserDto;
 import app.miniappspring.dto.user.UpdateDataUserDto;
 import app.miniappspring.dto.user.UpdateUserDto;
+import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import lombok.NonNull;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -37,4 +40,9 @@ public interface UserService {
 
     boolean isEmailAlreadyInUse(String email);
 
+    Set<Role> getListUserRole(String username);
+
+    UpdateDeliveryDataUser updateDataUserAboutDelivery(UpdateDeliveryDataUser updateDeliveryDataUser);
+
+    UpdateDeliveryDataUser getDataUserAboutDelivery();
 }
