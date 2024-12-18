@@ -47,7 +47,7 @@ public class AuthenticationController {
         return ResponseEntity.ok("Вы вышли из системы");
     }
 
-    @PostMapping("resetPassword")
+    @PostMapping("/password/reset")
     public ResponseEntity<JwtAuthenticationResponse> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto){
         return ResponseEntity.ok(authenticationService.resetPassword(resetPasswordDto));
     }

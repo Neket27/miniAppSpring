@@ -16,8 +16,8 @@ public class SupportController {
 
     private final SupportService supportService;
 
-    @PostMapping("/addHelpMessage")
-    public SupportMessageDto addMessageUserOboutHelp(@RequestBody CreateSupportMessageDto createSupportMessageDto){
-       return supportService.addMessageUserOboutHelp(createSupportMessageDto);
+    @PostMapping("/add/client/help-message")
+    public SupportMessageDto addMessageUserOboutHelp(@RequestBody CreateSupportMessageDto createSupportMessageDto) {
+        return supportService.addMessageUserOboutHelp(createSupportMessageDto);
     }
 }
