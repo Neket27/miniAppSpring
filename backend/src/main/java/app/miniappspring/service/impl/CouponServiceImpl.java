@@ -7,7 +7,7 @@ import app.miniappspring.entity.Coupon;
 import app.miniappspring.repository.CartRepo;
 import app.miniappspring.repository.CouponRepo;
 import app.miniappspring.service.CouponService;
-import app.miniappspring.utils.jwtToken.mapper.CouponMapper;
+import app.miniappspring.utils.mapper.CouponMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

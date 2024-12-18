@@ -15,12 +15,11 @@ import app.miniappspring.repository.DeliveryDataUserRepo;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.EncoderPassword;
-import app.miniappspring.utils.jwtToken.mapper.DeliveryMapper;
-import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
-import app.miniappspring.utils.jwtToken.mapper.UserMapper;
+import app.miniappspring.utils.mapper.DeliveryMapper;
+import app.miniappspring.utils.mapper.ImageMapper;
+import app.miniappspring.utils.mapper.UserMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,7 +52,7 @@ public class UserServiceImpl implements UserService {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 //                    return userRepo.findByUsername(username).orElseThrow(()->new ErrorException("Пользователь с логином "+username+" не найден"));
-                    return userRepo.findByUsername(username).orElse(null);
+                return userRepo.findByUsername(username).orElse(null);
 
             }
         };
@@ -75,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 .roles(Collections.singleton(Role.ROLE_USER))
                 .build();
 
-            return userMapper.toCreateUserDto(userRepo.save(user));
+        return userMapper.toCreateUserDto(userRepo.save(user));
     }
 
     @Override
@@ -97,7 +96,7 @@ public class UserServiceImpl implements UserService {
 //           user.setPassword(EncoderPassword.encode(UpdateDataUserDto.getPassword()));
 //           if(UpdateDataUserDto.getRoles()!=null)
 //           user.setRoles(UpdateDataUserDto.getRoles());
-           return userMapper.toUpdateDataUserDto(userRepo.save(user));
+        return userMapper.toUpdateDataUserDto(userRepo.save(user));
     }
 
     @Override
@@ -179,7 +178,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean remove(@NonNull String username) {
         try {
-           Long id= getByUsername(username).getId();
+            Long id= getByUsername(username).getId();
             userRepo.deleteById(id);
             return true;
         }catch (ErrorException e){
@@ -219,7 +218,7 @@ public class UserServiceImpl implements UserService {
             deliveryDataUser.setUser(getByUsername(username));
             deliveryDataUserRepo.save(deliveryDataUser);
         }
-            return updateDeliveryDataUser;
+        return updateDeliveryDataUser;
     }
 
     @Override
