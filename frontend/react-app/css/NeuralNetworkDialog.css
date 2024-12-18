@@ -1,0 +1,82 @@
+.neural-network-dialog {
+    background-color: #f8f9fa; /* Цвет фона */
+    border: 1px solid #ced4da; /* Граница для диалога */
+    /*border-radius: 10px;*/
+    padding: 20px;
+    position: relative;
+    width: 100%;
+    max-height: 40vh; /* Максимальная высота диалога */
+    overflow: hidden; /* Скрыть переполнение */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Убедитесь, что он выше других элементов */
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialog-header h2 {
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.messages {
+    max-height: calc(40vh - 120px); /* Ограничение высоты для прокрутки (120px - высота заголовка и формы) */
+    overflow-y: auto; /* Прокрутка по вертикали */
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.message.user {
+    background-color: #d1ecf1; /* Цвет сообщения пользователя */
+    align-self: flex-end; /* Выравнивание вправо */
+}
+
+.message.bot {
+    background-color: #c3e6cb; /* Цвет сообщения бота */
+    align-self: flex-start; /* Выравнивание влево */
+}
+
+.message-form {
+    display: flex;
+}
+
+input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/*.resize-handle {*/
+/*    height: 10px; !* Высота ручки *!*/
+/*    background-color: #007bff; !* Цвет ручки *!*/
+/*    cursor: ns-resize; !* Указатель для изменения размера *!*/
+/*    position: absolute;*/
+/*    bottom: 0;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*}*/

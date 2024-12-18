@@ -1,6 +1,6 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import '../../../init';
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {IDetailProduct} from "../../../model/product/IDetailProduct";
 import "./../../../../css/magnify.css";
 import "./../../../../css/ant107_shop.css";
@@ -15,12 +15,15 @@ import {ContextService} from "../../../main";
 import {ContextCountProductInBag} from "../../navbar";
 import {IProductInBag} from "../../../model/bag/IProductInBag";
 import ImageProduct from "./imageProduct";
-import CartProduct from "./cartProduct";
 import CartPreviewProduct from "./cartProduct";
+import "../../../../css/Detail.css"
+import {ICardProduct} from "../../../model/product/ICardProduct";
+import product from "../../home/product";
 
 const URL = import.meta.env.VITE_URL;
 
-const DetailProduct = (props:any) => {
+const DetailProduct = () => {
+    const navigate = useNavigate();
     const contextService = useContext(ContextService);
     const contextCountProductInCart = useContext(ContextCountProductInBag);
     const [accessToken,setAccessToken]= useState(localStorage.getItem("accessToken"));
@@ -33,33 +36,42 @@ const DetailProduct = (props:any) => {
     const [showBlockReview, setShowBlockReview] = useState<boolean>(false);
     const [productFromCart, setProductFromCart] = useState<ProductCartResponse | null>(null);
     const [titleCart, setTitleCart] = useState<string>('');
-    const [relatedProducts, setRelatedProducts] = useState<CardProductResponse>();
+    const [relatedProducts, setRelatedProducts] = useState<Array<ICardProduct>>();
     const [checkAddProduct, setCheckAddProduct] = useState<boolean>(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [note,setNote] = useState<string>('');
+    const [currentImageBase64, setCurrentImageBase64] = useState<string | null>(null);
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
-        console.log("полученно = "+val.body)
         setCountProducts(parseInt(val.body))
         contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
     }
 
     const sendValue=(count:number)=>{
         contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,count,accessToken);
-        // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
+    }
+
+    const getProductsByCategory= async (category:string) => {
+       if(category && category!="") {
+           const products: ICardProduct[] = await contextService.productService.getProductsByCategory(category);
+           setRelatedProducts(products);
+       }
     }
 
     async function getProductDetail(){
         if(typeId!=undefined) {
-            const response = await contextService.productService.getProductDetail(parseInt(typeId, 10))
+            const response = await contextService.productService.getProductDetail(parseInt(typeId, 10));
+            console.log("Продукт= "+response.brand);
             setProductDetail(response);
         }else {
             console.log("ID продукта в getProductDetail == undefined")
         }
     }
 
-    useEffect(() => { // useEffect выполняется при первой загрузке или перезагрузки страницы
+    useEffect(() => {
         getProductDetail();
 
-    }, []);
+    }, [location]);
 
     useEffect(() => {
             contextService.productService.connect(
@@ -70,8 +82,8 @@ const DetailProduct = (props:any) => {
                 accessToken: accessToken
             }));
             contextService.productService.sendRequestOnGetNumberOfPiecesOfGoods(productDetail?.id,accessToken);
-            // contextService.productService.sendRequestOnGetCountProductInBag(accessToken);
 
+            getProductsByCategory(productDetail?.category);
     }, [productDetail,location]);
 
 
@@ -91,6 +103,7 @@ const DetailProduct = (props:any) => {
             }
 
         };
+
     }, [productDetail]);
 
 
@@ -124,7 +137,6 @@ const DetailProduct = (props:any) => {
     const handleClickPlus = () => {
         if(!checkAddProduct && countProducts==0){
             let countStr = localStorage.getItem("countProductInBag");
-            console.log("countStr= "+countStr)
             if (countStr != null) {
                 const count = parseInt(countStr) + 1;
                 localStorage.setItem("countProductInBag", String(count));
@@ -138,13 +150,27 @@ const DetailProduct = (props:any) => {
         sendValue(count);
     };
 
-    const imagesMain =(<ImageProduct base64={productDetail?.imageDtoList.at(0)?.base64}/>);
+    // const imagesMain =(<ImageProduct base64={productDetail?.imageDtoList.at(0)?.base64}/>);
 
-    const images =productDetail?.imageDtoList.map((image,index) =>
-        <ImageProduct key={index} base64={image.base64}/>
+    const imagesMain = (
+        <ImageProduct base64={currentImageBase64 || productDetail?.imageDtoList.at(0)?.base64} />
     );
 
-    const relatedProductListJsx = relatedProducts?.cardsProduct.map((product,) =>{
+    // const images =productDetail?.imageDtoList.map((image,index) =>
+    //     <ImageProduct key={index} base64={image.base64}/>
+    // );
+
+    const images = productDetail?.imageDtoList.map((image, index) => (
+        <div
+            key={index}
+            onClick={() => setCurrentImageBase64(image.base64)}
+            style={{ cursor: 'pointer' }}
+        >
+            <ImageProduct base64={image.base64} />
+        </div>
+    ));
+
+    const relatedProductListJsx = relatedProducts?.filter(product=>product.id!=productDetail.id).map((product,) =>{
         return <CartPreviewProduct key={product.id} product={product}/>
     });
 
@@ -161,6 +187,25 @@ const DetailProduct = (props:any) => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
+            {productDetail ?
+                <div className="button-container">
+                    <button
+                        onClick={() => {
+                            navigate('/product/update', {state: {product: productDetail}});
+                        }}>
+                        Изменить данные
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            navigate('/product/delete', {state: {productId: productDetail.id}});
+                        }}>
+                        Удалить продукт
+                    </button>
+                </div>
+                : ''
+            }
+
             <div className="container">
                 <main>
                     <div className="row">
@@ -182,7 +227,7 @@ const DetailProduct = (props:any) => {
                                     </div>
 
                                 </div>
-                                <ul className="nav nav-tabs d-flex align-content-between">{images}</ul>
+                                <ul className="nav nav-tabs1 d-flex1 align-content-between">{images}</ul>
                             </div>
                         </div>
                         <div className="col-lg-6">
@@ -191,7 +236,7 @@ const DetailProduct = (props:any) => {
                                 <h6>Цена: <span>{productDetail?.cost}</span></h6>
                                 <p>{productDetail?.detail}</p>
                                 <h6>Бренд: <span>{productDetail?.brand}</span></h6>
-                                <h6>Артикул: <span>{productDetail?.article}</span></h6>
+                                {/*<h6>Артикул: <span>{productDetail?.article}</span></h6>*/}
                                 <h6>Наличие: <span>{productDetail?.stock}</span></h6>
                                 <h6>Участвует в акции: <span>{productDetail?.available ? "Да" : "Нет"}</span></h6>
 
@@ -201,7 +246,8 @@ const DetailProduct = (props:any) => {
                                             handleClickMinus()
                                         }}></button>
                                         <input min="1" max="50" name="quantity" value={countProducts}
-                                               type="number"  onChange={()=>{}} />
+                                               type="number" onChange={() => {
+                                        }}/>
                                         <button className="ant107_shop-plus" onClick={() => {
                                             handleClickPlus()
                                         }}></button>
@@ -211,10 +257,10 @@ const DetailProduct = (props:any) => {
                                             <div onClick={() => {
                                                 // {contextService.productService.sendNumberOfPiecesOfGoods(productDetail?.id,1,accessToken);}}
                                                 let countStr = localStorage.getItem("countProductInBag");
-                                                console.log("countStr= "+countStr);
+                                                console.log("countStr= " + countStr);
                                                 if (countStr != null) {
-                                                    const count = parseInt(countStr) +1;
-                                                    localStorage.setItem("countProductInBag",String(count));
+                                                    const count = parseInt(countStr) + 1;
+                                                    localStorage.setItem("countProductInBag", String(count));
                                                     contextCountProductInCart.setCountProductInBag(count);
                                                     setCountProducts(1);
                                                     setCheckAddProduct(true);

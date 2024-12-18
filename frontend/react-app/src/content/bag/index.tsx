@@ -1,125 +1,135 @@
-import {useContext, useEffect, useState} from "react";
-import {ProductCartResponse} from "../../model/response/product/ProductCartResponse";
-import {Link} from "react-router-dom";
-import {IProductBag} from "../../model/product/IProductBag";
-import {ContextService} from "../../main";
-import bagService from "../../service/bag/BagService";
-import {ContextCountProductInBag} from "../navbar";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { ProductCartResponse } from "../../model/response/product/ProductCartResponse";
+import { Link } from "react-router-dom";
+import { IProductBag } from "../../model/product/IProductBag";
+import {ContextService, locationDetector} from "../../main";
 import CartProductInBag from "./CartProductInBag";
+import { ICoupon } from "../../model/coupon/ICoupon";
+import { ContextCountProductInBag } from "../navbar";
+import OpenAI from "openai";
 
-const Bag =()=>{
+const Bag = () => {
     const contextService = useContext(ContextService);
     const contextCountProductInBag = useContext(ContextCountProductInBag);
-    const accessToken:string|null =localStorage.getItem("accessToken");
-    const [products, setProducts] = useState<Array<IProductBag>>()
+    const accessToken = localStorage.getItem("accessToken");
+
+    const [products, setProducts] = useState<IProductBag[]>([]);
     const [inputValues, setInputValues] = useState<Record<number, number>>({});
+    const [subtotal, setSubtotal] = useState(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [amountDelivery, setAmountDelivery] = useState(0);
+    const [amountDiscount, setAmountDiscount] = useState(0);
+    const [amountCoupon, setAmountCoupon] = useState(0);
+    const [couponTitle, setCouponTitle] = useState<string>('');
+    const [responseCheckCoupon, setResponseCheckCoupon] = useState<ICoupon | null>(null);
+    const [textForInvalidCoupon, setTextForInvalidCoupon] = useState<string>('');
 
-    async function removeProductFromCart(idProduct:number, accessToken:string) {
-        const response:ProductCartResponse = await contextService.bagService.removeProductFromCart(idProduct, accessToken)
-        setProducts(response.productsInCard);
 
-        const count = localStorage.getItem("countProductInBag");
-        if(count!=null)
-            contextCountProductInBag.setCountProductInBag(parseInt(count)-1);
+    const getDataPay = async() => {
+        const payData = await contextService.payService.getDataPay(localStorage.getItem("city"));
+        setSubtotal(payData.amountPay);
+        setAmountDelivery(payData.amountDeliver);
+        setAmountDiscount(payData.amountDiscount);
+        console.log(payData.amountDiscount);
+        setAmountCoupon(payData.amountCoupon);
+        setTotalPrice(payData.finalAmount);
     }
 
-    async function getProductsFromCart(accessToken:string){
-        try {
-            const result:ProductCartResponse = await contextService.bagService.getProductsFromCart(accessToken);
-            setProducts(result.productsInCard);
-            contextService.bagService.sendRequestOnGetCountProductInBag(accessToken);
-        } catch (error) {
-            console.error("Error:", error);
+
+    const getProductsFromCart = useCallback(async () => {
+        if (accessToken) {
+            try {
+                const result: ProductCartResponse = await contextService.bagService.getProductsFromCart(accessToken);
+                setProducts(result.productsInCard);
+                //contextService.bagService.sendRequestOnGetCountProductInBag(accessToken); закоментил
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
         }
-    }
+    }, [accessToken, contextService.bagService]);
 
-    const sendCountProductInCart = async (idProduct: number, count: number, accessToken: string) => {
-        if (!isNaN(count)) {  // Проверка на то, что count является числом
-            const response = await contextService.bagService.sendCountProductInCart(idProduct, count, accessToken);
-        } else {
-            console.error("Ошибка: Невалидное значение countProductsInBag");
-        }
-    };
-
-    useEffect(()=>{
-        if (accessToken!=null)
-            getProductsFromCart(accessToken);
-
-
-    },[]);
-
-    const handleInputChange = (id:number, value:string) => {
-        setInputValues(prevState => ({ ...prevState, [id]: parseInt(value) }));
-    };
-
-    const handleIncrement = (id:number) => {
-        setInputValues(prevState => ({
-            ...prevState,
-            [id]: (prevState[id] || 0) + 1,
-        }));
-        const updatedCount = inputValues[id] + 1;
-        if(accessToken!=null) {
-            sendCountProductInCart(id, updatedCount, accessToken);
-            updateTotalPrice(id, updatedCount);
-        }else
-            console.log("Токен для handleIncrement = "+accessToken);
-    };
-
-    const handleDecrement = (id:number) => {
-        setInputValues(prevState => ({
-            ...prevState,
-            [id]: Math.max((prevState[id] || 0) - 1, 0),
-        }));
-        const updatedCount = Math.max(inputValues[id] - 1, 0);
-        if(accessToken!=null) {
-        sendCountProductInCart(id, updatedCount,accessToken);
-        updateTotalPrice(id, updatedCount);
-        }else
-            console.log("Токен для handleIncrement = "+accessToken);
-    };
-
-    const updateTotalPrice = (id: number, count: number) => {
-        const product:IProductBag|undefined = products?.find(product => product.idProduct === id);
-        if (product) {
-            const productIndex:number|undefined = products?.indexOf(product);
-            // @ts-ignore
-            const updatedProducts:Array<IProductBag> = [...products];
-            if(productIndex!=undefined)
-                updatedProducts[productIndex] = { ...product, count };
-            setProducts(updatedProducts);
-
-            const totalPrice = updatedProducts.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
-            setTotalPrice(totalPrice);
-        }
-    };
 
 
     useEffect(() => {
-        // products - это состояние, содержащее массив продуктов
-        products?.forEach((product) => {
-            setInputValues((prevInputValues) => ({
-                ...prevInputValues,
-                [product.idProduct]: product.count
-            }));
-        });
+        getProductsFromCart();
+            getDataPay()
+    }, [getProductsFromCart]);
 
+    const updateTotalPrice = useCallback(() => {
+        const newTotalPrice = products.reduce((acc, product) => acc + product.cost * product.count, 0);
+        const finalPrice = responseCheckCoupon ? newTotalPrice - responseCheckCoupon.amount : newTotalPrice;
+        setTotalPrice(Math.max(finalPrice, 0)); // Не допускаем отрицательных значений
+    }, [products, responseCheckCoupon]);
 
-        const totalPrice:number|undefined = products?.reduce((acc, curr) => acc + (curr.cost * curr.count), 0);
-        if(totalPrice!=undefined)
-            setTotalPrice(totalPrice);
-    }, [products]);
+    useEffect(() => {
+        updateTotalPrice();
+    }, [products, updateTotalPrice]);
 
+    const handleProductCountChange = async (id: number, newCount: number) => {
+        const updatedProducts = products.map((product) =>
+            product.idProduct === id ? { ...product, count: newCount } : product
+        );
+        setProducts(updatedProducts);
 
-    const productsJsx = products?.map((product, index) =>
-       <CartProductInBag key={index} product={product} accessToken={accessToken} removeProductFromCart={removeProductFromCart} inputValues={inputValues} handleInputChange={handleInputChange} handleIncrement={handleIncrement} handleDecrement={handleDecrement}></CartProductInBag>
-    );
+        if (accessToken) {
+            await contextService.bagService.sendCountProductInCart(id, newCount, accessToken);
+        }
+    };
+
+    const handleIncrement = (id: number) => {
+        const newCount = (inputValues[id] || 0) + 1;
+        setInputValues((prevState) => ({ ...prevState, [id]: newCount }));
+        handleProductCountChange(id, newCount);
+    };
+
+    const handleDecrement = (id: number) => {
+        const newCount = Math.max((inputValues[id] || 0) - 1, 0);
+        setInputValues((prevState) => ({ ...prevState, [id]: newCount }));
+        handleProductCountChange(id, newCount);
+    };
+
+    const checkCoupon = async (coupon: string) => {
+        const response = await contextService.couponService.checkCoupon(coupon);
+
+        if (response) {
+            if (!responseCheckCoupon || response.amount > responseCheckCoupon.amount) {
+                setResponseCheckCoupon(response);
+                setAmountCoupon(response.amount);
+            }
+            setTextForInvalidCoupon('Купон применён');
+        } else {
+            setTextForInvalidCoupon('Купон не найден');
+        }
+
+        setTimeout(() => setTextForInvalidCoupon(''), 2000);
+    };
+
+    const removeProductFromCart = async (idProduct: number) => {
+        if (accessToken) {
+            const response: ProductCartResponse = await contextService.bagService.removeProductFromCart(idProduct, accessToken);
+            setProducts(response.productsInCard);
+            contextCountProductInBag.setCountProductInBag((prev) => prev - 1);
+        }
+    };
+
+    const productsJsx = products.map((product) => {
+        inputValues[product.idProduct] = product.count;
+        return <CartProductInBag
+            key={product.idProduct}
+            product={product}
+            accessToken={accessToken}
+            removeProductFromCart={removeProductFromCart}
+            inputValues={inputValues}
+            handleInputChange={(id, value) => setInputValues((prev) => ({...prev, [id]: parseInt(value)}))}
+            handleIncrement={handleIncrement}
+            handleDecrement={handleDecrement}
+        />
+    });
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
             <div className="container">
                 <div className="row">
-
                     <main className="col">
                         <div className="ant107_shop-cart-total-product mb-5">
                             <div className="ant107_shop-cart-title d-none d-md-flex">
@@ -130,70 +140,87 @@ const Bag =()=>{
                             </div>
                             <div className="ant107_shop-cart-items pb-3">
                                 {productsJsx}
-
-                                </div>
-
-                                <div className="row text-center text-lg-left">
-                                    <div className="col-lg-5">
-                                        <div className="ant107_shop-discount-wrapper">
-                                            <form action="#" className="d-lg-block">
-                                                <input className="ant107_shop-br-10" type="text" placeholder="Купон"/>
-                                                <button className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10"
-                                                    type="submit">Применить купон
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-7">
-                                        <div className="ant107_shop-update-shopping text-lg-right">
-                                            <a href="#"
-                                               className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-style-two ant107_shop-br-10 mr-3">Обновить
-                                                корзину</a>
-                                            <Link to="/" className="ant107_shop-theme-btn ant107_shop-br-10">Вернуться в магазин</Link>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
-                            <div className="ant107_shop-cart-total-price">
-                                <div className="ant107_shop-cart-title">
-                                    <h3>Итого</h3>
+                            <div className="row text-center text-lg-left">
+                                <div className="col-lg-5">
+                                    <div className="ant107_shop-discount-wrapper">
+                                        <form>
+                                            <p>{textForInvalidCoupon}</p>
+                                            <input
+                                                className="ant107_shop-br-10"
+                                                type="text"
+                                                placeholder="Купон"
+                                                value={couponTitle}
+                                                onChange={(e) => setCouponTitle(e.target.value)}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="ant107_shop-theme-btn ant107_shop-no-shadow ant107_shop-bg-black ant107_shop-br-10"
+                                                onClick={() => checkCoupon(couponTitle)}
+                                            >
+                                                Применить купон
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div className="row">
-                                    <div className="col-xl-5 col-lg-6">
-                                        <div className="ant107_shop-total-item-wrap">
-                                            <div className="ant107_shop-total-item ant107_shop-sub-total">
-                                                <span className="ant107_shop-title">Подытог</span>
-                                                <span className="ant107_shop-price">{totalPrice}</span>
-                                            </div>
-                                            <div className="ant107_shop-total-item ant107_shop-shipping">
-                                                <span className="ant107_shop-title">Доставка</span>
-                                                <span className="ant107_shop-price">100</span>
-                                            </div>
+                                <div className="col-lg-7 text-lg-right">
+                                    <Link to="/" className="ant107_shop-theme-btn ant107_shop-br-10">
+                                        Вернуться в магазин
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="ant107_shop-cart-total-price">
+                            <div className="ant107_shop-cart-title">
+                                <h3>Итого</h3>
+                            </div>
+                            <div className="row">
+                                <div className="col-xl-5 col-lg-6">
+                                    <div className="ant107_shop-total-item-wrap">
+                                        <div className="ant107_shop-total-item ant107_shop-sub-total">
+                                            <span className="ant107_shop-title">Подытог</span>
+                                            <span className="ant107_shop-price">{subtotal}</span>
+                                        </div>
+                                        <div className="ant107_shop-total-item ant107_shop-shipping">
+                                            <span className="ant107_shop-title">Доставка</span>
+                                            <span className="ant107_shop-price">{amountDelivery==0?'Бесплатно':amountDelivery}</span>
+                                        </div>
+                                            {amountDiscount != 0 ?
+                                                <div className="ant107_shop-total-item ant107_shop-discount">
+                                                    <span className="ant107_shop-title">Скидка</span>
+                                                    <span className="ant107_shop-price">{amountDiscount}</span>
+                                                </div>:''
+                                            }
+
+                                        {responseCheckCoupon != null || amountCoupon>0 ?
                                             <div className="ant107_shop-total-item ant107_shop-discount">
-                                                <span className="ant107_shop-title">Скидка</span>
-                                                <span className="ant107_shop-price">20</span>
-                                            </div>
-                                            <div className="ant107_shop-total-item ant107_shop-total">
-                                                <span className="ant107_shop-title mb-0">Итого</span>
-                                                <span className="ant107_shop-price mb-0">{totalPrice}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-xl-7 col-lg-6 text-right align-self-end">
-                                        <div className="ant107_shop-proceed-btn mt-4">
-                                            <a href="checkout.html" className="ant107_shop-theme-btn ant107_shop-br-10">К
-                                                оплате</a>
+                                                <span className="ant107_shop-title">Купон</span>
+                                                <span
+                                                    className="ant107_shop-price">{amountCoupon}</span>
+                                            </div>:''
+                                        }
+                                        <div className="ant107_shop-total-item ant107_shop-total">
+                                            <span className="ant107_shop-title">Итого</span>
+                                            <span className="ant107_shop-price">{totalPrice-amountDiscount+amountDelivery-amountCoupon}</span>
                                         </div>
                                     </div>
                                 </div>
+                                <div className="col-xl-7 col-lg-6 text-right">
+                                    <div className="ant107_shop-proceed-btn mt-4">
+                                        <Link to="/pay" className="ant107_shop-theme-btn ant107_shop-br-10">
+                                        К оплате
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                        </main>
-
-                    </div>
+                        </div>
+                    </main>
                 </div>
             </div>
+        </div>
     );
-}
+};
 
 export default Bag;

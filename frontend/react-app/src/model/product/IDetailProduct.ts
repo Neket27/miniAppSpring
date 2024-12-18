@@ -4,12 +4,12 @@ import {IImage} from "./IImage";
 
 export interface IDetailProduct{
     id:number,
-    categoryProduct:ICategory,
+    category:string,
     name:string,
     cost:number,
     description:string,
     brand:string,
-    article:string
+    note:string
     available:boolean,
     stock:number
     characteristicProductDto:ICharacteristic

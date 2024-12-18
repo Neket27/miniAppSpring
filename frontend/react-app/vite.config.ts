@@ -30,11 +30,17 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
       },
+      '/get-location': {
+        target: 'https://ipapi.co',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/get-location/, '/json'),
+      },
     },
   },
   plugins: [
     react(),
     windicss(),
+
   ],
 
 })

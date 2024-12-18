@@ -83,7 +83,7 @@ const ChangeDataUser = () => {
                                 <input className="input100" onChange={e => setFirstname(e.target.value)} value={firstname} type="text" placeholder="Имя" required={false} />
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-envelope" aria-hidden="true"></i>
+                                    {/*<i className="fa fa-envelope" aria-hidden="true"></i>*/}
                                 </span>
                             </div>
 
@@ -91,7 +91,7 @@ const ChangeDataUser = () => {
                                 <input className="input100" onChange={e => setLastname(e.target.value)} value={lastname} type="text" placeholder="Фамилия" required={false} />
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
+                                    {/*<i className="fa fa-lock" aria-hidden="true"></i>*/}
                                 </span>
                             </div>
 
@@ -99,7 +99,7 @@ const ChangeDataUser = () => {
                                 <input className="input100" onChange={e => setEmail(e.target.value)} value={email} type="text" placeholder="Email" required={false} />
                                 <span className="focus-input100"></span>
                                 <span className="symbol-input100">
-                                    <i className="fa fa-lock" aria-hidden="true"></i>
+                                    {/*<i className="fa fa-lock" aria-hidden="true"></i>*/}
                                 </span>
                             </div>
                         </form>

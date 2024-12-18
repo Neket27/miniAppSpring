@@ -1,0 +1,163 @@
+/* Основной контейнер для страницы поддержки */
+.support-container {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Псевдоэлемент для градиентной рамки */
+.support-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(to bottom, #e3f2fd, #f5f5f5); /* Градиент от светло-синего к светло-серому */
+    border-radius: 25px;
+    z-index: -1;
+}
+
+/* Заголовок */
+.support-title {
+    font-family: "Poppins-Bold";
+    font-size: 28px;
+    color: #2a2a2a;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Описание */
+.support-description {
+    font-family: "Poppins-Regular";
+    font-size: 16px;
+    color: #666666;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Форма */
+.support-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Поля ввода */
+.support-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #1089ff;
+    border-radius: 25px;
+    font-size: 16px;
+    color: #2a2a2a;
+    transition: border-color 0.3s ease;
+}
+
+.support-input:focus {
+    border-color: #0056b3;
+}
+
+/* Текстовое поле для сообщения */
+.support-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #1089ff;
+    border-radius: 15px;
+    font-size: 16px;
+    color: #2a2a2a;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+.support-textarea:focus {
+    border-color: #0056b3;
+}
+
+/* Кнопка отправки */
+.support-button {
+    font-family: "Montserrat-Bold";
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #1089ff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.support-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.support-button {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    background: linear-gradient(to right, #1089ff, #57b846); /* Градиент от синего к зелёно-голубому */
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.support-button:hover {
+    background: linear-gradient(to right, #57b846, #1089ff); /* Изменение направления градиента */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25); /* Увеличенная тень */
+    transform: translateY(-3px); /* Лёгкий подъем при наведении */
+}
+
+.support-button:active {
+    transform: translateY(0); /* Кнопка возвращается на место при клике */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили для контейнера загрузки файла */
+.support-file-upload {
+    display: inline-block;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px; /* Уменьшенный размер шрифта */
+    color: #ffffff;
+    background: linear-gradient(to right, #1089ff, #b97afd); /* Градиент от синего к фиолетовому */
+    width: 33.33%; /* Устанавливаем ширину 1/3 от контейнера */
+    padding: 8px 16px; /* Меньшие внутренние отступы */
+    border-radius: 8px; /* Менее скругленные углы */
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Уменьшенная тень */
+    text-align: left; /* Выровнено по левому краю */
+}
+
+/* Эффект при наведении */
+.support-file-upload:hover {
+    background: linear-gradient(to right, #b97afd, #1089ff); /* Меняем направление градиента */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2); /* Легкое увеличение тени */
+}
+
+/* Убираем стандартный вид инпута файла */
+.support-file-input {
+    display: none; /* Скрываем input */
+}
+
+.support-image-item {
+    display: inline-block;
+    width: 10vw; /* Занимает 10% ширины экрана */
+    max-width: 100px; /* Максимальная ширина для удобства просмотра */
+    height: auto; /* Сохраняет соотношение сторон */
+    margin: 5px; /* Отступы вокруг изображения */
+    border-radius: 8px; /* Небольшое скругление углов */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+    overflow: hidden; /* Обрезает содержимое по границе */
+}

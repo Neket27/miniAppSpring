@@ -7,6 +7,10 @@ import {ProductCartResponse} from "../../model/response/product/ProductCartRespo
 import {IFeedback} from "../../model/rating/IFeedback";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import {IAddProduct} from "../../model/product/IAddProduct";
+import {ICategory} from "../../model/product/ICategory";
+import api from "../../http";
+import category from "../../content/category";
 
 class ProductService {
     private _stompClient: Client = new Client();
@@ -27,12 +31,15 @@ class ProductService {
         }
     }
 
+    async getDiscountedProducts(){
+        return await ProductController.getDiscountedProducts();
+    }
+
 
     // @ts-ignore
-     async getProductByCategory(category: string):Promise<CardProductResponse> {
+     async getProductsByCategory(category: string):Promise<ICardProduct[]> {
         try {
-            const response:CardProductResponse = await ProductController.getProductsByCategory({ categoryProduct: category, subcategory: 'unsupported', stringValueCategory: 'mmm' });
-            return response
+            return await ProductController.getProductsByCategory({categoryProduct:category});
         } catch (error) {
             console.error("Error fetching related products:", error);
         }
@@ -67,9 +74,6 @@ class ProductService {
         } else {
             console.error("Ошибка: Невалидное значение countProductsInBag");
         }
-    };
-     async addRating(feedback:IFeedback):Promise<void>{
-        await ProductController.addRating(feedback);
     };
 
    public connect(callback:any,bodyTopic_1:string|null,bodyTopic_2:string) {
@@ -137,6 +141,19 @@ class ProductService {
                 console.log("Id продукта в sendRequestOnGetNumberOfPiecesOfGoods = "+idProduct);
         else
             console.log("Access token в sendRequestOnGetNumberOfPiecesOfGoods = "+accessToken);
+    }
+
+    public async addProduct(product:IAddProduct){
+       await ProductController.addProduct(product);
+    }
+
+
+    public async updateProduct(product:IAddProduct){
+        await ProductController.updateProduct(product);
+    }
+
+    public async deleteProduct(productId:number){
+        await ProductController.deleteProduct(productId);
     }
 }
 
