@@ -12,8 +12,8 @@ import java.util.List;
 @Setter
 public class UpdateProductArgument {
     private Long id;
-    private Category category;
-    private String subcategory;
+    private String category;
+//    private String subcategory;
     private String name;
     private float cost;
     private float rating;

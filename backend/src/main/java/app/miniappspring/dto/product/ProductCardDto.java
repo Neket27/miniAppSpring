@@ -18,5 +18,6 @@ public class ProductCardDto {
     private String name;
     private float cost;
     private float rating;
+    private float discount;
     private List<ImageDto>imageDtoList;
 }

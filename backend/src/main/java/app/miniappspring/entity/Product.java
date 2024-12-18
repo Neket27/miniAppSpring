@@ -22,17 +22,20 @@ public class Product {
     private float rating;
     private String description;
     private String brand;
-    private String article;
+    private String note;
     private boolean available;
     private int stock;
     private String detail;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_product_id")
-    private CategoryProduct categoryProduct;
-    private String subcategory;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "category_product_id")
+//    private CategoryProduct categoryProduct;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CategoryItem categoryItem;
+//    private String subcategory;
 
-    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
+//    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Image> imageList;
 
     @OneToOne(cascade = CascadeType.ALL)

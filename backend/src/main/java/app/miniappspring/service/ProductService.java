@@ -7,10 +7,8 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
-import app.miniappspring.dto.product.category.CategoryProductDto;
-import app.miniappspring.entity.Feedback;
+import app.miniappspring.dto.product.category.SearchProductDto;
 import app.miniappspring.entity.Product;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,11 +28,11 @@ public interface ProductService {
 
     void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException;
 
-    NumberOfProductsInThisCategory getCategories();
+
 
     List<ProductCardDto> getProductsByCategory(CategoryDto category);
 
-    List<CategoryProductDto>searchProductByCategory(String category);
+    List<SearchProductDto> searchProductByName(String searchText);
 
     UpdateProductDto updateProduct(UpdateProductArgument updateProductArgument);
 

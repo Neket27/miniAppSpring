@@ -30,22 +30,21 @@ public class User implements UserDetails {
     @NotBlank(message = "password user = null")
     private String password;
     private String email;
-//    @ElementCollection(targetClass = Image.class, fetch = FetchType.EAGER)
-//    @CollectionTable(name="user_avatar", joinColumns = @JoinColumn(name = "user_id"))
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY) // при удалении пользователя удалится и фотография (CascadeType.ALL)
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "avatar")
     private Image avatar;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name="user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "user_id", nullable = false)
     @Column(name = "cart_product_list", nullable = false)
     private List<BagProduct> cartProductList;
+
+    @OneToOne
+    private PayData payData;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

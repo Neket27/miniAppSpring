@@ -12,6 +12,8 @@ import app.miniappspring.service.UserService;
 import app.miniappspring.utils.jwtToken.mapper.FeedbackMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Collections;
 import java.util.Date;
@@ -24,13 +26,13 @@ public class FeedbackServiceImp implements FeedbackService {
     private final FeedbackRepo feedbackRepo;
     private final FeedbackMapper feedbackMapper;
     private final ProductService productService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
     private boolean getCountFeedback=false;
     @Override
     public FeedbackDto addFeedback(FeedbackCreateDto feedbackCreateDto) {
         Feedback feedback = feedbackMapper.toFeedback(feedbackCreateDto);
-        feedback.setUser(userService.getByUsername(jwtAuthenticationFilter.getUsername()));
+        String username = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", RequestAttributes.SCOPE_REQUEST);
+        feedback.setUser(userService.getByUsername(username));
         feedback.setDate(new Date());
         feedback.setProduct(productService.findProduct(feedbackCreateDto.getIdProduct()));
 
@@ -49,7 +51,8 @@ public class FeedbackServiceImp implements FeedbackService {
 
     @Override
     public List<FeedbackDto> getFeedbackList(Long idProduct) {
-        Image photoUser = userService.getByUsername(jwtAuthenticationFilter.getUsername()).getAvatar();
+        String username = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", RequestAttributes.SCOPE_REQUEST);
+        Image photoUser = userService.getByUsername(username).getAvatar();
         List<FeedbackDto>feedbackDtoList=feedbackMapper.toFeedbackList(feedbackRepo.getAllByProductId(idProduct).orElse(Collections.emptyList()),photoUser);
         return feedbackDtoList;
     }

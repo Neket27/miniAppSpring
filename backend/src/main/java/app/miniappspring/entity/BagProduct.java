@@ -20,4 +20,13 @@ public class BagProduct {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @ManyToOne
+    private Coupon coupon;
+
+    public BagProduct(Long idProduct, int count, boolean b, User user) {
+        this.idProduct = idProduct;
+        this.count = count;
+        this.showInCart = b;
+        this.user = user;
+    }
 }

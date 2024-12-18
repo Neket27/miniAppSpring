@@ -14,6 +14,7 @@ public interface CartRepo extends JpaRepository<BagProduct,Long> {
     Optional<BagProduct> getByUser_UsernameAndIdProduct(String username, Long idProduct);
     //int countCartProductByUser_UsernameAndAndIdProduct(String username, Long idProduct);
     Optional<BagProduct> getCartProductByUser_UsernameAndAndIdProduct(String username, Long idProduct);
+    Optional<List<BagProduct>> getBagProductByUser_Username(String username);
     Optional<Integer> countCartProductByUser_Username(String username);
 
     void removeByUser_UsernameAndIdProduct(String username, Long idProduct);

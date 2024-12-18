@@ -8,6 +8,7 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Product;
+import app.miniappspring.repository.ImageProductRepo;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,11 +44,9 @@ public abstract class ProductMapper {
                 .characteristicProductDto(characteristicMapper.toCharacteristicProductDto(product.getCharacteristicProduct()))
                 .brand(product.getBrand())
                 .stock(product.getStock())
-                .article(product.getArticle())
+                .note(product.getNote())
                 .description(product.getDescription())
                 .available(product.isAvailable())
-                //  .subcategory(product.getSubcategory())
-                .article(product.getArticle())
                 .imageDtoList(imageMapper.toImageDtoList(product.getImageList()))
                 .build();
     }
@@ -67,11 +66,11 @@ public abstract class ProductMapper {
         product.setCharacteristicProduct(characteristicProduct);
         product.setBrand(updateProductDto.getBrand());
         product.setStock(updateProductDto.getStock());
-        product.setArticle(updateProductDto.getArticle());
+        product.setNote(updateProductDto.getName());
         product.setDescription(updateProductDto.getDescription());
         product.setAvailable(updateProductDto.isAvailable());
-        product.setArticle(updateProductDto.getArticle());
-        product.setImageList(imageMapper.toImageListUpdate(updateProductDto.getUpdateImageDtoList()));
+        product.getImageList().clear();
+        product.getImageList().addAll(imageMapper.toImageListUpdate(updateProductDto.getUpdateImageDtoList()));
         return product;
     }
 
@@ -81,7 +80,7 @@ CharacteristicProductDto characteristicProductDto = characteristicMapper.toChara
         return UpdateProductDto.builder()
                 .id(updateProductArgument.getId())
                 .category(updateProductArgument.getCategory())
-                .subcategory(updateProductArgument.getSubcategory())
+//                .subcategory(updateProductArgument.getSubcategory())
                 .name(updateProductArgument.getName())
                 .cost(updateProductArgument.getCost())
                 .detail(updateProductArgument.getDetail())

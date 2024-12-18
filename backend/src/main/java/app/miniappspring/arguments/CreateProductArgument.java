@@ -13,14 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreateProductArgument {
-    private Category category;
-    private String subcategory;
+    private String category;
     private String name;
     private float cost;
     private float rating;
     private String description;
     private String brand;
-    private String article;
+    private String note;
     private boolean available;
     private int stock;
     private String detail;

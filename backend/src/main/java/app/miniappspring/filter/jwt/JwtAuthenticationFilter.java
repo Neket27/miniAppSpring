@@ -31,8 +31,8 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    @Value("${jwt.secret.prefix}") String prefix;
-    private String username;
+    @Value("${jwt.secret.prefix}")
+    private String prefix;
     private final UserService userService;
 
     @Override
@@ -49,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwtToken = authHeader.substring(7);
         username = jwtService.getUserNameFromAccessToken(jwtToken);
-        this.username=username;
         RequestContextHolder.currentRequestAttributes().setAttribute("username", username, RequestAttributes.SCOPE_REQUEST);
         if ((!StringUtils.isNullOrEmpty(username)) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);

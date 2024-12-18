@@ -4,7 +4,6 @@ import app.miniappspring.entity.TokenJWT;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.TokenRepo;
 import app.miniappspring.service.JWTService;
-import app.miniappspring.service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -13,7 +12,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -30,25 +28,14 @@ import java.util.function.Function;
 @Getter
 public class JWTServiceImpl implements JWTService {
 
-    private  TokenRepo tokenRepo;
-    private  UserService userService;
-
+    private  final TokenRepo tokenRepo;
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
-    public JWTServiceImpl(@Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+    public JWTServiceImpl(TokenRepo tokenRepo, @Value("${jwt.secret.access}") String jwtAccessSecret, @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
+        this.tokenRepo = tokenRepo;
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
 
-    }
-
-    @Autowired
-    public void setTokenRepo(TokenRepo tokenRepo){
-        this.tokenRepo=tokenRepo;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService){
-        this.userService=userService;
     }
 
     @Override
@@ -81,7 +68,6 @@ public class JWTServiceImpl implements JWTService {
             return tokenRepo.save(tokenJWT);
         }
         return tokenRepo.save(new TokenJWT(user.getId(),refreshToken,user));
-
     }
 
     @Override
@@ -125,16 +111,13 @@ public class JWTServiceImpl implements JWTService {
                     .parseClaimsJws(token)
                     .getBody();
         }
-      catch (
-    ExpiredJwtException expEx) {
+      catch (ExpiredJwtException expEx) {
         log.error("Token expired", expEx);
-    } catch (
-    UnsupportedJwtException unsEx) {
+    } catch (UnsupportedJwtException unsEx) {
         log.error("Unsupported jwt", unsEx);
     } catch (MalformedJwtException mjEx) {
         log.error("Malformed jwt", mjEx);
-    } catch (
-    SignatureException sEx) {
+    } catch (SignatureException sEx) {
         log.error("Invalid signature", sEx);
     } catch (Exception e) {
         log.error("invalid token", e);
@@ -157,6 +140,5 @@ public class JWTServiceImpl implements JWTService {
     private boolean isTokenExpired(@NonNull String token,@NonNull SecretKey secretKey) {
       return  extractClaim(token,secretKey,Claims::getExpiration).before(new Date());
     }
-
 
 }

@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 public class CategoryDto {
     private String categoryProduct;
-    private String subcategory;
 }
