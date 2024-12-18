@@ -1,5 +1,2 @@
 /.idea/
-/target/
-/META-INF/
-/node_modules/
-
+/frontend/react-app/node_modules/
