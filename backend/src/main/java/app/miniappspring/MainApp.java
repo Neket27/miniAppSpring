@@ -3,10 +3,6 @@ package app.miniappspring;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import static org.springframework.boot.SpringApplication.run;
 
 @SpringBootApplication
