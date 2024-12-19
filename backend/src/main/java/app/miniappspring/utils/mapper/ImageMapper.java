@@ -3,6 +3,7 @@ package app.miniappspring.utils.mapper;
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.image.UpdateImageDto;
+import app.miniappspring.dto.user.UpdateAvatarUserDto;
 import app.miniappspring.entity.Image;
 import org.mapstruct.Mapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +15,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ImageMapper {
 
-    Image toImage(MultipartFile multipartFile) throws IOException;
-
+    Image toImage(ImageDto avatar);
 
     default Image toImage(CreateImageDto createImageDto) {
         return Image.builder()
@@ -55,5 +55,6 @@ public interface ImageMapper {
     default byte[] toBytes(String string) {
         return string != null ? string.getBytes() : null;
     }
+
 }
 
