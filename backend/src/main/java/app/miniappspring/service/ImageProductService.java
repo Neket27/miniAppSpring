@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ImageProductService {
 
-    List<ImageDto> saveAllAndGetListImageDto(List<CreateImageDto> createImageDtoList);
-    List<Image> saveAllAndGetListImage(List<CreateImageDto> createImageDtoList, Product product);
-    List<Image> saveAllAndGetListImage2(List<UpdateImageDto> updateImageDtoList, Product product);
+//    List<ImageDto> saveAllAndGetListImageDto(List<CreateImageDto> createImageDtoList);
+//    List<Image> saveAllAndGetListImage(List<CreateImageDto> createImageDtoList, Product product);
+//    List<Image> saveAllAndGetListImage2(List<UpdateImageDto> updateImageDtoList, Product product);
 }

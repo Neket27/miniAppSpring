@@ -7,7 +7,7 @@ import app.miniappspring.entity.Product;
 import app.miniappspring.repository.DiscountRepo;
 import app.miniappspring.service.DiscountService;
 import app.miniappspring.service.ProductService;
-import app.miniappspring.utils.jwtToken.mapper.DiscountMapper;
+import app.miniappspring.utils.mapper.DiscountMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

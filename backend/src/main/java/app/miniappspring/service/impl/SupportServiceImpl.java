@@ -6,8 +6,8 @@ import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Support;
 import app.miniappspring.repository.SupportRepo;
 import app.miniappspring.service.SupportService;
-import app.miniappspring.utils.jwtToken.mapper.ImageMapper;
-import app.miniappspring.utils.jwtToken.mapper.SupportMapper;
+import app.miniappspring.utils.mapper.ImageMapper;
+import app.miniappspring.utils.mapper.SupportMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ public class SupportServiceImpl implements SupportService {
     @Transactional
     public SupportMessageDto addMessageUserOboutHelp(CreateSupportMessageDto createSupportMessageDto) {
         Support support = supportMapper.toEntity(createSupportMessageDto);
-        List<Image> imageList =imageMapper.toImageList(createSupportMessageDto.getImageDtoList());
+        List<Image> imageList =imageMapper.toImageListFromCreate(createSupportMessageDto.getImageDtoList());
         support.setImageList(imageList);
         support=supportRepo.save(support);
 

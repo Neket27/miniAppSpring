@@ -2,8 +2,6 @@ package app.miniappspring.dto.product;
 
 import app.miniappspring.dto.characteristic.CharacteristicProductDto;
 import app.miniappspring.dto.image.UpdateImageDto;
-import app.miniappspring.entity.Category;
-import app.miniappspring.entity.CharacteristicProduct;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +14,6 @@ import java.util.List;
 public class UpdateProductDto {
     private Long id;
     private String category;
-//    private String subcategory;
     private String name;
     private float cost;
     private float rating;

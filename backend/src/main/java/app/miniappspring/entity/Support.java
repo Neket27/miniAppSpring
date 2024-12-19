@@ -1,12 +1,16 @@
 package app.miniappspring.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 public class Support {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id

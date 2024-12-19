@@ -1,4 +1,4 @@
-package app.miniappspring.config.swagger;
+package app.miniappspring.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,10 +8,10 @@ import io.swagger.v3.oas.models.info.Info;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI configOpenAPI() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().title("MiniApp")
-                        .description("Example project")
+                .info(new Info().title("Shop")
+                        .description("API Shop")
                         .version("1.0"));
     }
 }

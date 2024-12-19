@@ -1,25 +1,21 @@
 package app.miniappspring.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
-
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class CharacteristicProduct {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String producerCountry;
     private int sellerWarranty;
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @Column(name = "image", nullable = false, columnDefinition = "bytea")
-//    private List<byte[]> images;
 
+    @OneToOne
+    private Product product;
 }
