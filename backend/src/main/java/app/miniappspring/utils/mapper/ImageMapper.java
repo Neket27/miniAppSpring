@@ -17,7 +17,7 @@ public interface ImageMapper {
     Image toImage(MultipartFile multipartFile) throws IOException;
 
 
-    default Image toImage(CreateImageDto createImageDto){
+    default Image toImage(CreateImageDto createImageDto) {
         return Image.builder()
                 .name(createImageDto.getName())
                 .contentType(createImageDto.getContentType())
@@ -26,7 +26,7 @@ public interface ImageMapper {
     }
 
 
-    default Image toImage(UpdateImageDto updateImagerDto){
+    default Image toImage(UpdateImageDto updateImagerDto) {
         return Image.builder()
                 .name(updateImagerDto.getName())
                 .contentType(updateImagerDto.getContentType())
@@ -34,7 +34,7 @@ public interface ImageMapper {
                 .build();
     }
 
-    default ImageDto toImageDto(Image image){
+    default ImageDto toImageDto(Image image) {
         return ImageDto.builder()
                 .name(image.getName())
                 .contentType(image.getContentType())
@@ -43,12 +43,17 @@ public interface ImageMapper {
     }
 
     List<ImageDto> toImageDtoList(List<Image> images);
+
     List<UpdateImageDto> toUpdateImageDtoList(List<UpdateImageDto> updateImageDtoList);
-    List<Image> toImageList(List<CreateImageDto> createImageDtoList);
-    List<Image> toImageList2(List<UpdateImageDto> updateImageDtoList);
+
+    List<Image> toImageListFromCreate(List<CreateImageDto> createImageDtoList);
+
+    List<Image> toImageListFromUpdate(List<UpdateImageDto> updateImageDtoList);
+
     List<Image> toImageListUpdate(List<UpdateImageDto> updateImagerDtoList);
 
     default byte[] toBytes(String string) {
         return string != null ? string.getBytes() : null;
     }
 }
+

@@ -42,9 +42,9 @@ gigachat:
   scope: GIGACHAT_API_PERS
 
 #Log
-logging:
-  level:
-    root: DEBUG
+#logging:
+#  level:
+#    root: DEBUG
 
 server:
   address: 0.0.0.0

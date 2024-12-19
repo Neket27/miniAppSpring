@@ -1,16 +1,17 @@
 package app.miniappspring.dto.product;
 
-import app.miniappspring.entity.Category;
-import app.miniappspring.entity.CategoryProduct;
+import app.miniappspring.dto.characteristic.CharacteristicProductDto;
+import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.CharacteristicProduct;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class CreateProductDto {
-    private Category category;
-    private String subcategory;
+    private String category;
     private String name;
     private float cost;
     private float rating;
@@ -20,6 +21,6 @@ public class CreateProductDto {
     private boolean available;
     private int stock;
     private String detail;
-    private CharacteristicProduct characteristic;
-    private byte[] image;
+    private CharacteristicProductDto characteristic;
+    private List<UpdateImageDto> updateImageDtoList;
 }

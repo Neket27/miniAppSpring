@@ -2,6 +2,7 @@ package app.miniappspring.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -9,11 +10,12 @@ import java.util.List;
 
 @Table(name = "feedback")
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
 public class Feedback {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String nameUser;
     private String email;

@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Entity
 @Table(name = "usr")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Setter
 @Getter
-@Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstname;
     private String lastname;

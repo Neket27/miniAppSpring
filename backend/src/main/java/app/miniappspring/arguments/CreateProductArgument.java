@@ -1,8 +1,6 @@
 package app.miniappspring.arguments;
 
 import app.miniappspring.dto.image.CreateImageDto;
-import app.miniappspring.dto.image.UpdateImageDto;
-import app.miniappspring.entity.Category;
 import lombok.*;
 
 import java.util.List;
