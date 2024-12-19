@@ -1,16 +1,17 @@
 package app.miniappspring.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Generated;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 public class Coupon {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Integer amount;

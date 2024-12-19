@@ -25,7 +25,7 @@ public class SupportServiceImpl implements SupportService {
     @Transactional
     public SupportMessageDto addMessageUserOboutHelp(CreateSupportMessageDto createSupportMessageDto) {
         Support support = supportMapper.toEntity(createSupportMessageDto);
-        List<Image> imageList =imageMapper.toImageList(createSupportMessageDto.getImageDtoList());
+        List<Image> imageList =imageMapper.toImageListFromCreate(createSupportMessageDto.getImageDtoList());
         support.setImageList(imageList);
         support=supportRepo.save(support);
 

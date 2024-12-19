@@ -46,15 +46,4 @@ public class ProductController {
         productService.deleteProduct(productId);
     }
 
-//    @PostMapping(path = "/product/addPhotoCardProduct", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")
-//    public void addPhotoCardProduct(@RequestParam Long idCardPhoto, @RequestParam MultipartFile photoCardProduct) throws IOException {
-//        productService.addPhotoCardProduct(idCardPhoto, photoCardProduct);
-//    }
-
-//    @GetMapping("/product/productsInStock")
-//    public List<ProductCardDto> getProductsWithStock(@RequestParam String city) {
-//        return productService.getProductsWithStock(city);
-//    }
-
 }

@@ -1,21 +1,20 @@
 package app.miniappspring.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Entity
 @Table(name = "product")
+@Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private float cost;
@@ -27,22 +26,18 @@ public class Product {
     private int stock;
     private String detail;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "category_product_id")
-//    private CategoryProduct categoryProduct;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private CategoryItem categoryItem;
-//    private String subcategory;
 
-//    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true)
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Image> imageList;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "characteristic_id")
     private CharacteristicProduct characteristicProduct;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE,fetch = FetchType.LAZY, orphanRemoval = true)
     @Column(name = "feedback_list", nullable = true)
     private List<Feedback> feedbackList;
 

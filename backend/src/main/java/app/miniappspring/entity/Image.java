@@ -3,14 +3,15 @@ package app.miniappspring.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
-@Entity
+@Getter
+@Setter
 public class Image {
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String contentType;
@@ -21,8 +22,8 @@ public class Image {
     @OneToOne
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = true)
-    @JoinColumn(name = "product_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(nullable = true)
     private Product product;
 
 }
