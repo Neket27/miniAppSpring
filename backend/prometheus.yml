@@ -1,0 +1,21 @@
+
+scrape_configs:
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:8080']
+
+#prometheus:
+#  prometheusSpec:
+#    serviceMonitorSelectorNilUsesHelmValues: false
+#    serviceMonitorSelector: {}
+
+
+#scrape_configs:
+#  - job_name: Mini-app
+#    metrics_path: '/actuator/prometheus'
+#    scrape_interval: 5s
+#    static_configs:
+#      - targets:
+#          - cadvisor:8080
