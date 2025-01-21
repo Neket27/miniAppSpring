@@ -28,7 +28,7 @@ public class CategoryController {
 
     @GetMapping
     public NumberOfProductsInThisCategory getMapKeyCategoryValueCountProduct() {
-        return categoryService.getCategories();
+        return categoryService.getCategoriesWithCountProducts();
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")

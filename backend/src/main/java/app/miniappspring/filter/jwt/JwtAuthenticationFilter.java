@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String username;
 
-        //TODO было изменение библиотеки StringUtils.isNullOrEmpty, проверить корректность работы
         if (StringUtils.isNullOrEmpty(authHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, prefix )||authHeader.equals(prefix+" null")||authHeader.equals(prefix+" undefined")) {
             filterChain.doFilter(request, response);
             return;
@@ -51,9 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         username = jwtService.getUserNameFromAccessToken(jwtToken);
         RequestContextHolder.currentRequestAttributes().setAttribute("username", username, RequestAttributes.SCOPE_REQUEST);
         if ((!StringUtils.isNullOrEmpty(username)) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+            UserDetails userDetails = userService.getUserDetailsService().loadUserByUsername(username);
 
-            if (userDetails!=null && jwtService.isTokenValidAccessToken(jwtToken, userDetails)) { //посмотреть, возможно бесмысленная проверка
+            if (userDetails!=null && jwtService.isTokenValidAccessToken(jwtToken, userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

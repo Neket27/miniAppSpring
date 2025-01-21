@@ -1,4 +1,4 @@
-package app.miniappspring.service.impl;
+package app.miniappspring.service.impl.product;
 
 import app.miniappspring.arguments.CreateProductArgument;
 import app.miniappspring.arguments.UpdateProductArgument;
@@ -7,23 +7,23 @@ import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.dto.product.category.CategoryDto;
 import app.miniappspring.dto.product.category.SearchProductDto;
-import app.miniappspring.entity.CategoryItem;
+import app.miniappspring.entity.Category;
 import app.miniappspring.entity.CharacteristicProduct;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Product;
 import app.miniappspring.exception.ErrorException;
-import app.miniappspring.repository.CategoryItemRepo;
+import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.repository.ProductRepo;
-import app.miniappspring.service.ImageProductService;
 import app.miniappspring.service.ProductService;
+import app.miniappspring.service.UserService;
 import app.miniappspring.utils.mapper.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,21 +33,19 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepo productRepo;
     private final SearchMapper searchMapper;
-    private final CategoryItemRepo categoryItemRepo;
+    private final CategoryRepo categoryRepo;
     private final ProductMapper productMapper;
     private final CharacteristicMapper characteristicMapper;
     private final ProductArgumentMapper productArgumentMapper;
-    private final ImageProductService imageProductService;
     private final ImageMapper imageMapper;
+    private final UserService userService;
 
     @Override
     @Transactional
     public ProductCardDto getProductCard(Long id) {
         Product product = productRepo.findById(id).orElseThrow(() -> new ErrorException("В базе данных нет карточки товара с id= " + id));
-        ProductCardDto productCardDto = productMapper.toProductCardDto(product);
-        return productCardDto;
+        return productMapper.toProductCardDto(product);
     }
-
 
     @Override
     @Transactional
@@ -57,20 +55,40 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @Cacheable(value = "ProductService::getListCardProduct1")
     public List<ProductCardDto> getListCardProduct() {
         List<Product> products = productRepo.findAll();
         if (products.isEmpty())
-            return new ArrayList<>();
+            return Collections.emptyList();
+        List<ProductCardDto> list =products.stream().map(productMapper::toProductCardDto).toList();
+        return list;
+    }
 
-        return products.stream().map(productMapper::toProductCardDto).toList();
+    @Override
+    @Transactional
+    public List<ProductDetailDto> getListProductDetail() {
+        List<Product> products = productRepo.findAll();
+        List<ProductDetailDto> productDetailDtos = products.stream().map(product -> {
+            List<Image> avatarList = product.getFeedbackList().stream().map(feedback -> {
+                return feedback.getUser().getAvatar();
+            }).toList();
+
+            return productMapper.toProductDetailDto(product, avatarList);
+        }).toList();
+
+        return productDetailDtos;
     }
 
     @Override
     @Transactional
     public ProductDetailDto getProductDetailDto(Long id) {
         Product product = findProduct(id);
-        ProductDetailDto productDetailDto = productMapper.toProductDetailDto(product);
-        productDetailDto.setCategory(product.getCategoryItem().getName());
+        List<Image> avatarList = product.getFeedbackList().stream().map(feedback -> {
+            return feedback.getUser().getAvatar();
+        }).toList();
+
+        ProductDetailDto productDetailDto = productMapper.toProductDetailDto(product, avatarList);
+
         return productDetailDto;
     }
 
@@ -79,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductCardDto> addProduct(CreateProductArgument createProductArgument) {
         Product product = productMapper.toProduct(createProductArgument);
 
-        CategoryItem categoryItem = categoryItemRepo.findByName(createProductArgument.getCategory()).orElseThrow(() -> new RuntimeException("Категория не найдена"));
-        product.setCategoryItem(categoryItem);
+        Category categoryItem = categoryRepo.findByName(createProductArgument.getCategory()).orElseThrow(() -> new RuntimeException("Категория не найдена"));
+        product.setCategory(categoryItem);
         categoryItem.getProductList().add(product);
 
         CharacteristicProduct characteristic = productArgumentMapper.toCharacteristicProduct(createProductArgument);
@@ -92,23 +110,6 @@ public class ProductServiceImpl implements ProductService {
         return getListCardProduct();
     }
 
-    @Override
-    @Transactional
-    public void addPhotoCardProduct(Long idCardPhoto, MultipartFile photoCardProduct) throws IOException {
-        Product product = findProduct(idCardPhoto);
-        if (product.getImageList() == null)
-            product.setImageList(new ArrayList<>());
-
-        Image image = Image.builder()
-                .bytes(photoCardProduct.getBytes())
-                .build();
-
-        List<Image> images = product.getImageList();
-        images.add(image);
-        product.setImageList(images);
-        productRepo.save(product);
-    }
-
 
     @Override
     @Transactional
@@ -117,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         if (categoryDto.getCategoryProduct().equals("Все категории"))
             products = productRepo.findAll();
         else
-            products = productRepo.findByCategoryItem_NameContainingIgnoreCase(categoryDto.getCategoryProduct()).orElse(Collections.emptyList());
+            products = productRepo.findByCategory_NameContainingIgnoreCase(categoryDto.getCategoryProduct()).orElse(Collections.emptyList());
 
         return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }
@@ -147,8 +148,8 @@ public class ProductServiceImpl implements ProductService {
         product.getCharacteristicProduct().setProducerCountry(characteristicProduct.getProducerCountry());
         product.getCharacteristicProduct().setSellerWarranty(characteristicProduct.getSellerWarranty());
 
-        CategoryItem categoryItem = categoryItemRepo.findByName(updateProductArgument.getCategory()).orElseThrow(() -> new RuntimeException("Категория не найдена"));
-        product.setCategoryItem(categoryItem);
+        Category categoryItem = categoryRepo.findByName(updateProductArgument.getCategory()).orElseThrow(() -> new RuntimeException("Категория не найдена"));
+        product.setCategory(categoryItem);
 
         productRepo.save(product);
         return updateProductDto;
@@ -162,26 +163,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product saveProduct(Product product) {
-        return productRepo.save(product);
-    }
-
-    @Override
-    @Transactional
     public void changeRating(float evaluation, Long idProduct, int countFeedback) {
         Product product = productRepo.findById(idProduct).orElseThrow(() -> new RuntimeException("Продукт не найтен"));
-        product.setRating((product.getRating() + evaluation) / countFeedback);
+        float rating = ((product.getRating() * countFeedback) + evaluation) / (countFeedback + 1);
+        product.setRating(rating);
     }
-
-    @Override
-    @Transactional
-    public List<ProductCardDto> getProductsWithStock(String city) {
-        List<Product> products = productRepo.findByDiscountList_City(city).orElse(Collections.emptyList());
-        if (products.isEmpty())
-            return new ArrayList<>();
-
-        return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
-    }
-
 
 }

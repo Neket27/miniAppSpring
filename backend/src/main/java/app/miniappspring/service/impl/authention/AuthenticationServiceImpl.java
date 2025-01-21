@@ -1,4 +1,4 @@
-package app.miniappspring.service.impl;
+package app.miniappspring.service.impl.authention;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.dto.cooke.CreateCookeDto;

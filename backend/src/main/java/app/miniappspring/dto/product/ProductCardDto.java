@@ -5,6 +5,7 @@ import app.miniappspring.dto.product.category.CategoryDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Setter
@@ -12,7 +13,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCardDto {
+@ToString
+@EqualsAndHashCode
+public class ProductCardDto implements Serializable {
     private Long id;
     private CategoryDto category;
     private String name;

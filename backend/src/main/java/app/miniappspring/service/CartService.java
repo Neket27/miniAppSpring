@@ -4,32 +4,31 @@ import app.miniappspring.dto.cart.CountProductDto;
 import app.miniappspring.dto.cart.CreateProductCartDto;
 import app.miniappspring.dto.cart.DtoCountProductInCart;
 import app.miniappspring.dto.cart.ProductCartDto;
-import app.miniappspring.dto.coupon.CouponDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface CartService {
 
-    void addProductInCart(CreateProductCartDto createProductCartDto);
+    void addProductInCart(String username, CreateProductCartDto createProductCartDto);
 
-    List<ProductCartDto> getListProductInCart(String accessToken);
+    List<ProductCartDto> getListProductInCart(String username);
 
-    List<ProductCartDto> removeProductFromCart(Long idProduct, String accessToken);
-    boolean increaseProductInCart(Long idProduct, String accessToken);
+    List<ProductCartDto> removeProductFromCart(String username, Long idProduct);
+    boolean increaseProductInCart(String username, Long idProduct);
 
     @Transactional
-    boolean decreaseProductInCart(Long idProduct, String accessToken);
+    boolean decreaseProductInCart(String username, Long idProduct);
 
-    ProductCartDto getProductFromCart(Long idProduct, String accessToken);
+    ProductCartDto getProductFromCart(String username, Long idProduct);
 
-    boolean sendNumberOfPiecesOfGoods(Long idProduct, int count, String accessToken);
+    boolean sendNumberOfPiecesOfGoods(String username, Long idProduct, int count);
 
     int sendNumberOfPiecesOfGoods(DtoCountProductInCart dtoCountProductInCart);
 
     int getNumberOfPiecesOfGoods(CountProductDto countProductDto);
 
-    int getCountProductInCart(String accessToken);
+    int getCountProductInCart(String username);
 
 }
 

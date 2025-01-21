@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryService {
     String createCategoryProduct(String categoryName);
-    NumberOfProductsInThisCategory getCategories();
+    NumberOfProductsInThisCategory getCategoriesWithCountProducts();
 
     List<String> getAllCategories();
 }

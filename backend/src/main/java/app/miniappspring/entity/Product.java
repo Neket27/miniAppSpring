@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Table(name = "product")
@@ -12,7 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Product {
+@ToString
+public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +31,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    private CategoryItem categoryItem;
+    private Category category;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Image> imageList;
@@ -41,7 +44,7 @@ public class Product {
     @Column(name = "feedback_list", nullable = true)
     private List<Feedback> feedbackList;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "product_discount", // Имя промежуточной таблицы
             joinColumns = @JoinColumn(name = "product_id"),

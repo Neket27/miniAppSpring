@@ -39,9 +39,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "cart_product_list", nullable = false)
-    private List<BagProduct> cartProductList;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @Column(name = "cart_product_list", nullable = false)
+    private List<ProductInBagUser> productsInBag;
 
     @OneToOne
     private PayData payData;

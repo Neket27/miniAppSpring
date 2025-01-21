@@ -26,7 +26,7 @@ public class Feedback {
     @Column(name = "feedback_image", nullable = false)
     private List<byte[]> imageList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_id")
     private Product product;
     @ManyToOne

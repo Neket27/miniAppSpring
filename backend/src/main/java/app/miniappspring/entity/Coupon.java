@@ -18,5 +18,5 @@ public class Coupon {
     private Integer timeLiveInHour;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BagProduct> bagProductList;
+    private List<ProductInBagUser> bagProductList;
 }

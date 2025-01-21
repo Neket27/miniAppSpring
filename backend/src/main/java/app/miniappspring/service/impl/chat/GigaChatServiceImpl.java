@@ -1,6 +1,10 @@
 package app.miniappspring.service.impl.chat;
 
-import app.miniappspring.dto.chat.*;
+import app.miniappspring.annotation.print.PrintValue;
+import app.miniappspring.dto.chat.AuthResponseGigaChat;
+import app.miniappspring.dto.chat.DtoGigaChat;
+import app.miniappspring.dto.chat.MessagesGigaChat;
+import app.miniappspring.dto.chat.RequestOnAnswerGigaChatDto;
 import app.miniappspring.service.GigaChatService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -27,7 +31,7 @@ import java.util.UUID;
 
 @Service
 public class GigaChatServiceImpl implements GigaChatService {
-
+    @PrintValue
     private WebClient webClient;
     private final String API_URL_MESSAGE = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions";
     private final String API_URL_AUTH = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth";
@@ -82,9 +86,8 @@ public class GigaChatServiceImpl implements GigaChatService {
             auth();
         MessagesGigaChat messagesGigaChat = new MessagesGigaChat("user", requestOnAnswerDto.getMessage());
         DtoGigaChat dtoGigaChat = new DtoGigaChat("GigaChat", List.of(messagesGigaChat), false);
+        ObjectMapper objectMapper = new ObjectMapper();
         String responseFromGigaChat;
-        ChatCompletionResponse response = null;
-
         String content = "";
         try {
             responseFromGigaChat = webClient
@@ -101,8 +104,6 @@ public class GigaChatServiceImpl implements GigaChatService {
                     .bodyToMono(String.class)
                     .block();
 
-
-            ObjectMapper objectMapper = new ObjectMapper();
 
             // Парсим JSON строку в дерево узлов
             JsonNode rootNode = objectMapper.readTree(responseFromGigaChat);

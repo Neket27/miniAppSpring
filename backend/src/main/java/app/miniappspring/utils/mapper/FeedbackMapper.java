@@ -18,12 +18,17 @@ public abstract class FeedbackMapper {
    public abstract Feedback toFeedback(FeedbackCreateDto feedbackCreateDto);
    public abstract FeedbackDto toFeedbackDto(Feedback feedback);
 
-   public List<FeedbackDto> toFeedbackList(List<Feedback> feedbackList, Image photoUser){
+   public List<FeedbackDto> toFeedbackDtoListAndSetAvatar(List<Feedback> feedbackList,List<Image>avatarList){
 
         return feedbackList.stream().map(feedback ->{
                     FeedbackDto feedbackDto = this.toFeedbackDto(feedback);
-                    if(photoUser != null)
-                        feedbackDto.setPhotoUser(imageMapper.toImageDto(photoUser));
+                    if(avatarList != null) {
+                        avatarList.stream().forEach(avatar->{
+                            if(avatar!=null && avatar.getUser().getId().equals(feedback.getUser().getId()))
+                                feedbackDto.setPhotoUser(imageMapper.toImageDto(avatar));
+                        });
+
+                    }
                     return feedbackDto;
                 }).toList();
     }

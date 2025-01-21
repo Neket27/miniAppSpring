@@ -20,7 +20,8 @@ public class ProductController {
 
     @GetMapping("")
     public List<ProductCardDto> products() {
-        return productService.getListCardProduct();
+        var t =productService.getListCardProduct();
+        return t;
     }
 
     @GetMapping("/detail")
