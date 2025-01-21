@@ -3,10 +3,7 @@ package app.miniappspring.service;
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
 import app.miniappspring.dto.delivey.UpdateDeliveryDataUser;
-import app.miniappspring.dto.user.CreateUserDto;
-import app.miniappspring.dto.user.UpdateAvatarUserDto;
-import app.miniappspring.dto.user.UpdateDataUserDto;
-import app.miniappspring.dto.user.UpdateUserDto;
+import app.miniappspring.dto.user.*;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import lombok.NonNull;
@@ -17,19 +14,17 @@ import java.util.Set;
 
 public interface UserService {
 
-    UserDetailsService userDetailsService();
+    UserDetailsService getUserDetailsService();
 
     CreateUserDto addUser(CreateUserArgument createUserArgument);
 
     UpdateDataUserDto updateDataUser(@NonNull UpdateDataUserArgument updateDataUserArgument);
 
-    UpdateDataUserDto updateDataUser(UpdateDataUserDto UpdateDataUserDto);
-
     UpdateDataUserDto updateDataUser(UpdateUserDto updateUserDto);
 
     boolean updateUserAvatar(UpdateAvatarUserDto updateAvatarUserDto);
 
-    List<User> getListUsers();
+    List<UserDto> getListUsers();
 
     User getById(Long id);
 
@@ -45,5 +40,5 @@ public interface UserService {
 
     UpdateDeliveryDataUser updateDataUserAboutDelivery(UpdateDeliveryDataUser updateDeliveryDataUser);
 
-    UpdateDeliveryDataUser getDataUserAboutDelivery();
+    UpdateDeliveryDataUser getDataUserAboutDelivery(String username);
 }

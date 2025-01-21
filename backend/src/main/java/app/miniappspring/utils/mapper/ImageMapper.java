@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ImageMapper {
 
-    Image toImage(MultipartFile multipartFile) throws IOException;
+    Image toImage(ImageDto imageDto);
 
 
     default Image toImage(CreateImageDto createImageDto) {

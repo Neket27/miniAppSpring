@@ -9,8 +9,31 @@ springdoc:
   api-docs:
     path: /api-docs
 
-# DB
+
 spring:
+  application:
+    name: mini-app
+
+  cache:
+    type: redis
+    cache-names: redis-cache
+  data:
+    redis:
+      host: localhost
+      port: 6380
+      username: cache
+      password: cache
+      database: 1
+
+  ai:
+    mistralai:
+      api-key: FtNwAtAuDFBaIrUePWFpAqxjxPr31U1y
+      chat:
+        options:
+          model: mistral-small-latest
+          temperature: 2
+
+  # DB
   datasource:
     url: jdbc:postgresql://localhost:5433/miniapp_db
     username: miniapp
@@ -20,9 +43,18 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        hbm2ddl.auto: update
-        globally_quoted_identifiers: true #????????????? ????????????????? ???? ? ?? ???? ?? ??????????? ????????????????? ????? ???? ?????? (????????, user, order, group), ??? ??????? ??? ????? ??????? ??????
-    igenerate-ddl: true
+        hbm2ddl:
+          auto: update
+        globally_quoted_identifiers: true # ( user, order, group)
+    generate-ddl: false
+    show-sql: false
+
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    password: miniapp
+    user: miniapp
 
 #Secret keys for token
 jwt:
@@ -30,6 +62,7 @@ jwt:
     access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
     refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
     prefix: Bearer
+
 #Cooke
 cooke:
   time:
@@ -42,10 +75,12 @@ gigachat:
   scope: GIGACHAT_API_PERS
 
 #Log
-#logging:
-#  level:
-#    root: DEBUG
+logging:
+  level:
+    root: info
 
 server:
   address: 0.0.0.0
   port: 8080
+
+

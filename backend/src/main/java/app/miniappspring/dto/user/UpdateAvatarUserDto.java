@@ -1,5 +1,6 @@
 package app.miniappspring.dto.user;
 
+import app.miniappspring.dto.image.ImageDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class UpdateAvatarUserDto {
     private String username;
-    private MultipartFile multipartFileAvatar;
+    private ImageDto avatar;
 }

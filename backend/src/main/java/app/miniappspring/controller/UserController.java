@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
@@ -48,12 +50,8 @@ public class UserController {
 
     @GetMapping("/data/delivery")
     public UpdateDeliveryDataUser getDataUserAboutDelivery() {
-        return userService.getDataUserAboutDelivery();
-    }
-
-    @PostMapping("/photo/update")
-    public ResponseEntity<Boolean> updatePhotoUser(@RequestParam String username, @RequestParam MultipartFile multipartFileAvatar) {
-        return ResponseEntity.ok(userService.updateUserAvatar(new UpdateAvatarUserDto(username, multipartFileAvatar)));
+        String username = (String) RequestContextHolder.currentRequestAttributes().getAttribute("username", RequestAttributes.SCOPE_REQUEST);
+        return userService.getDataUserAboutDelivery(username);
     }
 
     @GetMapping("/roles")

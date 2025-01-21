@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CouponService {
 
-    CouponDto checkCoupon(String coupon);
+    CouponDto checkCoupon(String username, String coupon);
     CouponDto addCoupon(CreateCouponDto createCouponDto);
 
     List<CouponDto> getAllCouponList();

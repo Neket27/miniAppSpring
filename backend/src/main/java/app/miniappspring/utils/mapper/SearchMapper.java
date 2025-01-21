@@ -11,7 +11,7 @@ public abstract class SearchMapper {
         return SearchProductDto.builder()
                 .idProduct(product.getId())
                 .nameProduct(product.getName())
-                .category(product.getCategoryItem().getName())
+                .category(product.getCategory().getName())
                 .build();
     }
 }

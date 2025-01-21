@@ -1,8 +1,8 @@
-package app.miniappspring.service.impl;
+package app.miniappspring.service.impl.category;
 
 import app.miniappspring.dto.product.category.NumberOfProductsInThisCategory;
-import app.miniappspring.entity.CategoryItem;
-import app.miniappspring.repository.CategoryItemRepo;
+import app.miniappspring.entity.Category;
+import app.miniappspring.repository.CategoryRepo;
 import app.miniappspring.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryItemRepo categoryItemRepo;
+    private final CategoryRepo categoryItemRepo;
 
     @Override
     @Transactional
@@ -25,11 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public NumberOfProductsInThisCategory getCategories(){
-//        Map<String,Integer> countProductThisCategory = Arrays.stream(app.miniappspring.entity.Category.values())
-//                .collect(Collectors.toMap(category -> category.getRussianValue(),category->categoryRepo.countByCategory(category)));
-
-        List<CategoryItem>categoryItemList = categoryItemRepo.findAll();
+    public NumberOfProductsInThisCategory getCategoriesWithCountProducts(){
+        List<Category>categoryItemList = categoryItemRepo.findAll();
 
         Map<String,Integer> countProductThisCategory =  categoryItemList.stream().map(categoryItem -> {
             int countProductWithCategory = categoryItemRepo.countByName(categoryItem.getName());
@@ -42,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public String createCategoryProduct(String categoryName) {
-        categoryItemRepo.save(new CategoryItem(categoryName));
+        categoryItemRepo.save(new Category(categoryName));
         return categoryName;
     }
 

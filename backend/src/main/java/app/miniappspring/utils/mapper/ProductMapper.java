@@ -7,19 +7,26 @@ import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.dto.product.ProductDetailDto;
 import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.entity.CharacteristicProduct;
+import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 //@Mapper(componentModel = "spring", uses = CategoryProductMapper.class)
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ImageMapper.class, CategoryMapper.class, FeedbackMapper.class})
 public abstract class ProductMapper {
-    // @Autowired
-    //  private CategoryProductMapper categoryProductEnumMapper;
+
     @Autowired
     private ImageMapper imageMapper;
     @Autowired
     private CharacteristicMapper characteristicMapper;
+    @Autowired
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private FeedbackMapper feedbackMapper;
 
     public ProductCardDto toProductCardDto(Product product){
         return ProductCardDto.builder()
@@ -27,30 +34,33 @@ public abstract class ProductMapper {
                 .name(product.getName())
                 .cost(product.getCost())
                 .rating(product.getRating())
-//                .category(product.getCategoryProduct())
+                .category(categoryMapper.toDto(product.getCategory()))
                 .imageDtoList(imageMapper.toImageDtoList(product.getImageList()))
                 .build();
     }
-    //public abstract Product toProduct(ProductCardDto productCardDto);
-    //public abstract Product toProduct(CreateProductDto createProductDto);
-    public ProductDetailDto toProductDetailDto(Product product){
+
+    public ProductDetailDto toProductDetailDto(Product product, List<Image> avatarList){
         return ProductDetailDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .cost(product.getCost())
                 .detail(product.getDetail())
-                //   .categoryProductDto(categoryMapper.toCategoryProductDto(product.getCategoryProduct()))
+                .category(product.getCategory().getName())
                 .characteristicProductDto(characteristicMapper.toCharacteristicProductDto(product.getCharacteristicProduct()))
                 .brand(product.getBrand())
                 .stock(product.getStock())
                 .note(product.getNote())
                 .description(product.getDescription())
                 .available(product.isAvailable())
+                .feedbackDtoList(feedbackMapper.toFeedbackDtoListAndSetAvatar(product.getFeedbackList(),avatarList))
                 .imageDtoList(imageMapper.toImageDtoList(product.getImageList()))
                 .build();
     }
 
+
+    @Mapping(target = "category.name", source = "category")
     public abstract Product toProduct(CreateProductArgument createProductArgument);
+    @Mapping(target = "category.name", source = "category")
     public abstract Product toProduct(UpdateProductDto updateProductDto);
 
     public Product updateProduct(Product product,UpdateProductDto updateProductDto){
@@ -79,7 +89,6 @@ CharacteristicProductDto characteristicProductDto = characteristicMapper.toChara
         return UpdateProductDto.builder()
                 .id(updateProductArgument.getId())
                 .category(updateProductArgument.getCategory())
-//                .subcategory(updateProductArgument.getSubcategory())
                 .name(updateProductArgument.getName())
                 .cost(updateProductArgument.getCost())
                 .detail(updateProductArgument.getDetail())

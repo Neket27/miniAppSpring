@@ -1,2 +1,4 @@
 /.idea/
 /backend/target/
+.env
+/external-data-0_localhost.xml

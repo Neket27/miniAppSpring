@@ -1,4 +1,4 @@
-package app.miniappspring.service.impl;
+package app.miniappspring.service.impl.discount;
 
 import app.miniappspring.dto.discount.DiscountCreateDto;
 import app.miniappspring.dto.discount.DiscountDto;
@@ -26,25 +26,11 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     @Transactional
     public DiscountDto createDiscount(DiscountCreateDto discountCreateDto) {
-        // Проверяем, существует ли скидка с данным названием и городом
         Discount discount = discountRepo.findByNameAndCity(discountCreateDto.getName(), discountCreateDto.getCity()).orElse(null);
 
         if (discount == null) {
-            // Преобразуем DTO в сущность
             discount = discountMapper.toEntity(discountCreateDto);
-            discount = discountRepo.save(discount);  // Сохраняем скидку
-
-            // Создаем промежуточные списки для продуктов и скидок
-            List<Product> productList = new ArrayList<>();
-
-            Discount finalDiscount = discount;
-            discountCreateDto.getProductIdList().forEach(productId -> {
-                Product product = productService.findProduct(productId);
-                product.getDiscountList().add(finalDiscount); // Добавляем скидку к продукту
-                productList.add(product);  // Добавляем продукт во временный список
-            });
-
-            // Присваиваем список продуктов скидке и сохраняем
+            List<Product> productList = discountCreateDto.getProductIdList().stream().map(productId->productService.findProduct(productId)).toList();
             discount.setProductList(productList);
             discountRepo.save(discount);
         }

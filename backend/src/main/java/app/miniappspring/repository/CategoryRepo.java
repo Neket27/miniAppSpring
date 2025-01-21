@@ -1,15 +1,15 @@
 package app.miniappspring.repository;
 
-import app.miniappspring.entity.CategoryItem;
+import app.miniappspring.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CategoryItemRepo extends JpaRepository<CategoryItem, Long> {
+public interface CategoryRepo extends JpaRepository<Category, Long> {
 
     int countByName(String name);
 
-    Optional<CategoryItem>findByName(String name);
+    Optional<Category>findByName(String name);
 }

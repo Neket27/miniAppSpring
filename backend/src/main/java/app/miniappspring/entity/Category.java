@@ -9,16 +9,16 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryItem {
+public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "categoryItem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> productList;
 
-    public CategoryItem(String name) {
+    public Category(String name) {
         this.name = name;
     }
 }

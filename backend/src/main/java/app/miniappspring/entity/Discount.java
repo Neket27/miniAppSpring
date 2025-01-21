@@ -20,6 +20,6 @@ public class Discount {
     private int amount;
     private String city;
 
-    @ManyToMany(mappedBy = "discountList")
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Product> productList;
 }
