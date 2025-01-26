@@ -1,0 +1,3 @@
+com/example/authorizationserver/config/DefaultSecurityConfig.class
+com/example/authorizationserver/AuthorizationServerApplication.class
+com/example/authorizationserver/config/AuthorizationServerConfig.class

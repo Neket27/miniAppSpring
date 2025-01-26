@@ -1,7 +1,6 @@
 package app.miniappspring.utils.mapper;
 
 import app.miniappspring.dto.characteristic.CharacteristicProductDto;
-import app.miniappspring.dto.product.UpdateProductDto;
 import app.miniappspring.entity.CharacteristicProduct;
 import org.mapstruct.Mapper;
 

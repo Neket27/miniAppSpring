@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signnup(SignUpRequest signUpRequest) {
 
-        User user = userService.getByUsername(signUpRequest.getUsername());//проверим что пользователь существует, можно проверить через user == null
+        User user = userService.getByUsername(signUpRequest.getUsername());
         if (user != null)
             signin(new SigninRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
 

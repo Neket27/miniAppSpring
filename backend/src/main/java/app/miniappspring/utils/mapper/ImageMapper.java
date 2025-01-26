@@ -1,13 +1,12 @@
 package app.miniappspring.utils.mapper;
 
+
 import app.miniappspring.dto.image.CreateImageDto;
 import app.miniappspring.dto.image.ImageDto;
 import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
 import org.mapstruct.Mapper;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 

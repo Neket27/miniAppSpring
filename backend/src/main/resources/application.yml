@@ -8,11 +8,26 @@ springdoc:
 # custom path for api docs
   api-docs:
     path: /api-docs
+  show-actuator: true
+  auto-tag-classes: true
+  default-support-form-data: true
+  enable-data-rest: true
+  enable-javadoc: true
+  show-spring-cloud-functions: true
+
+#  use-management-port: true
+
 
 
 spring:
   application:
     name: mini-app
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
 
   cache:
     type: redis
@@ -56,6 +71,7 @@ spring:
     password: miniapp
     user: miniapp
 
+
 #Secret keys for token
 jwt:
   secret:
@@ -79,8 +95,15 @@ logging:
   level:
     root: info
 
+
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8082
 
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
