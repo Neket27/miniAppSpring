@@ -1,0 +1,16 @@
+package app.miniappspring;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import static org.springframework.boot.SpringApplication.run;
+
+@SpringBootApplication
+@EnableCaching
+public class PaymentService {
+    public static void main(String[] args){
+        ConfigurableApplicationContext context = run(PaymentService.class, args);
+    }
+
+}

@@ -85,7 +85,6 @@ public class AuthorizationServerConfig {
     public ProviderSettings providerSettings() {
         return ProviderSettings.builder()
                 .issuer("http://localhost:9000")
-//                .issuer("http://localhost:9001")
                 .build();
     }
 

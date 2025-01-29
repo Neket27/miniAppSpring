@@ -1,8 +1,8 @@
 package app.miniappspring.service;
 
-import app.miniappspring.dto.payData.PayDataDto;
+import app.miniappspring.dto.RequestOnGetPayDataDto;
 
 public interface PayService {
 
-    PayDataDto getPayData(String city);
+    String pay(RequestOnGetPayDataDto requestOnGetPayDataDto);
 }

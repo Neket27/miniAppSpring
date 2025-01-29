@@ -1,0 +1,59 @@
+server:
+  address: 0.0.0.0
+  port: 8085
+
+#Swagger
+springdoc:
+  swagger-ui:
+    path: /ui
+    operationsSorter: alpha
+    tagsSorter: alpha
+  api-docs:
+    path: /api-docs
+
+spring:
+  application:
+    name: reviews-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+
+  # DB
+  datasource:
+    url: jdbc:postgresql://localhost:5435/reviews-service-miniapp_db
+    username: reviews-service-miniapp
+    password: reviews-service-miniapp
+    driverClassName: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: update
+        globally_quoted_identifiers: true # ( user, order, group)
+    generate-ddl: true
+    show-sql: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    password: reviews-service-miniapp
+    user: reviews-service-miniapp
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+#Log
+logging:
+  level:
+    root: info
+
+
+

@@ -1,7 +1,9 @@
 package app.miniappspring.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +19,4 @@ public class PayData {
     private float amountPay;
     private float amountDeliver;
     private float amountDiscount;
-
-    @OneToOne
-    private User user;
 }

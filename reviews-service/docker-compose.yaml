@@ -1,0 +1,12 @@
+services:
+
+  db-postgres:
+    image: postgres:16.1-alpine
+    container_name: db_reviews-service-miniapp
+    environment:
+      POSTGRES_DB: reviews-service-miniapp_db
+      POSTGRES_USER: reviews-service-miniapp
+      POSTGRES_PASSWORD: reviews-service-miniapp
+    ports:
+      - "5435:5432"
+

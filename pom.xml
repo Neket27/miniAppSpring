@@ -18,9 +18,10 @@
 
     <modules>
         <module>eureka-server</module>
-        <module>api-gateway</module>
         <module>backend</module>
         <module>service-payment</module>
+        <module>reviews-service</module>
+        <module>user-service</module>
     </modules>
 
     <properties>
