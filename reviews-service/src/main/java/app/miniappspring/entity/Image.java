@@ -19,6 +19,7 @@ public class Image {
     @Column(nullable = false)
     private byte[] bytes;
 
-    private Long UserId;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feedback_id", nullable = true)
+    private Feedback feedback;
 }

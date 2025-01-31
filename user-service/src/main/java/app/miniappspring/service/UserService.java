@@ -2,9 +2,9 @@ package app.miniappspring.service;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
-import app.miniappspring.dto.user.*;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
+import app.miniappspring.web.dto.user.*;
 import lombok.NonNull;
 
 import java.util.List;

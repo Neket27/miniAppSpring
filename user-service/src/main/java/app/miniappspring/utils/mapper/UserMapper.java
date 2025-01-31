@@ -3,9 +3,9 @@ package app.miniappspring.utils.mapper;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
-import app.miniappspring.dto.user.CreateUserDto;
-import app.miniappspring.dto.user.UpdateDataUserDto;
-import app.miniappspring.dto.user.UserDto;
+import app.miniappspring.web.dto.user.CreateUserDto;
+import app.miniappspring.web.dto.user.UpdateDataUserDto;
+import app.miniappspring.web.dto.user.UserDto;
 import app.miniappspring.entity.User;
 import org.mapstruct.Mapper;
 

@@ -15,11 +15,15 @@ spring:
   application:
     name: reviews-service
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000
+
+  config:
+    import: optional:file:.env[.properties]
+
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:9000
 
   # DB
   datasource:

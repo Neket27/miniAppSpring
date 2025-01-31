@@ -2,13 +2,13 @@ package app.miniappspring.utils.mapper;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
-import app.miniappspring.dto.image.UpdateImageDto;
-import app.miniappspring.dto.user.CreateUserDto;
-import app.miniappspring.dto.user.UpdateDataUserDto;
-import app.miniappspring.dto.user.UserDto;
 import app.miniappspring.entity.Image;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
+import app.miniappspring.web.dto.image.UpdateImageDto;
+import app.miniappspring.web.dto.user.CreateUserDto;
+import app.miniappspring.web.dto.user.UpdateDataUserDto;
+import app.miniappspring.web.dto.user.UserDto;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.processing.Generated;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-29T13:19:04+0300",
+    date = "2025-01-31T03:20:22+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.5 (Amazon.com Inc.)"
 )
 @Component

@@ -7,17 +7,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity
-@RequiredArgsConstructor
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig  {
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-//    private final UserService userService;
+@RequiredArgsConstructor
+public class SecurityConfig  {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -48,13 +45,15 @@ public class SecurityConfig  {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
 //                        .requestMatchers("/hi/**").permitAll()  // Путь доступен для всех
 //                        .requestMatchers("/hi/**").hasAuthority("SCOPE_resource.read")  // Но только для пользователей с нужным правом
                         .anyRequest().permitAll()
-                )
-                .oauth2ResourceServer()
-                .jwt();
+                );
+//                .oauth2ResourceServer()
+//                .jwt();
 
         return http.build();
     }

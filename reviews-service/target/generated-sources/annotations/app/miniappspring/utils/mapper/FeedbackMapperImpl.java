@@ -3,18 +3,22 @@ package app.miniappspring.utils.mapper;
 import app.miniappspring.dto.feedback.FeedbackCreateDto;
 import app.miniappspring.dto.feedback.FeedbackDto;
 import app.miniappspring.entity.Feedback;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.ZoneOffset;
+import java.util.Date;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-29T13:19:03+0300",
+    date = "2025-01-31T16:15:33+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.5 (Amazon.com Inc.)"
 )
 @Component
 public class FeedbackMapperImpl extends FeedbackMapper {
+
+    @Autowired
+    private ImageMapper imageMapper;
 
     @Override
     public Feedback toFeedback(FeedbackCreateDto feedbackCreateDto) {
@@ -28,12 +32,9 @@ public class FeedbackMapperImpl extends FeedbackMapper {
         feedback.setEmail( feedbackCreateDto.getEmail() );
         feedback.setMessage( feedbackCreateDto.getMessage() );
         feedback.setEvaluation( feedbackCreateDto.getEvaluation() );
-        List<byte[]> list = feedbackCreateDto.getImageList();
-        if ( list != null ) {
-            feedback.setImageList( new ArrayList<byte[]>( list ) );
-        }
-        feedback.setProductId( feedbackCreateDto.getProductId() );
         feedback.setUserId( feedbackCreateDto.getUserId() );
+        feedback.setProductId( feedbackCreateDto.getProductId() );
+        feedback.setImageList( imageMapper.toImageListFromCreate( feedbackCreateDto.getImageList() ) );
 
         return feedback;
     }
@@ -51,11 +52,10 @@ public class FeedbackMapperImpl extends FeedbackMapper {
         feedbackDto.setEmail( feedback.getEmail() );
         feedbackDto.setMessage( feedback.getMessage() );
         feedbackDto.setEvaluation( feedback.getEvaluation() );
-        List<byte[]> list = feedback.getImageList();
-        if ( list != null ) {
-            feedbackDto.setImageList( new ArrayList<byte[]>( list ) );
+        feedbackDto.setImageList( imageMapper.toImageDtoList( feedback.getImageList() ) );
+        if ( feedback.getDate() != null ) {
+            feedbackDto.setDate( Date.from( feedback.getDate().toInstant( ZoneOffset.UTC ) ) );
         }
-        feedbackDto.setDate( feedback.getDate() );
 
         return feedbackDto;
     }

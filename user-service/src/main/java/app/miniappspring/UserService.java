@@ -11,6 +11,7 @@ import static org.springframework.boot.SpringApplication.run;
 public class UserService {
     public static void main(String[] args){
         ConfigurableApplicationContext context = run(UserService.class, args);
+
     }
 
 }

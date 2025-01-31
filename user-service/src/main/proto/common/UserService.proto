@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_package = "ru.demo.numbers";
+option java_multiple_files = true;
+
+package service;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service UserServer {
+  rpc GetUserByUsername(GRPCUsername) returns (stream GRPCUser);
+}
+
+message GRPCUsername{
+  string username = 1;
+}
+
+message GRPCUser{
+  int64 id = 1;
+  string username = 2;
+  string password = 3;
+  string firstname = 4;
+  string lastname = 5;
+  string email = 6;
+  GRPCImage avatar = 7;
+  repeated GRPRole roles = 8;
+
+}
+
+enum GRPRole {
+  ROLE_USER = 0;
+  ROLE_ADMIN = 1;
+  ROLE_EMPLOYEE = 2;
+}
+
+message GRPCImage {
+  int64 id = 1;
+  string name = 2;
+  string contentType = 3;
+  bytes bytes = 4;
+  int64 userId = 5;
+}

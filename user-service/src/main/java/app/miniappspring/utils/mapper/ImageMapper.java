@@ -1,11 +1,13 @@
 package app.miniappspring.utils.mapper;
 
 
-import app.miniappspring.dto.image.CreateImageDto;
-import app.miniappspring.dto.image.ImageDto;
-import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
+import app.miniappspring.web.dto.image.CreateImageDto;
+import app.miniappspring.web.dto.image.ImageDto;
+import app.miniappspring.web.dto.image.UpdateImageDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import ru.demo.numbers.GRPCImage;
 
 import java.util.Base64;
 import java.util.List;
@@ -40,6 +42,13 @@ public interface ImageMapper {
                 .base64(Base64.getEncoder().encodeToString(image.getBytes()))
                 .build();
     }
+
+
+    @Mapping(target = "bytes", expression = "java(grpcImage.getBytes().toByteArray())")
+    Image fromGRPCImage(GRPCImage grpcImage);
+
+    @Mapping(target = "bytes", expression = "java(com.google.protobuf.ByteString.copyFrom(image.getBytes()))")
+    GRPCImage toGRPCImage(Image image);
 
     List<ImageDto> toImageDtoList(List<Image> images);
 

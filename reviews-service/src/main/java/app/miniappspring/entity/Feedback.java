@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "feedback")
@@ -21,11 +21,11 @@ public class Feedback {
     private String email;
     private String message;
     private float evaluation;
-    private Date date;
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "feedback_image", nullable = false)
-    private List<byte[]> imageList;
-    private Long productId;
+    private LocalDateTime date;
     private Long UserId;
+    private Long productId;
+
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> imageList;
 
 }

@@ -3,11 +3,13 @@ package app.miniappspring.dto.feedback;
 import app.miniappspring.dto.image.ImageDto;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
 @Getter
 @Setter
+@ToString
 public class FeedbackDto {
     private Long id;
     private String nameUser;
@@ -15,7 +17,7 @@ public class FeedbackDto {
     private ImageDto photoUser;
     private String message;
     private float evaluation;
-    private List<byte[]> imageList;
+    private List<ImageDto> imageList;
     private Date date;
 }
 

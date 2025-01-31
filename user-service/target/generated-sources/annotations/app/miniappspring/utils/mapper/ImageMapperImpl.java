@@ -1,17 +1,18 @@
 package app.miniappspring.utils.mapper;
 
-import app.miniappspring.dto.image.CreateImageDto;
-import app.miniappspring.dto.image.ImageDto;
-import app.miniappspring.dto.image.UpdateImageDto;
 import app.miniappspring.entity.Image;
+import app.miniappspring.web.dto.image.CreateImageDto;
+import app.miniappspring.web.dto.image.ImageDto;
+import app.miniappspring.web.dto.image.UpdateImageDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
+import ru.demo.numbers.GRPCImage;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-01-29T13:19:04+0300",
+    date = "2025-01-31T03:20:22+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.5 (Amazon.com Inc.)"
 )
 @Component
@@ -29,6 +30,45 @@ public class ImageMapperImpl implements ImageMapper {
         image.contentType( imageDto.getContentType() );
 
         return image.build();
+    }
+
+    @Override
+    public Image fromGRPCImage(GRPCImage grpcImage) {
+        if ( grpcImage == null ) {
+            return null;
+        }
+
+        Image.ImageBuilder image = Image.builder();
+
+        image.id( grpcImage.getId() );
+        image.name( grpcImage.getName() );
+        image.contentType( grpcImage.getContentType() );
+
+        image.bytes( grpcImage.getBytes().toByteArray() );
+
+        return image.build();
+    }
+
+    @Override
+    public GRPCImage toGRPCImage(Image image) {
+        if ( image == null ) {
+            return null;
+        }
+
+        GRPCImage.Builder gRPCImage = GRPCImage.newBuilder();
+
+        if ( image.getId() != null ) {
+            gRPCImage.setId( image.getId() );
+        }
+        gRPCImage.setName( image.getName() );
+        gRPCImage.setContentType( image.getContentType() );
+        if ( image.getUserId() != null ) {
+            gRPCImage.setUserId( image.getUserId() );
+        }
+
+        gRPCImage.setBytes( com.google.protobuf.ByteString.copyFrom(image.getBytes()) );
+
+        return gRPCImage.build();
     }
 
     @Override

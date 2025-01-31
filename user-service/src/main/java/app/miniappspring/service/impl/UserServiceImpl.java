@@ -2,13 +2,13 @@ package app.miniappspring.service.impl;
 
 import app.miniappspring.arguments.CreateUserArgument;
 import app.miniappspring.arguments.UpdateDataUserArgument;
-import app.miniappspring.dto.user.*;
 import app.miniappspring.entity.Role;
 import app.miniappspring.entity.User;
 import app.miniappspring.repository.UserRepo;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.mapper.ImageMapper;
 import app.miniappspring.utils.mapper.UserMapper;
+import app.miniappspring.web.dto.user.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

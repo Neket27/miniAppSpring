@@ -1,6 +1,6 @@
 package app.miniappspring.arguments;
 
-import app.miniappspring.dto.image.UpdateImageDto;
+import app.miniappspring.web.dto.image.UpdateImageDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
