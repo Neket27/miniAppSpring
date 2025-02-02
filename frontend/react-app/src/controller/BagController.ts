@@ -11,32 +11,32 @@ export default class BagController {
     }
 
     static async getProductFromCart(idProduct:number, accessToken:string){
-        return api.get<ProductCartResponse>(`/api/v1/cart/product?idProduct=${idProduct}&accessToken=${accessToken}`)
+        return api.get<ProductCartResponse>(`/api/v1/cart/product?idProduct=${idProduct}`)
             .then(response=>response.data);
     }
 
     static async getProductsFromCart(accessToken:string):Promise<Array<IProductBag>>{
-        return api.get<Array<IProductBag>>('/api/v1/cart/products?accessToken=' + accessToken)
+        return api.get<Array<IProductBag>>('/api/v1/cart/products')
             .then(response => response.data);
     }
 
     static async increaseProductInCart(idProduct:number,accessToken:string){
-        return api.get<boolean>(`/api/v1/cart/increase?idProduct=${idProduct}&accessToken=${accessToken}`)
+        return api.get<boolean>(`/api/v1/cart/increase?idProduct=${idProduct}`)
             .then(response=>response.data);
     }
 
     static async decreaseProductInCart(idProduct:number, accessToken:string){
-        return api.get<boolean>(`/api/v1/cart/decrease?idProduct=${idProduct}&accessToken=${accessToken}`)
+        return api.get<boolean>(`/api/v1/cart/decrease?idProduct=${idProduct}`)
             .then(response=>response.data);
     }
 
     static async sendCountProductInCart(idProduct:number,count:number,accessToken:string){
-        return api.get<boolean>(`/api/v1/cart/sendCountProductInCart?idProduct=${idProduct}&count=${count}&accessToken=${accessToken}`)
+        return api.get<boolean>(`/api/v1/cart/sendCountProductInCart?idProduct=${idProduct}&count=${count}`)
             .then(response=>response.data);
     }
 
     static async getCountProductInBag(accessToken:string):Promise<number>{
-        return api.get<number>(`/api/v1/cart//products/count?accessToken=${accessToken}`)
+        return api.get<number>(`/api/v1/cart//products/count`)
             .then(response=>response.data);
     }
 

@@ -97,7 +97,6 @@ const DetailProduct = () => {
                 idProduct: productDetail.id,
                 count: countProducts,
                 showInCart: true,
-                accessToken:accessToken
             }
                 contextService.bagService.addProductInCart(product);
             }
@@ -110,8 +109,6 @@ const DetailProduct = () => {
     useEffect(()=>{
         if(countProducts>0)
             setCheckAddProduct(true);
-        console.log("setCheckAddProduct(true);")
-
         return  sendValue(countProducts);
     });
 
@@ -119,10 +116,8 @@ const DetailProduct = () => {
     const handleClickMinus = () => {
         if(checkAddProduct && countProducts==1){
             let countStr = localStorage.getItem("countProductInBag");
-            console.log("countStr= "+countStr);
             if (countStr != null) {
                 const count = parseInt(countStr) -1;
-                localStorage.setItem("countProductInBag",String(count));
                 contextCountProductInCart.setCountProductInBag(count);
             }
 

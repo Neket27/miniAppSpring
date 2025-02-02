@@ -11,11 +11,8 @@ const Detail = (props: {productDetail:IDetailProduct|undefined}) => {
                 <li>{props.productDetail?.characteristicProductDto.sellerWarranty}</li>
             </ul>
             <p>
-                {/*Перераспределение бюджета, безусловно, обуславливает институциональный социальный*/}
-                {/*статус. Основная стадия проведения рыночного исследования вырождена.*/}
-                {/*Ретроконверсия национального наследия по-прежнему востребована. Медиавес основан*/}
-                {/*на анализе телесмотрения.*/}
-                {props.productDetail?.note}
+
+                {props.productDetail?.description}
             </p>
         </div>
     );

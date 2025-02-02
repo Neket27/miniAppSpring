@@ -116,7 +116,7 @@ export const ProductAdd:FC = ()=>{
                     <h3 className="text-center mb-0">
                         Добавление продукта
                     </h3>
-                    <form>
+                    <form onSubmit={(ev)=>ev.preventDefault()}>
                         <div className="container mt-4 mb-4">
                             <div className="card p-4">
                                 <h4 className="mb-3">Загрузка изображений</h4>
@@ -149,21 +149,6 @@ export const ProductAdd:FC = ()=>{
                                 {/*<i className="fa fa-envelope" aria-hidden="true"></i>*/}
                             </span>
                         </div>
-
-    {/*                    <div className="wrap-input100 validate-input">*/}
-    {/*                        <input*/}
-    {/*                            className="input100"*/}
-    {/*                            onChange={e => setSubcategory(e.target.value)}*/}
-    {/*                            value={subcategory}*/}
-    {/*                            type="text"*/}
-    {/*                            placeholder="Подкатегория"*/}
-    {/*                            required={false}*/}
-    {/*                        />*/}
-    {/*                        <span className="focus-input100"></span>*/}
-    {/*                        <span className="symbol-input100">*/}
-    {/*    <i className="fa fa-sitemap" aria-hidden="true"></i> /!* Иконка для подкатегории *!/*/}
-    {/*</span>*/}
-    {/*                    </div>*/}
 
                         <div className="wrap-input100 validate-input">
                             <input

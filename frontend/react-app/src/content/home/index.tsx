@@ -9,6 +9,7 @@ import {ICardProduct} from "../../model/product/ICardProduct";
 import {useLocation} from "react-router-dom";
 import {ContextService} from "../../main";
 import {ProductPageTodo} from "../detail/product/pageTodo";
+import context from "react-bootstrap/NavbarContext";
 
 const Home=()=> {
     let context = useContext(ContextService)
@@ -20,9 +21,21 @@ const Home=()=> {
         setProduct(await context.productService.getListProductOnHomePage())
     }
 
-        useEffect(()=>{ // useEffect выполняется при первой загрузке или перезагрузки страницы
+    async function fetchProductOnHomePage(){
+        context.productService.connect((productsCart: ICardProduct[]) => {
+            console.log("Полученные данные:", productsCart);
+            setProduct(productsCart);  // Обновляем состояние с новыми данными
+        });
+    }
+
+
+        useEffect(()=>{
           getListProductOnHomePage();
     }, [location]);
+
+    useEffect(() => {
+       fetchProductOnHomePage();
+    }, [products]);
 
     return (
         <div>

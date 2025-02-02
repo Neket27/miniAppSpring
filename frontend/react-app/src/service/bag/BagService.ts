@@ -68,6 +68,7 @@ class BagService {
         return await BagController.sendCountProductInCart(idProduct, count, accessToken);
     }
 
+
     public connect(callback:any,bodyTopic:string|null) {
         this._stompClient = new Client({
             webSocketFactory: () => new SockJS('http://localhost:8080/ws'),

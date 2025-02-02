@@ -1,16 +1,11 @@
 import {ICardProduct} from "../../model/product/ICardProduct";
 import ProductController from "../../controller/ProductController";
-import {CardProductResponse} from "../../model/response/product/CardProductResponse";
 import {IDetailProduct} from "../../model/product/IDetailProduct";
 import BagController from "../../controller/BagController";
 import {ProductCartResponse} from "../../model/response/product/ProductCartResponse";
-import {IFeedback} from "../../model/rating/IFeedback";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {IAddProduct} from "../../model/product/IAddProduct";
-import {ICategory} from "../../model/product/ICategory";
-import api from "../../http";
-import category from "../../content/category";
 
 class ProductService {
     private _stompClient: Client = new Client();
@@ -68,22 +63,21 @@ class ProductService {
         }
     }
 
-     async sendCountProductInCartUser (idProduct: number, count: number, accessToken: string):Promise<void >  {
-        if (!isNaN(count)) {  // Проверка на то, что count является числом
-            const response = await BagController.sendCountProductInCart(idProduct, count, accessToken);
-        } else {
-            console.error("Ошибка: Невалидное значение countProductsInBag");
-        }
-    };
 
    public connect(callback:any,bodyTopic_1:string|null,bodyTopic_2:string) {
         this._stompClient = new Client({
             webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
             onConnect: (frame) => {
                 console.log('Connected: ' + frame);
-                // this.subscribeToTopics(callback);
                 this.subscribeToFirstTopic(null);
-                this.subscribeToSecondTopic(callback)
+                this.subscribeToSecondTopic(callback);
+                // this.subscribeToResultSuitableProductsTopic(()=>console.log("Вызвана функция"));
+                this.subscribeToResultSuitableProductsTopic((message) => {
+                    console.log("Сообщение с канала /resultSuitableProducts/public:", message.body);
+                    const data: ICardProduct[] = JSON.parse(message.body);
+                    callback(data);
+                });
+
                 this.sendMessage("/app/getNumberOfPiecesOfGoods",bodyTopic_2);
                 if(bodyTopic_1!=null)
                     this.sendMessage("/app/getCountProductInCart",bodyTopic_1);
@@ -124,7 +118,7 @@ class ProductService {
     }
 
     public sendNumberOfPiecesOfGoods(idProduct:number|undefined,count:number,accessToken:string|null){
-       if (accessToken!=null)
+        if (accessToken!=null)
            if(idProduct!=undefined)
                 this.sendMessage("/app/sendNumberOfPiecesOfGoods",JSON.stringify({idProduct: idProduct, count: count, accessToken: accessToken}));
             else
@@ -134,7 +128,7 @@ class ProductService {
     }
 
     public sendRequestOnGetNumberOfPiecesOfGoods(idProduct:number|undefined,accessToken:string|null){
-        if (accessToken!=null)
+       if (accessToken!=null)
             if(idProduct!=undefined)
                 this.sendMessage("/app/getNumberOfPiecesOfGoods",JSON.stringify({idProduct: idProduct, accessToken: accessToken}));
             else
@@ -155,6 +149,20 @@ class ProductService {
     public async deleteProduct(productId:number){
         await ProductController.deleteProduct(productId);
     }
+
+    subscribeToResultSuitableProductsTopic(callback: any) {
+        console.log("вызов subscribeToResultSuitableProductsTopic ")
+        this._stompClient.subscribe('/resultSuitableProducts/public', callback);
+    }
+
+    public sendResultSuitableProducts(accessToken:string|null):void{
+        if(accessToken!=null)
+            this.sendMessage("/app/sendResultSuitableProducts",accessToken);
+        else
+            console.log("Access token в sendResultSuitableProducts = "+accessToken)
+    }
+
+
 }
 
 export default ProductService;
