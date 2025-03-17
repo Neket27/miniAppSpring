@@ -1,6 +1,6 @@
 import axios from "axios";
-import cities from '../../../react-app/src/russian-cities.json'
-import {string} from "prop-types";
+import cities from '../../russian-cities.json'
+
 
 export class LocationDetector {
 

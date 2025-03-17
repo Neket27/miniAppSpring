@@ -3,22 +3,19 @@ import { ICardProduct } from "../../../model/product/ICardProduct";
 import Product from "../../../home/product";
 
 interface ProductPageTodoProps {
-    products: Array<ICardProduct>;
+    products?: Array<ICardProduct>; // Сделаем необязательным
 }
 
-export const ProductPageTodo = (props: ProductPageTodoProps) => {
+export const ProductPageTodo = ({ products = [] }: ProductPageTodoProps) => {
     const [currentPage, setCurrentPage] = useState(1); // Текущая страница
     const itemsPerPage = 9; // Количество элементов на одной странице
 
-    // Определение количества страниц
-    const totalPages = Math.ceil(props.products.length / itemsPerPage);
+    const totalPages = Math.ceil(products.length / itemsPerPage);
 
-    // Разбиение элементов на страницы
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = props.products.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
 
-    // Функции для переключения между страницами
     const goToPage = (page: number) => {
         setCurrentPage(page);
     };
@@ -34,27 +31,31 @@ export const ProductPageTodo = (props: ProductPageTodoProps) => {
     return (
         <div>
             <div className="row">
-                <Product products={currentItems}/>
+                {currentItems.length > 0 ? (
+                    <Product products={currentItems} />
+                ) : (
+                    <p>Товары не найдены</p>
+                )}
             </div>
 
-            <div>
-                <nav className="ant107_shop-pazination mt-4">
-                    <ul>
-                        {[...Array(totalPages)].map((_, index: number) => (
-                            <li
-                                key={index}
-                                onClick={() => goToPage(index + 1)}
-                                // currentPage=== index + 1 ? ' className="active"' : ''
-                            >
-                                <a href="#">{index + 1}</a>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            </div>
-
-            <p style={{paddingTop: '10px'}}>Страница {currentPage} из {totalPages}</p>
+            {totalPages > 1 && (
+                <div>
+                    <nav className="ant107_shop-pazination mt-4">
+                        <ul>
+                            {[...Array(totalPages)].map((_, index: number) => (
+                                <li
+                                    key={index}
+                                    onClick={() => goToPage(index + 1)}
+                                    className={currentPage === index + 1 ? "active" : ""}
+                                >
+                                    <a href="#">{index + 1}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                    <p style={{ paddingTop: "10px" }}>Страница {currentPage} из {totalPages}</p>
+                </div>
+            )}
         </div>
-    )
-        ;
+    );
 };

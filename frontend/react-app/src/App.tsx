@@ -44,7 +44,7 @@ const App:FC=()=> {
     return (
         <div className="App">
             <Navbar/>
-            <NeuralNetworkDialog show={true} handleClose={false}/>
+            {/*<NeuralNetworkDialog show={true} handleClose={false}/>*/}
             <Routes>
                 <Route path="/" element={<AuthRootComponent/>}></Route>
                 <Route path="/login" element={<AuthRootComponent/>}></Route>

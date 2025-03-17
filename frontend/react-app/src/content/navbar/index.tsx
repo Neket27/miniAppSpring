@@ -14,8 +14,7 @@ import '../../fileTemplate/navbar/fonts/icomoon/demo-files/demo.css';
 import {Link} from "react-router-dom";
 import {ContextService, locationDetector, State} from "../../main";
 import CitySelector from "../сitySelector/CitySelector";
-import cities from '../../../../react-app/src/russian-cities.json'
-import {string} from "prop-types";
+import cities from "../../../../react-app/russian-cities.json"
 
 export let ContextCountProductInBag:React.Context<CountProductInBag>=createContext<CountProductInBag>();
 

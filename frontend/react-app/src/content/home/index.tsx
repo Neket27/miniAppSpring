@@ -10,21 +10,22 @@ import {useLocation} from "react-router-dom";
 import {ContextService} from "../../main";
 import {ProductPageTodo} from "../detail/product/pageTodo";
 import context from "react-bootstrap/NavbarContext";
+import NeuralNetworkDialog from "../chatWithNeiro/NeuralNetworkDialog";
 
 const Home=()=> {
     let context = useContext(ContextService)
     const location = useLocation();
-    const [products,setProduct]=useState<ICardProduct[]>([]);
+    const [products,setProducts]=useState<ICardProduct[]>([]);
 
 
     async function getListProductOnHomePage(){
-        setProduct(await context.productService.getListProductOnHomePage())
+        setProducts(await context.productService.getListProductOnHomePage())
     }
 
     async function fetchProductOnHomePage(){
         context.productService.connect((productsCart: ICardProduct[]) => {
             console.log("Полученные данные:", productsCart);
-            setProduct(productsCart);  // Обновляем состояние с новыми данными
+            setProducts(productsCart);  // Обновляем состояние с новыми данными
         });
     }
 
@@ -33,12 +34,23 @@ const Home=()=> {
           getListProductOnHomePage();
     }, [location]);
 
+    // useEffect(() => {
+    //    fetchProductOnHomePage();
+    // }, [products]);
+
     useEffect(() => {
-       fetchProductOnHomePage();
-    }, [products]);
+        fetchProductOnHomePage();
+    }, []);
+
+
 
     return (
         <div>
+            <NeuralNetworkDialog
+                show={true}
+                handleClose={false}
+                onSelectProducts={setProducts}
+            />
             <div id="ant107_shop" className="ant107_shop_container">
                 <div className="container">
                     <div className="row">

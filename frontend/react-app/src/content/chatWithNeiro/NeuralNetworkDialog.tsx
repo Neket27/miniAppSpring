@@ -1,28 +1,37 @@
-import React, {useState, useRef, useContext} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import '../../../css//NeuralNetworkDialog.css';
 import {ContextService, State} from "../../main";
-import {NeuroChatDto} from "../../model/neuroChat/NeuroChatDto"; // Importing the CSS file for custom styles
+import {NeuroChatDto} from "../../model/neuroChat/NeuroChatDto";
+import {ResponseOpenAi} from "../../model/neuroChat/ResponseOpenAi"; // Importing the CSS file for custom styles
 
-const NeuralNetworkDialog = ({ show, handleClose }) => {
-    const contextService:State = useContext(ContextService);
+const NeuralNetworkDialog = ({show, handleClose, onSelectProducts}) => {
+    const handleProductsSelect = (products) => {
+        onSelectProducts(products); // вызов setProduct
+    };
+    const contextService: State = useContext(ContextService);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]); // Состояние для хранения истории сообщений
     const dialogRef = useRef(null); // Ссылка на элемент диалога
 
 
-    const getAnswerFromNeuroChat =async ()=>{
-        const request :NeuroChatDto ={
+    const getAnswerFromNeuroChat = async () => {
+        const request: NeuroChatDto = {
             userId: 1,
-            message:input
+            message: input
         };
-        const  response = await contextService.neuroChatService.getAnswerFromNeuroChat(request);
+        // const response = await contextService.neuroChatService.getAnswerFromNeuroChat(request);
+        const response:ResponseOpenAi = await contextService.neuroChatService.sendQuestionInNero(input);
         console.log(response);
-            const userMessage = { text: input, sender: 'user' };
-            const botResponse = { text: `Ответ на: ${response.message}`, sender: 'bot' }; // Здесь вы можете интегрировать вызов к нейронной сети
 
-            // Обновляем историю сообщений
-            setMessages((prevMessages) => [...prevMessages, userMessage, botResponse]);
-            setInput(''); // Очищаем ввод
+        if((response.productCards != undefined))
+            handleProductsSelect(response.productCards);
+
+        const userMessage = {text: input, sender: 'user'};
+        const botResponse = {text: `Ответ на: ${response.message}`, sender: 'bot'};
+
+        // Обновляем историю сообщений
+        setMessages((prevMessages) => [...prevMessages, userMessage, botResponse]);
+        setInput(''); // Очищаем ввод
 
     }
 
@@ -51,7 +60,7 @@ const NeuralNetworkDialog = ({ show, handleClose }) => {
         document.addEventListener('mousemove', handleResize);
         document.addEventListener('mouseup', () => {
             document.removeEventListener('mousemove', handleResize);
-        }, { once: true });
+        }, {once: true});
     };
 
     if (!show) return null; // Не отображаем, если не показан
@@ -69,7 +78,7 @@ const NeuralNetworkDialog = ({ show, handleClose }) => {
                     </div>
                 ))}
             </div>
-            <form onSubmit={()=>null} className="message-form">
+            <form onSubmit={() => null} className="message-form">
                 <input
                     type="text"
                     value={input}
@@ -78,7 +87,7 @@ const NeuralNetworkDialog = ({ show, handleClose }) => {
                 />
                 <button onClick={handleSubmit}>Отправить</button>
             </form>
-            <div className="resize-handle" onMouseDown={handleMouseDown} />
+            <div className="resize-handle" onMouseDown={handleMouseDown}/>
         </div>
     );
 };
