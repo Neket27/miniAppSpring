@@ -17,8 +17,14 @@ public class AICategoryService {
 
     private final CategoryService categoryService;
 
+//    @Bean
+//    @Description("Getting all categories in the store")
+//    public Supplier<List<String>> getAllCategories() {
+//        return categoryService::getAllCategories;
+//    }
+
     @Bean
-    @Description("Getting all categories in the store")
+    @Description("Функция для получения всех категорий продуктов магазина.")
     public Supplier<List<String>> getAllCategories() {
         return categoryService::getAllCategories;
     }

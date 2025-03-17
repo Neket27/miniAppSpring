@@ -39,6 +39,6 @@ public class CategoryController {
 
     @PostMapping("/products")
     public List<ProductCardDto> getProductsByCategory(@RequestBody CategoryDto category) {
-        return productService.getProductsByCategory(category);
+        return productService.getProductsByCategory(category,20,100);
     }
 }

@@ -22,6 +22,7 @@ public class Product implements Serializable {
     private String name;
     private float cost;
     private float rating;
+    @Column(length = 2000)
     private String description;
     private String brand;
     private String note;

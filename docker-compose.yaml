@@ -1,7 +1,7 @@
 services:
 
   db-postgres:
-    image: postgres:16.1-alpine
+    image: pgvector/pgvector:pg16
     container_name: db_miniapp
     environment:
       POSTGRES_DB: miniapp_db

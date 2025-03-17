@@ -25,13 +25,29 @@ spring:
       password: cache
       database: 1
 
+#  ai:
+#    mistralai:
+#      api-key: FtNwAtAuDFBaIrUePWFpAqxjxPr31U1y
+#      chat:
+#        options:
+#          model: mistral-small-latest
+#          temperature: 2
+
   ai:
-    mistralai:
-      api-key: FtNwAtAuDFBaIrUePWFpAqxjxPr31U1y
+    openai:
+      api-key: ${API_OPENAI}
       chat:
         options:
-          model: mistral-small-latest
-          temperature: 2
+          model: gpt-4o-mini
+
+  vectorstore:
+    pgvector:
+    index-type: HNSW
+    distance-type: COSINE_DISTANCE
+    dimension: 1536
+  docker:
+    compose:
+      lifecycle-management: start_only
 
   # DB
   datasource:

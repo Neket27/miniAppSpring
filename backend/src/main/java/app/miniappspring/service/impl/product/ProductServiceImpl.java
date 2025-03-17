@@ -18,9 +18,6 @@ import app.miniappspring.service.ProductService;
 import app.miniappspring.service.UserService;
 import app.miniappspring.utils.mapper.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Cache;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    @Cacheable(value = "ProductService::getListCardProduct1")
+//  TODO кеширует не верно  @Cacheable(value = "ProductService::getListCardProduct")
     public List<ProductCardDto> getListCardProduct() {
         List<Product> products = productRepo.findAll();
         if (products.isEmpty())
@@ -113,12 +110,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public List<ProductCardDto> getProductsByCategory(CategoryDto categoryDto) {
+    public List<ProductCardDto> getProductsByCategory(CategoryDto categoryDto, int page, int pageSize) {
         List<Product> products;
         if (categoryDto.getCategoryProduct().equals("Все категории"))
             products = productRepo.findAll();
         else
-            products = productRepo.findByCategory_NameContainingIgnoreCase(categoryDto.getCategoryProduct()).orElse(Collections.emptyList());
+            products = productRepo.findByCategory_NameContainingIgnoreCase(categoryDto.getCategoryProduct());
 
         return products.stream().map(product -> productMapper.toProductCardDto(product)).toList();
     }

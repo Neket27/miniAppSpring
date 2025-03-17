@@ -25,7 +25,7 @@ public interface ProductService {
 
     List<ProductCardDto> addProduct(CreateProductArgument createProductArgument);
 
-    List<ProductCardDto> getProductsByCategory(CategoryDto category);
+    List<ProductCardDto> getProductsByCategory(CategoryDto category, int page, int pageSize);
 
     List<SearchProductDto> searchProductByName(String searchText);
 
