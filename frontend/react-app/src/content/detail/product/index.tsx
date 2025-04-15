@@ -10,7 +10,6 @@ import Detail from "./swithBlocks/detail";
 import {ProductCartResponse} from "../../../model/response/product/ProductCartResponse";
 import {observer} from "mobx-react-lite";
 import {Message} from 'stompjs';
-import {CardProductResponse} from "../../../model/response/product/CardProductResponse";
 import {ContextService} from "../../../main";
 import {ContextCountProductInBag} from "../../navbar";
 import {IProductInBag} from "../../../model/bag/IProductInBag";
@@ -18,7 +17,6 @@ import ImageProduct from "./imageProduct";
 import CartPreviewProduct from "./cartProduct";
 import "../../../../css/Detail.css"
 import {ICardProduct} from "../../../model/product/ICardProduct";
-import product from "../../home/product";
 
 const URL = import.meta.env.VITE_URL;
 
@@ -41,6 +39,15 @@ const DetailProduct = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [note,setNote] = useState<string>('');
     const [currentImageBase64, setCurrentImageBase64] = useState<string | null>(null);
+
+
+    const [flagContentAdmin, setFlagContentAdmin] = useState<boolean>(false);
+
+    const getUserRoles = async () => {
+        const response: Array<string> = await contextService.authService.getUserRoles(contextService.authService.user.username);
+        if (response.includes("ROLE_ADMIN")||response.includes("ROLE_EMPLOYEE"))
+            setFlagContentAdmin(true);
+    };
 
     const getNumberOfPiecesOfGoods =(val:Message)=>{
         setCountProducts(parseInt(val.body))
@@ -182,7 +189,7 @@ const DetailProduct = () => {
 
     return (
         <div id="ant107_shop" className="ant107_shop_container">
-            {productDetail ?
+            {productDetail && flagContentAdmin?
                 <div className="button-container">
                     <button
                         onClick={() => {
@@ -228,7 +235,7 @@ const DetailProduct = () => {
                         <div className="col-lg-6">
                             <div className="ant107_shop-product-details">
                                 <h3 className="mb-3">{productDetail?.name}</h3>
-                                <h6>Цена: <span>{productDetail?.cost}</span></h6>
+                                <h6>Цена: <span>{productDetail?.cost} Р</span></h6>
                                 <p>{productDetail?.detail}</p>
                                 <h6>Бренд: <span>{productDetail?.brand}</span></h6>
                                 {/*<h6>Артикул: <span>{productDetail?.article}</span></h6>*/}

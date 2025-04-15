@@ -5,7 +5,7 @@ const AboutUs = () => {
     return (
         <div className="about-container">
             <div className="about-wrapper">
-                <h1 className="about-title">Добро пожаловать в White Dreams!</h1>
+                <h1 className="about-title">Добро пожаловать в Device Home!</h1>
                 <p className="about-text">
                     Ваш цифровой помощник в мире умного дома!
                 </p>
@@ -19,7 +19,7 @@ const AboutUs = () => {
                     Погрузитесь в мир технологий, где каждый день — это новый уровень комфорта. Мы предлагаем только самые лучшие и инновационные решения для вашего дома.
                 </p>
                 <p className="about-text">
-                    С White Dreams ваш дом станет не просто местом, где вы живете, а настоящим умным убежищем!
+                    С Device Home ваш дом станет не просто местом, где вы живете, а настоящим умным убежищем!
                 </p>
                 <p className="about-text">
                     Присоединяйтесь к нам и давайте вместе создадим дом мечты!

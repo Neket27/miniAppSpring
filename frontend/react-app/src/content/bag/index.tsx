@@ -181,16 +181,16 @@ const Bag = () => {
                                     <div className="ant107_shop-total-item-wrap">
                                         <div className="ant107_shop-total-item ant107_shop-sub-total">
                                             <span className="ant107_shop-title">Подытог</span>
-                                            <span className="ant107_shop-price">{subtotal}</span>
+                                            <span className="ant107_shop-price">{subtotal} Р</span>
                                         </div>
                                         <div className="ant107_shop-total-item ant107_shop-shipping">
                                             <span className="ant107_shop-title">Доставка</span>
-                                            <span className="ant107_shop-price">{amountDelivery==0?'Бесплатно':amountDelivery}</span>
+                                            <span className="ant107_shop-price">{amountDelivery==0?'Бесплатно':amountDelivery+" Р"}</span>
                                         </div>
                                             {amountDiscount != 0 ?
                                                 <div className="ant107_shop-total-item ant107_shop-discount">
                                                     <span className="ant107_shop-title">Скидка</span>
-                                                    <span className="ant107_shop-price">{amountDiscount}</span>
+                                                    <span className="ant107_shop-price">{amountDiscount} Р</span>
                                                 </div>:''
                                             }
 
@@ -198,12 +198,12 @@ const Bag = () => {
                                             <div className="ant107_shop-total-item ant107_shop-discount">
                                                 <span className="ant107_shop-title">Купон</span>
                                                 <span
-                                                    className="ant107_shop-price">{amountCoupon}</span>
+                                                    className="ant107_shop-price">{amountCoupon} Р</span>
                                             </div>:''
                                         }
                                         <div className="ant107_shop-total-item ant107_shop-total">
                                             <span className="ant107_shop-title">Итого</span>
-                                            <span className="ant107_shop-price">{totalPrice-amountDiscount+amountDelivery-amountCoupon}</span>
+                                            <span className="ant107_shop-price">{totalPrice-amountDiscount+amountDelivery-amountCoupon} Р</span>
                                         </div>
                                     </div>
                                 </div>

@@ -21,6 +21,9 @@ import {AddAndUpdateCategory} from "./content/category/addAndUpdateCategory";
 import {PagePay} from "./content/pay";
 import OpenAI from "openai";
 import NeuralNetworkDialog from "./content/chatWithNeiro/NeuralNetworkDialog";
+import Delivery from "./content/delivery";
+import Refund from "./content/refund/Refund";
+import Stocks from "./content/stocks/Stocks";
 
 const App:FC=()=> {
     const context:State= useContext(ContextService);
@@ -62,10 +65,13 @@ const App:FC=()=> {
                 <Route path='/coupon/add' element={<AddCoupon/>}/>
                 <Route path='/discount/create' element={<DiscountAdd/>}/>
                 <Route path='/aboutUs' element={<AboutUs/>}/>
+                <Route path='/delivery' element={<Delivery/>}/>
+                <Route path='/refund' element={<Refund/>}/>
                 <Route path='/help' element={<SupportPage/>}/>
                 <Route path='/cabinetUser/delivery' element={<DeliveryUserData/>}/>
                 <Route path='/category/update' element={<AddAndUpdateCategory/>}/>
                 <Route path='/pay' element={<PagePay/>}/>
+                <Route path= '/stocks' element={<Stocks/>}/>
             </Routes>
         </div>
     );

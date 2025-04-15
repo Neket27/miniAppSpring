@@ -9,4 +9,8 @@ export class DiscountService {
     public async createDiscount(coupon:ICreateCoupon) {
         return await DiscountController.createDiscount(coupon);
     }
+
+    public async getProductWithDiscountByTown(town:string){
+        return DiscountController.getProductWithDiscountByTown(town);
+}
 }

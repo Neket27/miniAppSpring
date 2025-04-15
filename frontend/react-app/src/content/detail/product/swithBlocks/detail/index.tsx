@@ -8,7 +8,7 @@ const Detail = (props: {productDetail:IDetailProduct|undefined}) => {
 
             <ul className="ant107_shop-list-style-one mt-3 mb-3">
                 <li>{props.productDetail?.characteristicProductDto.producerCountry}</li>
-                <li>{props.productDetail?.characteristicProductDto.sellerWarranty}</li>
+                <li>Грарантия {props.productDetail?.characteristicProductDto.sellerWarranty} год</li>
             </ul>
             <p>
 

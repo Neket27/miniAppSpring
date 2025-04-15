@@ -122,7 +122,7 @@ export const PagePay = ()=>{
                                     <div className="form-group">
                                         <input type="text"
                                                className="form-control"
-                                               placeholder="Улица"
+                                               placeholder="Адрес доставки"
                                                value={streetAddress}
                                                onChange={(e) => setStreetAddress(e.target.value)}
                                                required/>

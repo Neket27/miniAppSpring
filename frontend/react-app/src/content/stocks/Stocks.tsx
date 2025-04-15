@@ -10,44 +10,40 @@ import {useLocation} from "react-router-dom";
 import {ContextService} from "../../main";
 import {ProductPageTodo} from "../detail/product/pageTodo";
 
-const Home = () => {
+const Stocks = () => {
     let context = useContext(ContextService)
     const location = useLocation();
     const [products, setProducts] = useState<ICardProduct[]>([]);
 
 
     async function getListProductOnHomePage() {
-        setProducts(await context.productService.getListProductOnHomePage())
+        const city:string = localStorage.getItem('city');
+        if(city!="" && city!=null) {
+            const productsCard = await context.discountService.getProductWithDiscountByTown(city);
+            setProducts(productsCard);
+        }
     }
 
-    async function fetchProductOnHomePage() {
-        context.productService.connect((productsCart: ICardProduct[]) => {
-            console.log("Полученные данные:", productsCart);
-            setProducts(productsCart);  // Обновляем состояние с новыми данными
-        });
-    }
+    // async function fetchProductOnHomePage() {
+    //     context.productService.connect((productsCart: ICardProduct[]) => {
+    //         console.log("Полученные данные:", productsCart);
+    //         setProducts(productsCart);
+    //     });
+    // }
 
 
     useEffect(() => {
         getListProductOnHomePage();
     }, [location]);
 
+    //
     // useEffect(() => {
-    //    fetchProductOnHomePage();
-    // }, [products]);
-
-    useEffect(() => {
-        fetchProductOnHomePage();
-    }, []);
+    //     fetchProductOnHomePage();
+    // }, []);
 
 
     return (
         <div>
-            {/*<NeuralNetworkDialog*/}
-            {/*    show={true}*/}
-            {/*    handleClose={false}*/}
-            {/*    onSelectProducts={setProducts}*/}
-            {/*/>*/}
             <div id="ant107_shop" className="ant107_shop_container">
                 <div className="container">
                     <div className="row">
@@ -66,4 +62,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Stocks;

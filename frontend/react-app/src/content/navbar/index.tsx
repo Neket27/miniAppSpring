@@ -106,8 +106,6 @@ const Navbar = () => {
         return <div ref={ref}>{children}</div>;
     };
 
-
-
     return (
         <ContextCountProductInBag.Provider value={{ countProductInBag, setCountProductInBag,getCountProductInBag}}>
             <div className="site-navbar bg-white py-2">
@@ -124,7 +122,7 @@ const Navbar = () => {
                     <div className="d-flex align-items-center justify-content-between">
                         <div className="logo">
                             <div className="site-logo">
-                                <Link to="/" className="js-logo-clone">White Dream</Link>
+                                <Link to="/" className="js-logo-clone">Device Home</Link>
                             </div>
                         </div>
                         <p onClick={handleCityClick}>Ваш город: {city}</p>
@@ -142,8 +140,8 @@ const Navbar = () => {
                                     <li className="has-children ">
                                         <Link to="/">Главная</Link>
                                         <ul className="dropdown">
-                                            <li><a href="#">Доставка</a></li>
-                                            <li><a href="#">Обмен, возврат, гарантия</a></li>
+                                            <li><Link to="/delivery">Доставка</Link></li>
+                                            <li><Link to="/refund">Обмен, возврат, гарантия</Link></li>
                                             <li><Link to="/help">Поддержка</Link></li>
                                             {/*<li className="has-children">*/}
                                             {/*    <a href="#">Sub Menu</a>*/}
@@ -156,7 +154,7 @@ const Navbar = () => {
                                         </ul>
                                     </li>
 
-                                    <li className="active"><a href="shop.html">Акции</a></li>
+                                    <li className="active"><Link to="/stocks">Акции</Link></li>
                                     <li><Link to="/aboutUs">Кто мы</Link></li>
                                 </ul>
                             </nav>

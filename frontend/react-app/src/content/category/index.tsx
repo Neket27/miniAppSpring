@@ -15,6 +15,7 @@ const Category = (props: { OnClickGetListProduct(category:string): void; })=>{
     async function getMapCategory(){
         const response = contextService.categoryService.getMapCategory();
         const jsonCategoryResponse=await response.then(r => r);
+        console.log("lll"+JSON.stringify(jsonCategoryResponse));
         setCategoryMap(jsonToMap(jsonCategoryResponse));
     }
 
