@@ -63,6 +63,8 @@ public class OpenAiController {
                 """
         );
 
+        promptParameters.put("system", "Когда ты получаешь товары, то в объекте есть поле название(name), заметок(note), бренд(brand) анализируй информацию с этих полей и отвечай на вопрос пользователя");
+
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .functions(Set.of("getAllCategories", "getProductsByCategory")).build();
         Prompt prompt = promptTemplate.create(promptParameters, options);
@@ -73,22 +75,27 @@ public class OpenAiController {
                 .getOutput()
                 .getText()
                 .trim();
+        String[] idProductsAndRecommendMessage;
+        try {
 
-        String[] idProductsAndRecommendMessage = response.split("&");
+            idProductsAndRecommendMessage = response.split("&");
 
-        List<Long> idProducts = Arrays.stream(idProductsAndRecommendMessage[0].split("\\|"))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(Long::valueOf)
-                .toList();
+            List<Long> idProducts = Arrays.stream(idProductsAndRecommendMessage[0].split("\\|"))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Long::valueOf)
+                    .toList();
 
-        String recommendMessage = idProductsAndRecommendMessage[1];
+            String recommendMessage = idProductsAndRecommendMessage[1];
 
-        List<ProductCardDto> productCardDtos = idProducts.stream()
-                .map(productService::getProductCard)
-                .toList();
-        return new ResponseOpenAi(recommendMessage, productCardDtos);
+            List<ProductCardDto> productCardDtos = idProducts.stream()
+                    .map(productService::getProductCard)
+                    .toList();
+            return new ResponseOpenAi(recommendMessage, productCardDtos);
 //        return new ResponseOpenAi("kkkk",productService.getListCardProduct());
+        } catch (Exception e) {
+            return new ResponseOpenAi(response, List.of());
+        }
     }
 
 

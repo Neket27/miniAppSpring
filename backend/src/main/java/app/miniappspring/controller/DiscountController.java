@@ -2,6 +2,7 @@ package app.miniappspring.controller;
 
 import app.miniappspring.dto.discount.DiscountCreateDto;
 import app.miniappspring.dto.discount.DiscountDto;
+import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.service.DiscountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,5 +31,12 @@ public class DiscountController {
     public DiscountDto checkDiscount(@RequestParam Long productId){
         return discountService.checkDiscountAtProduct(productId);
     }
+
+    @GetMapping("/products")
+    public List<ProductCardDto> getDiscountList(@RequestParam String town) {
+        return discountService.getProductsWithDiscountByTown(town);
+    }
+
+
 
 }

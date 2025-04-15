@@ -2,17 +2,18 @@ package app.miniappspring.service.impl.discount;
 
 import app.miniappspring.dto.discount.DiscountCreateDto;
 import app.miniappspring.dto.discount.DiscountDto;
+import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.entity.Discount;
 import app.miniappspring.entity.Product;
 import app.miniappspring.repository.DiscountRepo;
 import app.miniappspring.service.DiscountService;
 import app.miniappspring.service.ProductService;
 import app.miniappspring.utils.mapper.DiscountMapper;
+import app.miniappspring.utils.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +23,7 @@ public class DiscountServiceImpl implements DiscountService {
     private final DiscountRepo discountRepo;
     private final DiscountMapper discountMapper;
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @Override
     @Transactional
@@ -30,14 +32,13 @@ public class DiscountServiceImpl implements DiscountService {
 
         if (discount == null) {
             discount = discountMapper.toEntity(discountCreateDto);
-            List<Product> productList = discountCreateDto.getProductIdList().stream().map(productId->productService.findProduct(productId)).toList();
+            List<Product> productList = discountCreateDto.getProductIdList().stream().map(productId -> productService.findProduct(productId)).toList();
             discount.setProductList(productList);
             discountRepo.save(discount);
         }
 
         return discountMapper.toDiscountDto(discount);
     }
-
 
 
     @Override
@@ -49,5 +50,15 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public List<DiscountDto> getDiscountList() {
         return discountRepo.findAll().stream().map(discount -> discountMapper.toDiscountDto(discount)).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ProductCardDto> getProductsWithDiscountByTown(String town) {
+        List<Discount> allByCity = discountRepo.findAllByCity(town);
+        return allByCity.stream().flatMap(discount -> {
+            List<Product> productList = discount.getProductList();
+            return productList.stream().map(productMapper::toProductCardDto);
+        }).toList();
     }
 }

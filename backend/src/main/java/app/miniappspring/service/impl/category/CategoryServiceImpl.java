@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +26,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public NumberOfProductsInThisCategory getCategoriesWithCountProducts(){
+        Map<String,Integer> countProductThisCategory = new HashMap<>();
         List<Category>categoryItemList = categoryItemRepo.findAll();
-
-        Map<String,Integer> countProductThisCategory =  categoryItemList.stream().map(categoryItem -> {
-            int countProductWithCategory = categoryItemRepo.countByName(categoryItem.getName());
-            return Map.entry(categoryItem.getName(), countProductWithCategory);
-        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
+        categoryItemList.forEach(categoryItem -> countProductThisCategory.put(categoryItem.getName(), categoryItem.getProductList().size()));
         return new NumberOfProductsInThisCategory(countProductThisCategory);
     }
 

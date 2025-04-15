@@ -32,7 +32,7 @@ public class AIDiscountService {
     }
 
     @Bean
-    @Description("Get list Discount")
+    @Description("Get list Discount by town")
     public Supplier<List<DiscountDto>> getDiscountList(){
         return ()->discountService.getDiscountList();
     }
