@@ -26,25 +26,58 @@ public class OpenAiController {
 
     private final OpenAiChatModel chatModel;
     private final VectorStore vectorStore;
-    @Value("classpath:/prompts/spring-boot-reference.st")
+    @Value("classpath:/prompts/device.st")
     private Resource sbPromptTemplate;
 
     private final ProductService productService;
 
     @PostMapping("/chat1")
-    public String question(@RequestParam String message) {
+    public ResponseOpenAi question(@RequestParam String message) {
+
+        String system = """
+                Помогайте пользователям в следующих вопросах:
+                Поиск датчиков и устройств для "умного дома".
+                Совместимость различных датчиков.
+                Сборка комплектов устройств.
+                """;
+
         PromptTemplate promptTemplate = new PromptTemplate(sbPromptTemplate);
         Map<String, Object> promptParameters = new HashMap<>();
         promptParameters.put("input", message);
         promptParameters.put("documents", String.join("\n", findSimilarDocuments(message)));
+        promptParameters.put("system", system);
+        promptParameters.put("instruction", """
+                В начале ответа до символа | помещай id товаров (пиши их через запятую), которые подошли,
+                а после подробно напиши сообщения почему ты выбрал эти товары.
+                Пример: 1,5,7|твой подробный ответ почему эти товары.
+                """);
 
         OpenAiChatOptions options = OpenAiChatOptions.builder().functions(Set.of("getAllCategories", "getProductsByCategory")).build();
         Prompt prompt = promptTemplate.create(promptParameters, options);
 
-        return chatModel.call(prompt)
+        String response = chatModel.call(prompt)
                 .getResult()
                 .getOutput()
                 .getText();
+
+        String[] idProductsAndMessage = response.split("\\|");
+
+        List<Long> idProducts = Arrays.stream(idProductsAndMessage[0].split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
+
+        List<ProductCardDto> productCardDtos = idProducts.stream()
+                .map(productService::getProductCard)
+                .toList();
+
+        ResponseOpenAi responseOpenAi = ResponseOpenAi.builder()
+                .productCards(productCardDtos)
+                .message(idProductsAndMessage[1])
+                .build();
+
+        return responseOpenAi;
     }
 
 
@@ -100,7 +133,8 @@ public class OpenAiController {
 
 
     private List<String> findSimilarDocuments(String message) {
-        List<Document> similarDocuments = vectorStore.similaritySearch(SearchRequest.builder().topK(3).query(message).build());
+        List<Document> similarDocuments = vectorStore
+                .similaritySearch(SearchRequest.builder().topK(3).query(message).build());
         assert similarDocuments != null;
         return similarDocuments.stream().map(Document::getText).toList();
     }

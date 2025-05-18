@@ -71,6 +71,10 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     password: miniapp
     user: miniapp
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
 
 #Secret keys for token
 jwt:
@@ -92,11 +96,28 @@ gigachat:
 
 #Log
 logging:
+  file:
+    name: '/var/log/miniapp.log'
   level:
     root: info
 
 server:
   address: 0.0.0.0
   port: 8080
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 

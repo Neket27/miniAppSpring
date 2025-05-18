@@ -1,21 +1,27 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'spring-boot-app'
+  - job_name: 'smart_device_home__shop'
+    scrape_interval: 15s
+    scrape_timeout: 10s
     metrics_path: '/actuator/prometheus'
-    scrape_interval: 5s
     static_configs:
-      - targets: ['localhost:8080']
+      - targets: ['host.docker.internal:8080']
 
-#prometheus:
-#  prometheusSpec:
-#    serviceMonitorSelectorNilUsesHelmValues: false
-#    serviceMonitorSelector: {}
+  - job_name: 'postgres'
+    static_configs:
+      - targets:
+          - db_miniapp:5432
+    metrics_path: /metrics
+    params:
+      module: [ default ]
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: postgres-exporter:9187
 
-
-#scrape_configs:
-#  - job_name: Mini-app
-#    metrics_path: '/actuator/prometheus'
-#    scrape_interval: 5s
-#    static_configs:
-#      - targets:
-#          - cadvisor:8080

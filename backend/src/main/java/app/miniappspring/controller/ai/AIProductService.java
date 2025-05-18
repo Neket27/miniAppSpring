@@ -41,7 +41,8 @@ public class AIProductService {
 
 
     @Bean
-    @Description("Функция для получения продуктов по категории. Функция поддерживает пагинацию, можешь указывать page и pageSize в параметре запроса.")
+    @Description("Функция для получения продуктов по категории. " +
+            "Функция поддерживает пагинацию, можешь указывать page и pageSize в параметре запроса.")
     public Function<RequestOnGetProductsByCategory, List<ProductCardDto>> getProductsByCategory() {
         return (c) ->{
           List<ProductCardDto> productCardDtos =   productService.getProductsByCategory(

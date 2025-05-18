@@ -1,4 +1,52 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<date>\d{4}-\d{2}-\d{2})T(?P<time>\d{2}:\d{2}:\d{2}.\d{3}) (?P<message>(?s:.*))$$'
+
 services:
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    ports:
+      - '9090:9090'
+    command:
+      - '--config.file=/etc/prometheus/config.yml'
+      - '--enable-feature=exemplar-storage'
+    volumes:
+      - '/home/neket/IdeaProjects/miniAppSpring/backend/prometheus.yml:/etc/prometheus/config.yml'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - loki
+    logging: *default-logging
+    networks:
+      - smart_home
+
+  grafana:
+    image: 'grafana/grafana:6.5.0'
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - loki
+      - prometheus
+    logging: *default-logging
+    networks:
+      - smart_home
+
+  loki:
+    image: grafana/loki:3.0.0
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - smart_home
 
   db-postgres:
     image: pgvector/pgvector:pg16
@@ -9,7 +57,21 @@ services:
       POSTGRES_PASSWORD: miniapp
     ports:
       - "5433:5432"
+    logging: *default-logging
+    networks:
+      - smart_home
 
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres_exporter
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://miniapp:miniapp@db_miniapp:5432/miniapp_db?sslmode=disable"
+    depends_on:
+      - db-postgres
+    networks:
+      - smart_home
 
   cache:
     container_name: redis_container_cache
@@ -22,6 +84,8 @@ services:
       - "6380:6379"
     volumes:
       - ./redisdata:/data
+    networks:
+      - smart_home
     deploy:
       resources:
         limits:
@@ -50,20 +114,25 @@ services:
     tty: true
     stdin_open: true
 
+#  backend:
+#    build:
+#      context: ./
+#      dockerfile: backend/Dockerfile
+#    container_name: miniAppSpring_backend
+#    ports:
+#      - "8081:8080"
 
+#  frontend:
+#    build:
+#      context: ./
+#      dockerfile: frontend/Dockerfile
+#    container_name: miniAppSpring_frontend
+#    ports:
+#      - "5174:5173"
 
-  backend:
-    build:
-      context: ./
-      dockerfile: backend/Dockerfile
-    container_name: miniAppSpring_backend
-    ports:
-      - "8081:8080"
+volumes:
+  grafana_data:
 
-  frontend:
-    build:
-      context: ./
-      dockerfile: frontend/Dockerfile
-    container_name: miniAppSpring_frontend
-    ports:
-      - "5174:5173"
+networks:
+  smart_home:
+    driver: bridge
