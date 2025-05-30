@@ -10,6 +10,13 @@ x-logging: &default-logging
           expression: '^(?P<date>\d{4}-\d{2}-\d{2})T(?P<time>\d{2}:\d{2}:\d{2}.\d{3}) (?P<message>(?s:.*))$$'
 
 services:
+
+#  fpm:
+#    build:
+#      context: .
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+#      -
   # Infrastructure
   loki:
     image: grafana/loki:3.0.0
@@ -33,6 +40,8 @@ services:
     logging: *default-logging
     networks:
       - smart_home
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 
   tempo:
