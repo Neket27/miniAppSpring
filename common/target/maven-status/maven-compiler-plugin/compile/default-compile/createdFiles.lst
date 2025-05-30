@@ -1,0 +1,6 @@
+com/example/common/role/JwtRoleConverter.class
+com/example/common/coreapi/Credentials.class
+com/example/common/ApiEndpoints.class
+com/example/common/role/Roles.class
+com/example/common/coreapi/UserWithStatus.class
+com/example/common/coreapi/UserStatus.class

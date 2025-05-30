@@ -1,0 +1,6 @@
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/ApiEndpoints.java
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/coreapi/Credentials.java
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/coreapi/UserStatus.java
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/coreapi/UserWithStatus.java
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/role/JwtRoleConverter.java
+/home/neket/IdeaProjects/miniAppSpring/common/src/main/java/com/example/common/role/Roles.java
