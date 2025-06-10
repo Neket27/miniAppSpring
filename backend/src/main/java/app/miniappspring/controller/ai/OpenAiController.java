@@ -2,6 +2,7 @@ package app.miniappspring.controller.ai;
 
 import app.miniappspring.dto.product.ProductCardDto;
 import app.miniappspring.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -26,6 +27,7 @@ public class OpenAiController {
 
     private final OpenAiChatModel chatModel;
     private final VectorStore vectorStore;
+    private final ObjectMapper objectMapper;
     @Value("classpath:/prompts/device.st")
     private Resource sbPromptTemplate;
 
@@ -47,9 +49,11 @@ public class OpenAiController {
         promptParameters.put("documents", String.join("\n", findSimilarDocuments(message)));
         promptParameters.put("system", system);
         promptParameters.put("instruction", """
-                В начале ответа до символа | помещай id товаров (пиши их через запятую), которые подошли,
-                а после подробно напиши сообщения почему ты выбрал эти товары.
-                Пример: 1,5,7|твой подробный ответ почему эти товары.
+               Формат ответа:
+               {
+                  "productIds": [6, 4, 8],
+                  "message": "Вот устройства Tuya: умные розетки и датчик температуры. Обратите внимание, что устройства Tuya работают через приложения Tuya или Smart Life и не совместимы с Aqara."
+               }
                 """);
 
         OpenAiChatOptions options = OpenAiChatOptions.builder().functions(Set.of("getAllCategories", "getProductsByCategory")).build();
@@ -60,77 +64,19 @@ public class OpenAiController {
                 .getOutput()
                 .getText();
 
-        String[] idProductsAndMessage = response.split("\\|");
+        RecomendProductResponse recomendProductResponse = objectMapper.convertValue(response, RecomendProductResponse.class);
 
-        List<Long> idProducts = Arrays.stream(idProductsAndMessage[0].split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(Long::valueOf)
-                .toList();
-
-        List<ProductCardDto> productCardDtos = idProducts.stream()
+        List<ProductCardDto> productCardDtos = recomendProductResponse.getProductIds().stream()
                 .map(productService::getProductCard)
                 .toList();
 
         ResponseOpenAi responseOpenAi = ResponseOpenAi.builder()
                 .productCards(productCardDtos)
-                .message(idProductsAndMessage[1])
+                .message(recomendProductResponse.getMessage())
                 .build();
 
         return responseOpenAi;
     }
-
-
-    @PostMapping("/filtred-products")
-    public ResponseOpenAi question2(@RequestParam String message) {
-        PromptTemplate promptTemplate = new PromptTemplate(sbPromptTemplate);
-
-        Map<String, Object> promptParameters = new HashMap<>();
-        promptParameters.put("input", message);
-        promptParameters.put("documents", String.join("\n", findSimilarDocuments(message)));
-        promptParameters.put("instruction", """
-                Ты ассистент, который возвращает ТОЛЬКО id продуктов через символ '|', 
-                "без описаний и других слов. Пример, формат ответа: id1|id2|id3".
-                После всех id, в этой же строке, пишешь символ & без пробелов и 
-                дальше пишешь сообщение-рекомендацию пользователю уже соблюдая все правила пунктуации, точки пробелы и тд..
-                """
-        );
-
-        promptParameters.put("system", "Когда ты получаешь товары, то в объекте есть поле название(name), заметок(note), бренд(brand) анализируй информацию с этих полей и отвечай на вопрос пользователя");
-
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .functions(Set.of("getAllCategories", "getProductsByCategory")).build();
-        Prompt prompt = promptTemplate.create(promptParameters, options);
-
-
-        String response = chatModel.call(prompt)
-                .getResult()
-                .getOutput()
-                .getText()
-                .trim();
-        String[] idProductsAndRecommendMessage;
-        try {
-
-            idProductsAndRecommendMessage = response.split("&");
-
-            List<Long> idProducts = Arrays.stream(idProductsAndRecommendMessage[0].split("\\|"))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Long::valueOf)
-                    .toList();
-
-            String recommendMessage = idProductsAndRecommendMessage[1];
-
-            List<ProductCardDto> productCardDtos = idProducts.stream()
-                    .map(productService::getProductCard)
-                    .toList();
-            return new ResponseOpenAi(recommendMessage, productCardDtos);
-//        return new ResponseOpenAi("kkkk",productService.getListCardProduct());
-        } catch (Exception e) {
-            return new ResponseOpenAi(response, List.of());
-        }
-    }
-
 
     private List<String> findSimilarDocuments(String message) {
         List<Document> similarDocuments = vectorStore
@@ -138,17 +84,4 @@ public class OpenAiController {
         assert similarDocuments != null;
         return similarDocuments.stream().map(Document::getText).toList();
     }
-
-
-//    public ChatResponse getChatCompletion(@RequestParam String prompt) {
-//        Prompt p = new Prompt(List.of(new UserMessage(prompt)),
-//                OpenAiChatOptions.builder()
-//                        .functions(Set.of(
-//                                "getAllCategories"
-//
-//                        ))
-//                        .build());
-//
-//        return chatModel.call(p);
-//    }
 }

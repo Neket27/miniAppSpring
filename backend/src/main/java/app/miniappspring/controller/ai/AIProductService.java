@@ -45,7 +45,7 @@ public class AIProductService {
             "Функция поддерживает пагинацию, можешь указывать page и pageSize в параметре запроса.")
     public Function<RequestOnGetProductsByCategory, List<ProductCardDto>> getProductsByCategory() {
         return (c) ->{
-          List<ProductCardDto> productCardDtos =   productService.getProductsByCategory(
+            List<ProductCardDto> productCardDtos =   productService.getProductsByCategory(
                     new CategoryDto(c.category),
                     c.page != null ? c.page : 1, c.pageSize != null ? c.pageSize : 10
             );
@@ -58,5 +58,4 @@ public class AIProductService {
 
 
 }
-
 
