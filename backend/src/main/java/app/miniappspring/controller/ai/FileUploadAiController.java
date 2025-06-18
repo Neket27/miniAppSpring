@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -36,8 +37,8 @@ public class FileUploadAiController {
 
         Path filePath = Path.of("backend/src/main/resources/prompts/device.st");
 
-        try {
-            Files.write(filePath, stFile.getBytes());
+        try (OutputStream out = Files.newOutputStream(filePath)) {
+            out.write(stFile.getBytes());
 
             referenceDocsLoader.save(pdfFile);
 
@@ -48,5 +49,6 @@ public class FileUploadAiController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при чтении файлов.");
         }
+
     }
 }
